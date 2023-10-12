@@ -73,6 +73,7 @@ trait FunctionTrait {
             }
             return false;
         } catch(Exception $e) {
+            dd($e->getMessage().' '.$e->getLine());
             return false;
         }    
     }
