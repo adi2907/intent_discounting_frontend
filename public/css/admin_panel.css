@@ -1,0 +1,91 @@
+.refund-save-btn {
+    justify-content: flex-end;
+    -webkit-box-pack: justify;
+}
+
+.sub-content{
+ border-top: 1px solid #e5e5e5;
+}
+.is-display{
+    display: none;
+}
+.get-btn-disabled { 
+    /*pointer-events: none;*/
+    cursor: not-allowed;
+}
+.activityTbl{
+    padding-top: 2rem;
+}
+.search-store-admin {
+    display: flex;
+}
+
+.admin-search-bar{
+    width: 80%;
+    margin-left: 20px;
+}
+@media screen and (max-width: 995px) {
+    .search-store-admin {
+        display: block;
+    }
+    .admin-search-bar{
+        width: 98%;
+    }
+    .admin-search-btn{
+        margin-top: 5px;
+    }
+}
+
+.admin-search-btn{
+    margin-left: 10px;
+}
+.form_mar_none{
+    margin-block-end: 0;
+}
+.notics_msg{
+    margin: 0;
+}
+.hard-reset{
+     /*font-size: 1.7rem;*/ 
+     font-weight: 600; 
+     margin: 0; 
+}
+.refund-login-btn{
+    display: flex;
+}
+.refund-login-btn .login-btn{
+    margin-top: -3.5rem;
+    margin-left: 14rem;
+}
+.without_shopify_msg{
+    padding: 0.5rem 0;
+}
+.mt-2{
+    margin-top: 2rem;
+}
+.Polaris-Card__Section.mainMaxCap{
+    display: none;
+}
+.submainMaxCap{
+    z-index: 0;
+    padding: 0;
+    position: relative;
+}
+
+.sub_confirm_ink {
+    padding: 0;
+}
+#newStore{
+    white-space: nowrap;
+}
+/********************************************
+******    Flash notice css start      *******
+*********************************************/
+/* flash */
+.inline-flash-wrapper{position:fixed;z-index:9999;bottom:1.6rem;display:none;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:end;-webkit-align-items:flex-end;-ms-flex-align:end;align-items:flex-end;width:100%;pointer-events:none}.inline-flash-wrapper--is-visible{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}.inline-flash{position:relative;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;margin:0 1.6rem;background:rgba(0,0,0,.88);-webkit-box-shadow:0 0 0 1px rgba(63,63,68,.05),0 1px 3px 0 rgba(63,63,68,.15);box-shadow:0 0 0 1px rgba(63,63,68,.05),0 1px 3px 0 rgba(63,63,68,.15);border-radius:3px;color:#fff;cursor:default;pointer-events:auto;font-size:1.6rem;font-weight:400;line-height:2.4rem}.inline-flash__message{padding:.8rem 1.6rem;margin-bottom:0;margin-top:0}p{margin:0;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0;-webkit-margin-end:0}.inline-flash-wrapper.animated{-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes bounceInUp{0%{opacity:0;-webkit-transform:translateY(2000px);transform:translateY(2000px)}60%{opacity:1;-webkit-transform:translateY(-30px);transform:translateY(-30px)}80%{-webkit-transform:translateY(10px);transform:translateY(10px)}100%{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes bounceInUp{0%{opacity:0;-webkit-transform:translateY(2000px);-ms-transform:translateY(2000px);transform:translateY(2000px)}60%{opacity:1;-webkit-transform:translateY(-30px);-ms-transform:translateY(-30px);transform:translateY(-30px)}80%{-webkit-transform:translateY(10px);-ms-transform:translateY(10px);transform:translateY(10px)}100%{-webkit-transform:translateY(0);-ms-transform:translateY(0);transform:translateY(0)}}.inline-flash-wrapper.bounceInUp{-webkit-animation-name:bounceInUp;animation-name:bounceInUp}@media screen and (min-width:768px){.inline-flash--nav-offset{margin-left:24rem}}@media (min-width:640px){.inline-flash{font-size:2rem;line-height:2.8rem}}
+/* error */
+.inline-flash.error{background:-webkit-gradient(linear,left top,left bottom,from(#e6391a),to(#d53417));background:linear-gradient(to bottom,#e6391a,#d53417);border-color:background:rgba(255,0,0,.88);-webkit-box-shadow:inset 0 1px 0 0 #e84528;box-shadow:inset 0 1px 0 0 #e84528}
+/* add other color flash here */
+/********************************************
+******    Flash notice css start Ene  *******
+*********************************************/
