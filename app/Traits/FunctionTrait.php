@@ -56,6 +56,7 @@ trait FunctionTrait {
     public function validateRequestFromShopify($request) {
         try {
             $arr = [];
+            dd(config('shopify.SECRET_KEY'));
             if(array_key_exists('hmac', $request)) {
                 $hmac = $request['hmac'];
                 unset($request['hmac']);
