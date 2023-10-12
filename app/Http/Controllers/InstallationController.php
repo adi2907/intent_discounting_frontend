@@ -86,13 +86,13 @@ class InstallationController extends Controller
                         'hmac' => $hmac,
                         'install_date' => date('Y-m-d h:i:s')
                     ]);
-                    $shopRow = Shop::updateOrCreate($updateArr, $createArr);
+                    Shop::updateOrCreate($updateArr, $createArr);
     
                     //if(!$this->isShopifyStoreVersionNew($shop, $accessToken)) {
                         $payload = [
                             'script_tag' => [
                                 'event' => 'onload',
-                                'src' => asset('custom_script.js'),
+                                'src' => asset('js/custom_script.js'),
                                 'display_scope' => 'online_store'
                             ]
                         ];
