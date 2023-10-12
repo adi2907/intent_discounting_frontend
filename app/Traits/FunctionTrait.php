@@ -69,6 +69,7 @@ trait FunctionTrait {
                 }
                 $str = implode('&', $arr);
                 $ver_hmac =  hash_hmac('sha256', $str, config('shopify.SECRET_KEY'), false);
+                dd($ver_hmac.' '.$hmac);
                 return $ver_hmac === $hmac;
             }
             return false;
