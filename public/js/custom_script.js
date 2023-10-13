@@ -1,6 +1,6 @@
 // capture click events in the page
 var user_data = "";
-var baseURL = 'https://almeeapp.co.in/';
+var baseURL = 'https://almeapp.co.in/';
 document.addEventListener('click', async function(event) {
     // create a token identifier for this session and store in browser local storage
     var alme_user_token = localStorage.getItem('alme_user_token');
