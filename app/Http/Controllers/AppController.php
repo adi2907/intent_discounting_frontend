@@ -30,4 +30,9 @@ class AppController extends Controller {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+    public function themePopups(Request $request) {
+        $html = view('theme_popups')->render();
+        return response()->json(['status' => true, 'html' => $html]);
+    }
 }

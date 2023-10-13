@@ -1,6 +1,6 @@
 // capture click events in the page
 var user_data = "";
-var baseURL = 'https://ffd1-103-50-83-46.ngrok-free.app/';
+var baseURL = 'https://almeeapp.co.in/';
 document.addEventListener('click', async function(event) {
     // create a token identifier for this session and store in browser local storage
     var alme_user_token = localStorage.getItem('alme_user_token');
@@ -96,7 +96,7 @@ async function handleShowingPopup(){
 
     let obj;
 
-    const res = await fetch(baseURL+'theme_popups.php?shop='+Shopify.shop);
+    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
 
     obj = await res.json();
 
