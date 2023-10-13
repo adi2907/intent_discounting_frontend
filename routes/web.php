@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboard');
 
-Route::get('theme_popups', [AppController::class, 'themePopups']);
+Route::middleware('cors')->group(function () {
+    Route::get('theme_popups', [AppController::class, 'themePopups']);
+});
 
 Route::prefix('shopify/auth')->group(function () {
     Route::get('/', [InstallationController::class, 'startInstallation']);
