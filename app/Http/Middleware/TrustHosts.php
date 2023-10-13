@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Shop;
 use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
 class TrustHosts extends Middleware
@@ -13,8 +14,14 @@ class TrustHosts extends Middleware
      */
     public function hosts(): array
     {
-        return [
-            $this->allSubdomainsOfApplicationUrl(),
-        ];
+
+        $shops = Shop::select(['shop_url'])->get()->pluck('shop_url')->toArray();
+        $finalArr = [];
+        $finalArr[] = $this->allSubdomainsOfApplicationUrl();
+        foreach($shops as $shop) {
+            $finalArr[] = 'https://'.$shop;
+        }
+        //dd($finalArr);
+        return $finalArr;
     }
 }

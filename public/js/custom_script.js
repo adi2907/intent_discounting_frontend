@@ -66,10 +66,11 @@ document.addEventListener('click', async function(event) {
     localStorage.setItem("events", JSON.stringify(events));
 
     var isNew = localStorage.getItem('new_almee_user');
-    console.log('isNew' + isNew);
+    console.log('isNew ' + isNew);
+    await handleShowingPopup();
     if ((isNew !== false && isNew !== 'false') || isNew == 'true' || isNew === null) {
         localStorage.setItem('new_almee_user', 'false');
-        await handleShowingPopup();
+        
     } else {
         localStorage.setItem('new_almee_user', 'false');
         localStorage.setItem('alme_contact_popupDisplayed', 'true');
