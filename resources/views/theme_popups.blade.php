@@ -17,7 +17,20 @@
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            <form id="newUserForm">
+                <div class="form-group">
+                <label for="userName">Full Name</label>
+                <input id="userName" type="text" name="fullName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                <label for="userPhone">Mobile</label>
+                <input id="userPhone" type="number" name="phone" class="form-control">
+                </div>
+                <button id="submit" type="submit" name="newUserSubmit" class="add-cart-cta">Submit</button>
+            </form>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
