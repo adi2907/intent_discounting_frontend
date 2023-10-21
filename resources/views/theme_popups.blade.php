@@ -89,7 +89,7 @@
 </style>
 <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
-    <div class="popup" style="background: url(http://www.shukatsu-note.com/wp-content/uploads/2014/12/computer-564136_1280.jpg) no-repeat; background-size: cover; ">
+    <div class="popup">
         <h2>Please give us your information</h2>
         <a class="close" href="#">&times;</a>
         <div class="content">
