@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Shop;
 use Exception;
+use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
@@ -85,6 +86,29 @@ trait FunctionTrait {
         $headers = getShopifyAPIHeadersForStore($shopDetails);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
         return array_key_exists('statusCode', $response) && $response['statusCode'] == 200; 
+    }
+
+    public function isPriceRuleValid($priceRule, $shop) {
+        $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        return array_key_exists('statusCode', $response) && $response['statusCode'] == 200;
+    }
+
+    public function createDiscountCode($priceRule, $shop) {
+        $code = Str::random(6);
+        $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'/discount_codes.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $payload = [
+            "discount_code" => [
+                "code" => $code
+            ]
+        ];
+        $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
+        if(array_key_exists('statusCode', $response) && $response['statusCode'] == 201) {
+            return $response['body']['discount_code'];
+        }
+        return $response;
     }
 
 }

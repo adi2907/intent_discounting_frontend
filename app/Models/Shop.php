@@ -11,4 +11,20 @@ class Shop extends Model
     protected $guarded = [];
     protected $table = 'shop';
     public $timestamps = false;
+
+    public function getPriceRule() {
+        return $this->hasOne(PriceRule::class, 'store_id', 'id');
+    }
+
+    public function getLatestPriceRule() {
+        return $this->hasOne(PriceRule::class, 'store_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    public function getLatestDiscountCode() {
+        return $this->hasOne(DiscountCode::class, 'store_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    public function getDiscountCode() {
+        return $this->hasOne(DiscountCode::class, 'store_id', 'id');
+    }
 }
