@@ -94,6 +94,7 @@ document.addEventListener('click', async function(event) {
 async function handleShowingPopup(){
     // Define HTML and CSS
     var popupHTML = null;
+    var code = null;
 
     let obj;
 
@@ -103,7 +104,7 @@ async function handleShowingPopup(){
 
     console.log('outside');
     console.log(obj)
-
+    code = obj.code;
     popupHTML = obj.html;
 
     // Insert HTML
@@ -111,12 +112,12 @@ async function handleShowingPopup(){
     if(el == null || el.length < 1) {
         document.body.insertAdjacentHTML('beforeend', popupHTML);
         document.getElementById('popupModal').click();
-        handleFormSubmission()
+        handleFormSubmission(code)
     }
 }
 
 // Function to handle form submission
-function handleFormSubmission() {
+function handleFormSubmission(code = null) {
   
     document.getElementById('newUserForm').addEventListener('submit', function(event) { 
         //alert('submitting');
@@ -140,7 +141,11 @@ function handleFormSubmission() {
             body: JSON.stringify(newUserDetails),
         }).then(function(response) {
             if (response.ok) {
-                document.getElementById('newUserPopup').style.display = 'none';
+                if(code !== null && code) {
+                    document.getElementById('newUserPopup').innerHTML = '<center>Thanks for submitting! Use the discount code <b>'+code+'</b> to get 10% off your order!</center>'
+                } else {
+                    document.getElementById('newUserPopup').style.display = 'none';
+                }
                 localStorage.setItem('alme_contact_popupDisplayed', 'true');
                 console.log('Form submitted successfully');
             }
