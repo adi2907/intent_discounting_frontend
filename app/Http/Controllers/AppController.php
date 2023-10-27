@@ -33,6 +33,15 @@ class AppController extends Controller {
 
     public function themePopups(Request $request) {
         $html = view('theme_popups')->render();
-        return response()->json(['status' => true, 'html' => $html]);
+        if($request->has('shop')) {
+            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode'])->where('shop_url', $request->shop)->first();
+            if($shop !== null) {
+                $code = $shop->getLatestDiscountCode->code;
+            } else {
+                $code = null;
+            }
+            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+        }
+        return response()->json(['code' => null, 'status' => true, 'html' => $html]);
     }
 }
