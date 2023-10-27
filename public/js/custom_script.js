@@ -141,7 +141,8 @@ function handleFormSubmission(code = null) {
             body: JSON.stringify(newUserDetails),
         }).then(function(response) {
             if (response.ok) {
-                if(code !== null && code) {
+                if(code !== null) {
+                    console.log('here code '+code);
                     document.getElementById('newUserPopup').innerHTML = '<center>Thanks for submitting! Use the discount code <b>'+code+'</b> to get 10% off your order!</center>'
                 } else {
                     document.getElementById('newUserPopup').style.display = 'none';
