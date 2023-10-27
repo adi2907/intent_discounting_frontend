@@ -92,7 +92,7 @@ class InstallationController extends Controller
                         $payload = [
                             'script_tag' => [
                                 'event' => 'onload',
-                                'src' => asset('js/custom_script.js'),
+                                'src' => asset('js/custom_script.js?v='.date('c')),
                                 'display_scope' => 'online_store'
                             ]
                         ];
