@@ -143,9 +143,9 @@ function handleFormSubmission(code = null) {
             if (response.ok) {
                 if(code !== null) {
                     console.log('here code '+code);
-                    document.getElementById('newUserPopup').innerHTML = '<center>Thanks for submitting! Use the discount code <b>'+code+'</b> to get 10% off your order!</center>'
+                    document.getElementById('popupModal').innerHTML = '<center>Thanks for submitting! Use the discount code <b>'+code+'</b> to get 10% off your order!</center>'
                 } else {
-                    document.getElementById('newUserPopup').style.display = 'none';
+                    document.getElementById('popupModal').style.display = 'none';
                 }
                 localStorage.setItem('alme_contact_popupDisplayed', 'true');
                 console.log('Form submitted successfully');
