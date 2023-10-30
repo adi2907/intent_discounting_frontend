@@ -19,6 +19,7 @@ Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboar
 
 Route::middleware('cors')->group(function () {
     Route::get('theme_popups', [AppController::class, 'themePopups']);
+    Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
 });
 
 Route::prefix('shopify/auth')->group(function () {
