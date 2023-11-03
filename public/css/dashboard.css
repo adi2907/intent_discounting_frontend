@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+.section-heading {
+    font-family: 'montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 24px; 
+    margin-left: 20px; /* Aligned with other sections */
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.section {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.overview, .products, .users { 
+    display: flex;
+    gap: 20px;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.metric-box {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Left aligned content */
+    text-align: left;       /* Text is left aligned */
+}
+
+.metric-value {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.metric-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+    margin: 20px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+

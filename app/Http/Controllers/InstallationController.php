@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\User;
 use App\Traits\RequestTrait;
 use App\Traits\FunctionTrait;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-class InstallationController extends Controller
-{
+class InstallationController extends Controller {
+    
     use RequestTrait, FunctionTrait;
 
     public $apiKey, $apiSecret, $scopes, $appURL;
@@ -40,12 +43,14 @@ class InstallationController extends Controller
 
         if($shopDetails != null && $shopDetails->count() > 0 && $this->verifyInstallation($shopDetails)) {
             $baseShop = Shop::where('shop_url', $shop)->first();
+            $user = User::where('shop_id', $baseShop->id)->first();
             $shopDetails = ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first();
-            return view('dashboard', compact('baseShop', 'shopDetails'));
+            Auth::loginUsingId($user->id);
+            return redirect()->route('dashboard');
         } else {
-            $redirect_url = urlencode(route('shopify.auth.redirect'));
-            $install_url = "https://$shop/admin/oauth/authorize?client_id=$this->apiKey&scope=$this->scopes&redirect_uri=$redirect_url";
-            return redirect()->to($install_url);
+            $redirectUrl = urlencode(route('shopify.auth.redirect'));
+            $installUrl = "https://$shop/admin/oauth/authorize?client_id=$this->apiKey&scope=$this->scopes&redirect_uri=$redirectUrl";
+            return redirect()->to($installUrl);
         }
     }
 
@@ -75,33 +80,33 @@ class InstallationController extends Controller
                 $endpoint = "https://$shop/admin/oauth/access_token";
                 $headers = [ 'Content-Type' => 'application/json' ];
                 $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
-                Log::info('Response for access token');
-                Log::info($payload);
-                Log::info($response);
+                
                 if($response['statusCode'] && $response['statusCode'] == 200) {
                     $accessToken = $response['body']['access_token'];
+                    $storeObj = array_merge($storeObj, ['accessToken' => $accessToken]);
+
+                    $shopifyShopData = $this->getShopifyStoreData($storeObj);
+
                     $updateArr = ['shop_url' => $shop];
                     $createArr = array_merge($updateArr, [
                         'access_token' => $accessToken,
                         'hmac' => $hmac,
                         'install_date' => date('Y-m-d h:i:s')
                     ]);
-                    Shop::updateOrCreate($updateArr, $createArr);
-    
+                    
+                    $dbShop = Shop::updateOrCreate($updateArr, $createArr);
+                    
+                    $updateArr = [
+                        'shop_id' => $dbShop->id,
+                        'email' => $shopifyShopData['email']
+                    ];
+                    $createArr = array_merge($updateArr, [
+                        'password' => Hash::make(123456),
+                        'name' => $shopifyShopData['name']
+                    ]);
+                    User::updateOrCreate($updateArr, $createArr);
                     //if(!$this->isShopifyStoreVersionNew($shop, $accessToken)) {
-                        $payload = [
-                            'script_tag' => [
-                                'event' => 'onload',
-                                'src' => asset('js/custom_script.js?v='.date('c')),
-                                'display_scope' => 'online_store'
-                            ]
-                        ];
-                        $endpoint = getShopifyAPIURLForStore('script_tags.json', $storeObj);
-                        $headers = getShopifyAPIHeadersForStore(['accessToken' => $accessToken]);
-                        $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
-                        Log::info('Response for script tags');
-                        Log::info($payload);
-                        Log::info($response);
+                        $this->addScriptTagToStore($storeObj);
                     //}
                 }
                 return redirect()->to("https://$shop/admin/apps/".$this->apiKey);
@@ -110,5 +115,12 @@ class InstallationController extends Controller
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
+    }
+
+    private function getShopifyStoreData($storeObj) {
+        $endpoint = getShopifyAPIURLForStore('shop.json', $storeObj);
+        $headers = getShopifyAPIHeadersForStore($storeObj);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        return $response['body']['shop'];
     }
 }

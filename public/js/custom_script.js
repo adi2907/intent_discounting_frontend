@@ -129,7 +129,7 @@ function handleFormSubmission(code = null) {
             name: name,
             phone: phone,
             alme_user_token: alme_user_token,
-            app_name: 'desi_sandook',
+            app_name: Shopify.shop,
         };
   
         // Send data to server

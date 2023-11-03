@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\InstallationController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +15,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Auth::routes();
 
-Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboard');
+    Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
+    Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
+});
+
+Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
 
 Route::middleware('cors')->group(function () {
     Route::get('theme_popups', [AppController::class, 'themePopups']);
