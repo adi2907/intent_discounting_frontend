@@ -121,4 +121,15 @@ class AppController extends Controller {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+    public function updateNotificationSettings(Request $request) {
+        try {
+            $user = Auth::user();
+            $shop = $user->shopifyStore;
+            $shop->notificationSettings()->update([$request->field, $request->value]);
+            return response()->json(['status' => true, 'message' => 'Updated!']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
 }

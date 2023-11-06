@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboard');
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
+    Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');
+    Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');
 });
 
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
