@@ -112,16 +112,18 @@ trait FunctionTrait {
     }
 
     public function addScriptTagToStore($store) {
+        $version = strtotime(date('Y-m-d h:i:s'));
         $payload = [
             'script_tag' => [
                 'event' => 'onload',
-                'src' => asset('js/custom_script.js?v='.date('c')),
+                'src' => secure_asset('js/custom_script.js?v='.$version),
                 'display_scope' => 'online_store'
             ]
         ];
         $endpoint = getShopifyAPIURLForStore('script_tags.json', $store);
-        $headers = getShopifyAPIHeadersForStore(['accessToken' => $store]);
+        $headers = getShopifyAPIHeadersForStore($store);
         $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
+        return $response;
     }
 
 }

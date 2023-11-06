@@ -9,6 +9,7 @@ use App\Traits\RequestTrait;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AppController extends Controller {
@@ -19,11 +20,40 @@ class AppController extends Controller {
     }
 
     public function showProductRacks(Request $request) {
-        return view('product_racks');
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $productRackInfo = $shop->productRackInfo;
+        if($productRackInfo == null || $productRackInfo->count() < 1) {
+            $productRackInfo = $shop->productRackInfo()->create([
+                'user_liked' => false,
+                'crowd_fav' => false,
+                'pop_picks' => false,
+                'feat_collect' => false,
+                'prev_browsing' => false,
+                'high_convert_prods' => false,
+                'most_added_prods' => false,
+                'slow_inv' => false
+            ]);
+        }
+        return view('product_racks', ['productRackInfo' => $productRackInfo]);
     }
 
     public function showNotificationSettings(Request $request) {
-        return view('notifications');
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $notifSettings = $shop->notificationSettings;
+        if($notifSettings == null || $notifSettings->count() < 1) {
+            $notifSettings = $shop->notificationSettings()->create([
+                'status' => false,
+                'title' => null,
+                'description' => null,
+                'discount_value' => 10,
+                'sale_status' => false,
+                'sale_discount_value' => 10,
+                'discount_expiry' => 24
+            ]);
+        }
+        return view('notifications', ['notifSettings' => $notifSettings]);
     }
 
     public function showDashboard(Request $request) {
@@ -63,5 +93,32 @@ class AppController extends Controller {
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => $html]);
+    }
+
+    public function removeCustomScript(Request $request) {
+        try {
+            if($request->has('shop_id') && $request->filled('shop_id')) {
+                $shop = Shop::where('id', $request->shop_id)->first();
+                $endpoint = getShopifyAPIURLForStore('script_tags.json', $shop);
+                $headers = getShopifyAPIHeadersForStore($shop);
+                $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+                if(array_key_exists('statusCode', $response) && $response['statusCode'] == 200) {
+                    $body = $response['body']['script_tags'];
+                    if(count($body) > 0) {
+                        foreach($body as $scriptTag) {
+                            $endpoint = getShopifyAPIURLForStore('script_tags/'.$scriptTag['id'].'.json', $shop);
+                            $this->makeAnAPICallToShopify('DELETE', $endpoint, $headers);
+                        }
+                    }
+                    //Install the script tag
+                    $installResponse = $this->addScriptTagToStore($shop);
+                    return response()->json(['status' => true, 'response' => $installResponse]);
+                }
+            }
+            return response()->json(['status' => false, 'message' => 'Shop ID not in params']);
+        } catch(Exception $e) {
+            Log::info($e->getMessage().' '.$e->getLine());
+            return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
+        }
     }
 }
