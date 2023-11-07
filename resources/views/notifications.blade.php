@@ -99,7 +99,7 @@
         function updateSettings(thisVar) {
             const field = thisVar.data('fieldname');
             const type = thisVar.data('fieldtype');
-            const value = thisVar.val();
+            const value = type == 'checkbox' ? (thisVar.is(':checked') ? 'on':'off') : thisVar.val();
 
             console.log('Field '+field+' Value '+value);
             $.ajax({
