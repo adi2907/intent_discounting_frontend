@@ -126,7 +126,8 @@ class AppController extends Controller {
         try {
             $user = Auth::user();
             $shop = $user->shopifyStore;
-            $shop->notificationSettings()->update([$request->field, $request->value]);
+            $value = $request->fieldtype == 'checkbox' ? ($request->value == 'on' ? true : false) : $request->value;
+            $shop->notificationSettings()->update([$request->field => $value]);
             return response()->json(['status' => true, 'message' => 'Updated!']);
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
