@@ -97,7 +97,7 @@
         });
 
         function updateSettings(thisVar) {
-            const field = thisVar.data('fieldName');
+            const field = thisVar.data('fieldname');
             const value = thisVar.val();
 
             console.log('Field '+field+' Value '+value);
