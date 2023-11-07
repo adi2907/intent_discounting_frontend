@@ -82,7 +82,7 @@
 </div>
 @endsection
 
-@section
+@section('scripts')
     <script>
         $(document).ready(function () {
             $('.blurInputChange').blur(function (e) {
