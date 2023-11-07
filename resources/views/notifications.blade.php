@@ -112,7 +112,7 @@
                 },
                 async: false,
                 success: function (response) {
-                    alert(response.status + ' ' + response.message);
+                    //alert(response.status + ' ' + response.message);
                     if(response.status) {
                         thisVar.parent().css({'border-color': 'green'});
                     }
