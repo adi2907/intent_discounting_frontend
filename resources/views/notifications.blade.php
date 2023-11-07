@@ -20,7 +20,7 @@
                         <p class="settings-card-description">In-site notification collects contacts for WhatsApp conversion</p>
                     </div>
                     <label class="switch">
-                        <input type="checkbox" class="inputChange" data-fieldtype="checkbox" data-fieldName="status" @if(isset($notifSettings['status']) && $notifSettings['status'] === true) checked @endif>
+                        <input type="checkbox" class="inputChange" data-fieldtype="checkbox" data-fieldName="status" @if(isset($notifSettings['status']) && $notifSettings['status'] == 1) checked @endif>
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -56,7 +56,7 @@
                     </div>
                     
                     <label class="switch">
-                        <input type="checkbox" class="inputChange" data-fieldtype="checkbox" data-fieldName="sale_status" @if(isset($notifSettings['sale_status']) && $notifSettings['sale_status'] === true) checked @endif>
+                        <input type="checkbox" class="inputChange" data-fieldtype="checkbox" data-fieldName="sale_status" @if(isset($notifSettings['sale_status']) && $notifSettings['sale_status'] == 1) checked @endif>
                         <span class="slider"></span>
                     </label>
                 </div>
