@@ -1,10 +1,13 @@
 if (document.readyState !== 'loading') {
     console.log('document is ready, logging page_load');
-    logEvent('page_load', 'page_load', null);
+    // create a generic object and assign innerText to ''
+    var page_load_event = {target: {innerText: ''}};
+    logEvent('page_load', 'page_load', page_load_event);
+
 } else {
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function (event) {
         console.log('document was not ready, adding event listener, logging page_load');
-        logEvent('page_load', 'page_load', null);
+        logEvent('page_load', 'page_load', event);
     });
 }
 
