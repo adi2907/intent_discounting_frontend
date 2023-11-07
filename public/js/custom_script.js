@@ -49,10 +49,17 @@ setInterval(sendEventsToServer, 5000);
 function logEvent(event_type, event_name, event) {
     var cust_email = '{{ customer.email }}'
     var cust_id = '{{ customer.id }}'
-    var product_id = meta.product.id || '';
-    var product_name = meta.product.variants[0].name || '';
-    var product_price = meta.product.variants[0].price || '';
-    var product_category = meta.product.type || '';
+    var product_id = null;
+    var product_name = null;
+    var product_price = null;
+    var product_category = null;
+    if(meta.product) {
+        product_id = meta.product.id;
+        product_name = meta.product.variants[0].name
+        product_category = meta.product.type
+        product_price = meta.product.variants[0].price
+    } 
+    
     var timestamp = Math.floor(Date.now() / 1000);
     var eventDetails = {
         'user_login': cust_email,
