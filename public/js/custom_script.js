@@ -76,9 +76,11 @@ function logEvent(event_type, event_name, event) {
 
 document.addEventListener('click', function(event) {
     logEvent('click', '', event);
+    console.log('CLick captured');
 });
 
 document.addEventListener('DOMContentLoaded', function(event) {
+    console.log('Event page loaded');
     logEvent('page_load', 'page_load', event);
 });
 
