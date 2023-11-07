@@ -16,7 +16,7 @@
             <div class="settings-card">
                 <div class="settings-option">
                     <div>
-                        <span class="settings-card-title">Contact Capture Notification/span>
+                        <span class="settings-card-title">Contact Capture Notification</span>
                         <p class="settings-card-description">In-site notification collects contacts for WhatsApp conversion</p>
                     </div>
                     <label class="switch">
