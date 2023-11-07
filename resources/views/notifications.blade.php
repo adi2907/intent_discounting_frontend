@@ -43,7 +43,7 @@
                         <span class="settings-card-title">Discount for submitting contact</span>
                         <p class="settings-card-description">Incentivise your users to submit their contact details by giving an exclusive discount</p>
                     </div>
-                    <input class="discount-input blurInputChange" data-fieldtype="text" type="number" min="1" max="50" value="{{$notifSettings['discount_value']}}" >
+                    <input class="discount-input blurInputChange" data-fieldtype="text" data-fieldName="discount_value" type="number" min="1" max="50" value="{{$notifSettings['discount_value']}}">
                 </div>
             </div>
             <h2 class="settings-heading">Enable Sale Notifications</h2>
