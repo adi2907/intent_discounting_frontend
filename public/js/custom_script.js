@@ -1,12 +1,9 @@
 if (document.readyState !== 'loading') {
-    console.log('document is ready, logging page_load');
-    // create a generic object and assign innerText to ''
     var page_load_event = {target: {innerText: ''}};
     logEvent('page_load', 'page_load', page_load_event);
 
 } else {
     document.addEventListener('DOMContentLoaded', function (event) {
-        console.log('document was not ready, adding event listener, logging page_load');
         logEvent('page_load', 'page_load', event);
     });
 }
@@ -99,13 +96,3 @@ document.addEventListener('click', function(event) {
     console.log('CLick captured');
 });
 
-/*
-document.addEventListener('DOMContentLoaded', function(event) {
-    console.log('Event page loaded');
-    logEvent('page_load', 'page_load', event);
-});
-
-
-home_url = window.location.origin;
-var ajax_url = home_url + "/wp-json/alme/v1/data";
-*/
