@@ -1,3 +1,13 @@
+if (document.readyState !== 'loading') {
+    var page_load_event = {target: {innerText: ''}};
+    logEvent('page_load', 'page_load', page_load_event);
+
+} else {
+    document.addEventListener('DOMContentLoaded', function (event) {
+        logEvent('page_load', 'page_load', event);
+    });
+}
+
 function createUserToken(){
     var timestamp = Date.now().toString().slice(-5);
     var random = Math.random().toString(36).substring(2, 8);
@@ -45,7 +55,7 @@ function sendEventsToServer() {
     }
 }
 
-setInterval(sendEventsToServer, 5000);
+setInterval(sendEventsToServer, 10000);
 function logEvent(event_type, event_name, event) {
     var cust_email = '{{ customer.email }}'
     var cust_id = '{{ customer.id }}'
@@ -86,12 +96,3 @@ document.addEventListener('click', function(event) {
     console.log('CLick captured');
 });
 
-document.addEventListener('DOMContentLoaded', function(event) {
-    console.log('Event page loaded');
-    logEvent('page_load', 'page_load', event);
-});
-
-/*
-home_url = window.location.origin;
-var ajax_url = home_url + "/wp-json/alme/v1/data";
-*/
