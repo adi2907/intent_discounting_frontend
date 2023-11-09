@@ -8,7 +8,7 @@ if (document.readyState !== 'loading') {
     });
 }
 
-await handleShowingPopup();
+handleShowingPopup();
 
 function createUserToken(){
     var timestamp = Date.now().toString().slice(-5);
@@ -16,16 +16,16 @@ function createUserToken(){
     return timestamp + random;
 }
 
-async function handleShowingPopup(){
+function handleShowingPopup(){
     // Define HTML and CSS
     var popupHTML = null;
     var code = null;
 
     let obj;
 
-    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
+    const res = fetch(baseURL+'theme_popups?shop='+Shopify.shop);
 
-    obj = await res.json();
+    obj = res.json();
 
     console.log('outside');
     console.log(obj)
