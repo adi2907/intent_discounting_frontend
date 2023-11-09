@@ -47,7 +47,7 @@
 </style>
 
 <!-- Bootstrap Modal -->
-<a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
+<!-- <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a> -->
 <div class="modal fade" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -82,6 +82,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function(){
+  console.log('here');
   $('#popup1').modal('show');
 });
 </script>
