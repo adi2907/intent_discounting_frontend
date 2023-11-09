@@ -53,7 +53,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <div class="header-box mx-auto text-center">
-                <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
+                <!-- <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo"> -->
                 <h5 class="modal-title">Become an Insider</h5>
             </div>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
