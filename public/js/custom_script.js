@@ -8,10 +8,95 @@ if (document.readyState !== 'loading') {
     });
 }
 
+await handleShowingPopup();
+
 function createUserToken(){
     var timestamp = Date.now().toString().slice(-5);
     var random = Math.random().toString(36).substring(2, 8);
     return timestamp + random;
+}
+
+async function handleShowingPopup(){
+    // Define HTML and CSS
+    var popupHTML = null;
+    var code = null;
+
+    let obj;
+
+    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
+
+    obj = await res.json();
+
+    console.log('outside');
+    console.log(obj)
+    code = obj.code;
+    popupHTML = obj.html;
+
+    // Insert HTML
+    var el = document.getElementById('newUserForm');
+    if(el == null || el.length < 1) {
+        document.body.insertAdjacentHTML('beforeend', popupHTML);
+        document.getElementById('popupModal').click();
+        handleFormSubmission(code)
+    }
+}
+
+// Function to handle form submission
+function handleFormSubmission(code = null) {
+  
+    document.getElementById('newUserForm').addEventListener('submit', function(event) { 
+        //alert('submitting');
+        event.preventDefault();
+        var name = document.getElementById('userName').value;
+        var phone = document.getElementById('userPhone').value;    
+        var alme_user_token = localStorage.getItem('alme_user_token');
+        var newUserDetails = {
+            name: name,
+            phone: phone,
+            alme_user_token: alme_user_token,
+            app_name: Shopify.shop,
+        };
+  
+        // Send data to server
+        fetch('https://almeapp.com/notification/submit_contact/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newUserDetails),
+        }).then(function(response) {
+            if (response.ok) {
+                if(code !== null) {
+                    console.log('here code '+code);
+                    document.getElementById('popup1').innerHTML = '<center>Thanks for submitting! Use the discount code <b>'+code+'</b> to get 10% off your order!</center>'
+                } else {
+                    document.getElementById('popup1').style.display = 'none';
+                }
+                localStorage.setItem('alme_contact_popupDisplayed', 'true');
+                console.log('Form submitted successfully');
+            }
+        }).catch(function(error) {
+            console.log(error);
+        });
+    });
+  }
+      
+
+// Function to handle close button click
+function handleCloseButtonClick() {
+    // Ensure the element is available in the DOM
+    let closeBtn = document.getElementById('closeBtn');
+
+    if (closeBtn) {
+    closeBtn.addEventListener('click', function(event) {
+        console.log('Handling close button click');
+        event.stopPropagation();
+        document.getElementById('newUserPopup').style.display = 'none';
+        localStorage.setItem('alme_contact_popupDisplayed', 'true');
+    });
+    } else {
+    console.error('Close button not found in DOM');
+    }
 }
 
 function sendEventsToServer() {
