@@ -8,24 +8,22 @@ if (document.readyState !== 'loading') {
     });
 }
 
-handleShowingPopup();
-
 function createUserToken(){
     var timestamp = Date.now().toString().slice(-5);
     var random = Math.random().toString(36).substring(2, 8);
     return timestamp + random;
 }
 
-function handleShowingPopup(){
+async function handleShowingPopup(){
     // Define HTML and CSS
     var popupHTML = null;
     var code = null;
 
     let obj;
     var baseURL = 'https://almeapp.co.in/';
-    const res = fetch(baseURL+'theme_popups?shop='+Shopify.shop);
+    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
 
-    obj = res.json();
+    obj = await res.json();
 
     console.log('outside');
     console.log(obj)
@@ -176,8 +174,9 @@ function logEvent(event_type, event_name, event) {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', async function(event) {
     logEvent('click', '', event);
     console.log('CLick captured');
+    await handleShowingPopup();
 });
 
