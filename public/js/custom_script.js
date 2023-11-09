@@ -22,7 +22,7 @@ function handleShowingPopup(){
     var code = null;
 
     let obj;
-
+    var baseURL = 'https://almeapp.co.in/';
     const res = fetch(baseURL+'theme_popups?shop='+Shopify.shop);
 
     obj = res.json();
