@@ -34,7 +34,7 @@ async function handleShowingPopup(){
     var el = document.getElementById('newUserForm');
     if(el == null || el.length < 1) {
         document.body.insertAdjacentHTML('beforeend', popupHTML);
-        //document.getElementById('popupModal').click();
+        document.getElementById('popupModal').click();
         handleFormSubmission(code)
     }
 }
