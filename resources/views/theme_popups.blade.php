@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Submit Contact</title>
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="submit_contact.css">
 <style>
@@ -51,8 +46,6 @@
     font-family: 'Montserrat', sans-serif;
   }
 </style>
-</head>
-<body>
 
 <!-- Bootstrap Modal -->
 <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
@@ -90,9 +83,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function(){
-  $('#desiModal').modal('show');
+  $('#popup1').modal('show');
 });
 </script>
-
-</body>
-</html>
