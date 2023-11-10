@@ -80,3 +80,29 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Commented html code for reference -->
+<!-- Include Bootstrap CSS if needed 
+<div class="modal" id="customPopup" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Custom Popup</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This is a custom popup from your Laravel app!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// JS to trigger the modal
+document.addEventListener('DOMContentLoaded', (event) => {
+    $('#customPopup').modal('show');
+});
+</script>
+-->
