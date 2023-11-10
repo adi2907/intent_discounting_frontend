@@ -32,7 +32,7 @@ async function handleShowingPopup(){
 
     // Insert HTML
     var el = document.getElementById('newUserForm');
-    if(el == null || el.length < 1) {
+    if(popupHTML !== null && (el == null || el.length < 1)) {
         document.body.insertAdjacentHTML('beforeend', popupHTML);
         document.getElementById('popupModal').click();
         handleFormSubmission(code)
