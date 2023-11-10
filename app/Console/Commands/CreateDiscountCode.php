@@ -29,7 +29,6 @@ class CreateDiscountCode extends Command {
      * Execute the console command.
      */
     public function handle() {
-
         $shops = Shop::with('getLatestPriceRule')->get();
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
