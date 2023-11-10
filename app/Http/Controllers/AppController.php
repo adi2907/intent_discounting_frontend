@@ -9,6 +9,7 @@ use App\Traits\RequestTrait;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -17,6 +18,11 @@ class AppController extends Controller {
     use FunctionTrait, RequestTrait;
     public function __construct() {
         
+    }
+
+    public function checkCronStatus() {
+        $cacheKey = config('custom.cacheKeys.cronStatus');
+        return response()->json(['value' => Cache::has($cacheKey) ? Cache::get($cacheKey) : null]);
     }
 
     public function showProductRacks(Request $request) {

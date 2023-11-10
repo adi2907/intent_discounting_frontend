@@ -10,9 +10,8 @@ class Kernel extends ConsoleKernel {
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void {
-
         $schedule->command('app:discount')->daily();
-
+        $schedule->command('app:check-cron-status')->everyFiveSeconds();
     }
 
     /**

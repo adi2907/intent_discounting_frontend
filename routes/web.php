@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
 
+Route::prefix('debug')->group(function () {
+    Route::get('cron', [AppController::class, 'checkCronStatus']);
+});
+
 Route::middleware('cors')->group(function () {
     Route::get('theme_popups', [AppController::class, 'themePopups']);
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
