@@ -25,8 +25,6 @@ async function handleShowingPopup(){
 
     obj = await res.json();
 
-    console.log('outside');
-    console.log(obj)
     code = obj.code;
     popupHTML = obj.html;
 
