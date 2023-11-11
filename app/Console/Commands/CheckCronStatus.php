@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
-class CheckCronStatus extends Command
-{
+class CheckCronStatus extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -24,8 +23,7 @@ class CheckCronStatus extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
         $cacheKey = config('custom.cacheKeys.cronStatus');
         $data = [
             'ok' => true,
@@ -34,6 +32,5 @@ class CheckCronStatus extends Command
         Cache::set($cacheKey, $data);
         $this->info('Done');
         return Command::SUCCESS;
-
     }
 }
