@@ -24,7 +24,7 @@ class AppController extends Controller {
         $cacheKeys = config('custom.cacheKeys');
         $returnVal = [];
         foreach($cacheKeys as $key) {
-            $returnVal[$key] = Cache::has($key) ? Cache::get($key) : null
+            $returnVal[$key] = Cache::has($key) ? Cache::get($key) : null;
         }
         return response()->json(['value' => $returnVal]);
     }
