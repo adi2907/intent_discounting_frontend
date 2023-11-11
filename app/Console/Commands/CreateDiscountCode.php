@@ -6,6 +6,7 @@ use App\Models\Shop;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class CreateDiscountCode extends Command {
