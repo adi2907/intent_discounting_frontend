@@ -21,8 +21,12 @@ class AppController extends Controller {
     }
 
     public function checkCronStatus() {
-        $cacheKey = config('custom.cacheKeys.cronStatus');
-        return response()->json(['value' => Cache::has($cacheKey) ? Cache::get($cacheKey) : null]);
+        $cacheKeys = config('custom.cacheKeys');
+        $returnVal = [];
+        foreach($cacheKeys as $key) {
+            $returnVal[$key] = Cache::has($key) ? Cache::get($key) : null
+        }
+        return response()->json(['value' => $returnVal]);
     }
 
     public function showProductRacks(Request $request) {

@@ -29,6 +29,14 @@ class CreateDiscountCode extends Command {
      * Execute the console command.
      */
     public function handle() {
+
+        $cacheKey = config('custom.cacheKeys.createDiscountCode');
+        $data = [
+            'ok' => true,
+            'last_update' => date('Y/m/d h:i:s')
+        ];
+        Cache::set($cacheKey, $data);
+
         $shops = Shop::with('getLatestPriceRule')->get();
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
