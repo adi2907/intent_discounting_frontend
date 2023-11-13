@@ -81,7 +81,6 @@ trait FunctionTrait {
 
     public function verifyInstallation($shopDetails = null) {
         if($shopDetails == null) return false;
-
         $endpoint = getShopifyAPIURLForStore('shop.json', $shopDetails);
         $headers = getShopifyAPIHeadersForStore($shopDetails);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
