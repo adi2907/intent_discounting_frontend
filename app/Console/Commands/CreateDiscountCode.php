@@ -161,4 +161,11 @@ class CreateDiscountCode extends Command {
         
         return true;
     }
+
+    /**
+     * "almeapp.com/api/carts/?token=q6wxm4v47y9&max_items=5&app_name=test_shopify"
+     *"almeapp.com/api/visits/?token=q6wxm4v47y9&app_name=test_shopify&max_items=5"
+     *"almeapp.com/api/most_visited/?app_name=test_shopify"
+     *"almeapp.com/api/most_carted/?app_name=test_shopify" 
+    */
 }
