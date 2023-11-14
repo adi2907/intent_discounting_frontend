@@ -1,0 +1,60 @@
+.main-content h1 {
+    font-size: 2.5em;
+    margin-top: 20px;
+}
+
+.main-content {
+    background-color: #DEECEC;
+    padding: 20px;
+}
+.options-box {
+    background-color: white; /* White background */
+    border: 5px solid #1B4332; /* Thick green border */
+    border-radius: 25px;     /* Rounded corners */
+}
+/* Base style for the checkbox */
+.form-check-input {
+    appearance: none;
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    border: #926F34 4px solid;
+    border-radius: 8px;
+    vertical-align: top;
+    position: relative; /* Added to position the inner white circle */
+}
+
+/* Checked state */
+.form-check-input:checked {
+    background-color: #1B4332;
+    border: #926F34 2px solid;
+}
+
+
+
+.form-check-label {
+    margin-left: 16px;
+}
+
+
+.form-check-label {
+    margin-left: 16px; /* To give space between the checkbox and label */
+}
+
+/* Product title styling */
+.productrack-title {
+    font-family:'montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    display: inline-block; /* To ensure vertical alignment works */
+}
+
+/* Product description styling */
+.productrack-description {
+    font-family:'montserrat', sans-serif;
+    font-weight: 400; /* semi-bold */
+    font-size: 14px;
+}
+
+
+

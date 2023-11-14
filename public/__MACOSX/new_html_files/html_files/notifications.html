@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="common.css">
+    <img id="site-logo" src="images/TextALME.png" alt="Alme Logo">
+    <link rel="stylesheet" href="notifications.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+             <!-- Sidebar for larger screens -->
+             <div class="col-md-3 sidebar d-none d-md-block">
+                <div class="brand mb-4">
+                    <img src="M&H-logo.png" alt="M&H Clothing" class="img-fluid">
+                    M&H Clothing
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-shopping-bag"></i> Product Collection
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-message"></i> Notifications
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Navbar for mobile screens -->
+            <nav class="navbar navbar-expand-md navbar-light bg-light d-md-none w-100">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a href="#" class="nav-link">Dashboard</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Product Collection</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Notifications</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="col-md-9 nopadding">
+                <section class="page-title bg-white p-4">
+                    <div class="title-content">      
+                        <h1>Notifications</h1>
+                        <i class="fas fa-message"></i>
+                    </div>
+                </section>
+                <section class="main-content">
+
+                    <div class="container mt-5">
+
+                        <h2 class="settings-heading">Get contact details</h2>
+                        <div class="settings-card">
+                            <div class="settings-option">
+                                <div>
+                                    <span class="settings-card-title">Contact Capture Notification</span>
+                                    <p class="settings-card-description">In-site notification collects contacts for WhatsApp conversion</p>
+                                </div>
+                                
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="settings-option">
+                                <div class="settings-text">
+                                    <span class="settings-card-title">Notification Title</span>
+                                    <p class="settings-card-description">Give a catchy title to display on top of the notification</p>
+                                </div>
+                                <input class="contact-input" type="text" placeholder="Become an Insider to our store. Exclusive updates await">
+                            </div>
+                            
+                            <div class="settings-option">
+                                <div class="settings-text">
+                                    <span class="settings-card-title">Notification Description</span>
+                                    <p class="settings-card-description">Highlight the value for your users when they submit their contact details</p>
+                                </div>
+                                <input class="contact-input" type="text" placeholder="Receive Whatsapp notifications on New Collections">
+                            </div>
+                            
+                            <div class="settings-option">
+                                <div class="settings-text">
+                                    <span class="settings-card-title">Discount for submitting contact</span>
+                                    <p class="settings-card-description">Incentivise your users to submit their contact details by giving an exclusive discount</p>
+                                </div>
+                                <input class="discount-input" type="number" min="1" max="50" value="10">
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        <h2 class="settings-heading">Enable Sale Notifications</h2>
+                        <h2></h2>
+                        <div class="settings-card">
+                            <div class="settings-option">
+                                <div>
+                                    <span class="settings-card-title">Enable Sale Notifications</span>
+                                    <p class="settings-card-description">Enable personalised sale alerts based on browsing behaviour</p>
+                                </div>
+                                
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="settings-option">
+                                <div>
+                                    <span class="settings-card-title">Discount (%age) for coupons</span>
+                                    <p class="settings-card-description">Specify how much discount to give using coupons on your store</p>
+                                </div>
+                                <input class="discount-input" type="number" min="1" max="50" value="10">
+                            </div>
+
+                            <div class="settings-option">
+                                <div>
+                                    <span class="settings-card-title">Coupon validity(hours)</span>
+                                    <p class="settings-card-description">Specify the validity of the dynamically generated coupon in hours</p>
+                                    <p class="settings-card-description">Recommended to keep between 6 and 24 hours </p>
+                                </div>
+                                <input class="validity-input" type="number" min="1" max="100" value="24">
+                            </div>
+                        </div>
+                        
+
+
+                </section>
+    
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

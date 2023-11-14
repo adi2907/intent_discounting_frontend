@@ -1,4 +1,7 @@
 @extends('layouts.new_app')
+@section('css')
+<link rel="stylesheet" src="{{secure_asset('css/dashboard.css')}}" />
+@endsection
 @section('content')
 
 <div class="col-md-9 nopadding">

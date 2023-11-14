@@ -1,0 +1,55 @@
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .header-box {
+    text-align: center;
+  }
+  
+  .brand-logo {
+    max-width: 25%;
+    margin: 0 auto;
+    display: block; /* ensures the image does not inline with the title */
+  }
+  
+  .modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    color: #4e342e;
+    margin-top: 0px; /* spacing between logo and title */
+  }
+  
+  .modal-description{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: #616161;
+    margin-top: 0px; /* spacing between title and description */
+  }
+  
+  .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
+  
+  .coupon-code {
+    background-color: #4e342e; /* Color similar to the button in the image */
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block; /* To shape the coupon code box */
+    margin-top: 0px; /* spacing between description and coupon code */
+  }
+  
+  .code {
+    letter-spacing: 1px; /* To mimic the spacing in the image */
+  }
+  
+.modal-header,
+.modal-body {
+  border: none;
+}

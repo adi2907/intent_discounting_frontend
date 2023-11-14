@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\User;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Exception;
