@@ -28,7 +28,7 @@ class ExtensionController extends Controller {
                 if($flag) {
                     if($productRackSettings->most_added_prods === 1 || $productRackSettings->most_added_prods === true) {
                         $almeToken = $request->token;
-                        $getParams = `?app_name=$this->appName&max_items=$this->maxItems&token=$almeToken`;
+                        $getParams = '?app_name='.$this->appName.'&max_items='.$this->maxItems.'&token='.$almeToken;
                         $endpoint = getAlmeAppURLForStore('most_visited'.$getParams);
                         $headers = getAlmeHeaders();
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
