@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop;
+use App\Models\ShopifyProducts;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
@@ -34,18 +35,36 @@ class ExtensionController extends Controller {
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
                         Log::info('Response from Alme API '.$endpoint);
                         Log::info($response['body']);
-                        $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers];   
+                        if($response['statusCode'] == 200) {
+                            $html = $this->getMostViewedHTML($response['body'], $shop);
+                            $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers, 'html' => $html];   
+                        } else {
+                            $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers, 'html' => null];   
+                        }
+                    } else {
+                        $response = ['status' => true, 'message' => 'Flag set false', 'debug' => $productRackSettings, 'html' => null];
                     }
                 } else {
-                    $response = ['status' => true, 'message' => 'Flag not set true', 'debug' => $productRackSettings];
+                    $response = ['status' => true, 'message' => 'Flag not set true', 'debug' => $productRackSettings, 'html' => null];
                 } 
             } else {
-                $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all()];
+                $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all(), 'html' => null];
             }
         } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all()];
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
-
         return response()->json($response);
+    }
+    
+    private function getMostViewedHTML($body, $shop) {
+        try {
+            if($body !== null && count($body) > 0) {
+                $products = $shop->getProducts()->whereIn('product_id', $body)->get();
+                return view('appExt.most_viewed', ['products' => $products])->render();
+            }
+            return null;
+        } catch (\Throwable $th) {
+            return null;
+        }
     }
 }
