@@ -32,7 +32,7 @@ class ExtensionController extends Controller {
                         $endpoint = getAlmeAppURLForStore('most_visited'.$getParams);
                         $headers = getAlmeHeaders();
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-                        Log::info('Response from Alme API');
+                        Log::info('Response from Alme API '.$endpoint);
                         Log::info($response['body']);
                         $response = ['status' => true, 'response' => $response];   
                     }
