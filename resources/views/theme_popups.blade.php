@@ -191,100 +191,86 @@
     </div>
 </div>
 -->
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popup Modal</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Overlay styling */
+        /* Rest of your CSS */
         .overlay {
-            display: none; /* Hide until triggered */
+            display: none; /* Start hidden */
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
-            z-index: 1050; /* Ensures overlay is above other content */
+            background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1050;
         }
 
-        /* Modal styling */
         .modal-custom {
             background: white;
             border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            overflow: hidden; /* Ensures the content does not overflow the modal's border-radius */
+            width: 500px; /* or your preferred size */
+            /* Rest of your modal styling */
         }
 
-        /* Close button styling */
-        .close-custom {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            border: none;
-            background: none;
-            font-size: 25px;
-            cursor: pointer;
-        }
-
-        /* Button styling */
-        .btn-submit {
-            background-color: #4e342e;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-family: 'Arial', sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-submit:hover {
-            background-color: #3e271e;
-        }
-
-        /* Input field styling */
-        .form-control {
-            margin-bottom: 10px; /* Adds spacing between form fields */
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
+        /* Ensure button is visible for demonstration */
+        #popupTrigger {
+            visibility: visible;
         }
     </style>
 </head>
 <body>
 
-<a class="button" id="popupTrigger" href="#popupModal">Let me Pop up</a>
+<!-- Button to trigger modal -->
+<a class="btn btn-primary" id="popupTrigger" href="#popupModal">Let me Pop up</a>
 
+<!-- Modal -->
 <div id="popupModal" class="overlay">
-    <div class="modal-custom" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-custom" role="dialog">
+        <!-- Modal content -->
         <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle">Please give us your information</h5>
-            <button type="button" class="close-custom" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title">Please give us your information</h5>
+            <button type="button" class="close">&times;</button>
         </div>
         <div class="modal-body">
-            <p>Receive notifications on New Collections and Sale Updates.</p>
-            <form id="newUserForm">
-                <div class="form-group">
-                    <input type="text" id="userName" class="form-control" placeholder="Full Name" name="fullname" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" id="userPhone" class="form-control" placeholder="Mobile" name="mobile">
-                </div>
-                <button type="submit" name="newUserSubmit" class="btn btn-submit">Submit</button>
-            </form>
+            <!-- Form -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-submit">Submit</button>
         </div>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Trigger button shows the modal
+        $('#popupTrigger').click(function(e) {
+            e.preventDefault(); // Prevent default anchor behavior
+            $('#popupModal').show(); // Show the modal
+        });
+
+        // Clicking on the 'close' button hides the modal
+        $('.close').click(function() {
+            $('#popupModal').hide(); // Hide the modal
+        });
+
+        // Clicking anywhere outside of the modal will close it
+        $(window).click(function(e) {
+            if ($(e.target).is('#popupModal')) {
+                $('#popupModal').hide();
+            }
+        });
+    });
+</script>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</html>
