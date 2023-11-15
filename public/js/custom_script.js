@@ -172,9 +172,16 @@ function logEvent(event_type, event_name, event) {
     localStorage.setItem("events", JSON.stringify(events));
 }
 
-document.addEventListener('click', async function(event) {
-    logEvent('click', '', event);
-    console.log('CLick captured');
+window.addEventListener('load', async function(event) {
+    logEvent('page_load', 'page_load', event);
     await handleShowingPopup();
 });
+
+
+
+// document.addEventListener('', async function(event) {
+//     logEvent('click', '', event);
+//     console.log('CLick captured');
+//     await handleShowingPopup();
+// });
 
