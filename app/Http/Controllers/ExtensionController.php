@@ -59,7 +59,7 @@ class ExtensionController extends Controller {
     private function getMostViewedHTML($body, $shop) {
         try {
             if($body !== null && count($body) > 0) {
-                $products = $shop->getProducts()->whereIn('product_id', $body)->groupBy('product_id')->get();
+                $products = $shop->getProducts()->whereIn('product_id', $body)->distinct('product_id')->get();
                 return view('appExt.most_viewed', ['products' => $products])->render();
             }
             return null;
