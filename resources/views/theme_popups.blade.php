@@ -47,7 +47,7 @@
 </style>
 
 <body>
-    <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
+    <a class="button" id="popupModal" href="#popup1">Let me Pop up</a>
     <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
         <div class="modal" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
