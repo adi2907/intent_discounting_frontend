@@ -34,10 +34,18 @@ class ExtensionController extends Controller {
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
                         Log::info('Response from Alme API');
                         Log::info($response['body']);
-                        return response()->json(['status' => true, 'response' => $response]);   
+                        $response = ['status' => true, 'response' => $response];   
                     }
-                }
+                } else {
+                    $response = ['status' => true, 'message' => 'Flag not set true', 'debug' => $productRackSettings];
+                } 
+            } else {
+                $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all()];
             }
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all()];
         }
+
+        return response()->json($response);
     }
 }
