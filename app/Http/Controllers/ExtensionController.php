@@ -34,7 +34,7 @@ class ExtensionController extends Controller {
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
                         Log::info('Response from Alme API');
                         Log::info($response['body']);
-                        
+                        return response()->json(['status' => true, 'response' => $response]);   
                     }
                 }
             }
