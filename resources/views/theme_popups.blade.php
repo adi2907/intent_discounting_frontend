@@ -1,3 +1,4 @@
+<!-- Bootstrap Modal 
 <style>
     h1 {
         text-align: center;
@@ -87,6 +88,55 @@
         }
     }
 </style>
+-->
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .header-box {
+    text-align: center;
+  }
+  
+  .brand-logo {
+    max-width: 25%;
+    margin: 0 auto;
+    opacity: 0.7;
+    display: block; /* ensures the image does not inline with the title */
+  }
+  
+  .modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    color: #4e342e;
+    margin-top: 10px; /* spacing between logo and title */
+  }
+  
+  .modal-description{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /*dark grey color*/
+    color: #616161;
+    margin-top: 10px; /* spacing between title and description */
+  }
+
+  .close {
+    position: absolute;
+    right: 15px; /* or your preferred value */
+    top: 15px; /* aligns with the top of the modal */
+  }
+  
+  .btn-submit {
+    background-color: #4e342e;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+  }
+</style>
+
 <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
     <div class="modal" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
