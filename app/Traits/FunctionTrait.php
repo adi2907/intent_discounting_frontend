@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Shop;
+use App\Models\ShopifyProducts;
 use Exception;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
@@ -125,4 +126,37 @@ trait FunctionTrait {
         return $response;
     }
 
+    public function updateOrCreateThisProductInDB($product, $shop) {
+        try {
+            $arr = [];
+            $shopId = $shop->id;
+            foreach($product['variants'] as $variant) {
+                $arr[] = [
+                    'updateArr' => [
+                        'shop_id' => $shopId,
+                        'product_id' => $product['id'],
+                        'variant_id' => $variant['id']
+                    ],
+                    'createArr' => [
+                        'shop_id' => $shopId,
+                        'product_id' => $product['id'],
+                        'variant_id' => $variant['id'],
+                        'title' => $product['title'],
+                        'handle' => $product['handle'],
+                        'price' => $variant['price'],
+                        'imageSrc' => $product['image']['src'] ?? null
+                    ]
+                ];
+            }
+    
+            foreach($arr as $data) {
+                ShopifyProducts::updateOrCreate($data['updateArr'], $data['createArr']);
+            }
+    
+            return true;
+        } catch(Exception $e) {
+            Log::info('Error inserting products');
+            Log::info($e->getMessage().' '.$e->getLine());
+        } 
+    }
 }

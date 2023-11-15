@@ -37,6 +37,32 @@ trait RequestTrait {
         }
     }
 
+    public function makeAnAlmeAPICall($method, $endpoint, $headers) {
+        try {
+            $client = new Client();
+            $response = null;
+            if($method == 'GET' || $method == 'DELETE') {
+                $response = $client->request($method, $endpoint, [ 'headers' => $headers ]);
+                return [
+                    'statusCode' => $response->getStatusCode(),
+                    'body' => json_decode($response->getBody(), true)
+                ];
+            } 
+            return [
+                'statusCode' => 404,
+                'body' => 'Request method found '.$method
+            ];
+        } catch(Exception $e) {
+            Log::info('Error calling in Alme API RequestTrait');
+            Log::info($e->getMessage().' '.$e->getLine());
+            return [
+                'statusCode' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'body' => null
+            ];
+        }
+    }
+
     public function makeADockerAPICall($endpoint, $headers, $method = 'GET') {
         try {
             $client = new Client();

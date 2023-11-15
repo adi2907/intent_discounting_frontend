@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\ExtensionController;
 use App\Http\Controllers\InstallationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,11 @@ Route::prefix('debug')->group(function () {
 Route::middleware('cors')->group(function () {
     Route::get('theme_popups', [AppController::class, 'themePopups']);
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
+    
+    //Routes for theme app extensions
+    Route::prefix('appExt')->group(function () {
+        Route::post('mostViewed', [ExtensionController::class, 'getMostViewedData']);
+    });
 });
 
 Route::prefix('shopify/auth')->group(function () {

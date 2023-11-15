@@ -21,4 +21,15 @@ if (!function_exists('getShopifyAPIURLForStore')) {
             'X-Shopify-Access-Token' => $store['accessToken'] ?? $store['access_token']
         ];
     }
+
+    function getAlmeAppURLForStore($path) {
+        return 'https://almeapp.com/api/'.$path;
+    }
+
+    function getAlmeHeaders() {
+        return [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ];
+    }
 }
