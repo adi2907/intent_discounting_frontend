@@ -34,7 +34,7 @@ class ExtensionController extends Controller {
                         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
                         Log::info('Response from Alme API '.$endpoint);
                         Log::info($response['body']);
-                        $response = ['status' => true, 'response' => $response];   
+                        $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers];   
                     }
                 } else {
                     $response = ['status' => true, 'message' => 'Flag not set true', 'debug' => $productRackSettings];
