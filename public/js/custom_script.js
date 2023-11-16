@@ -42,7 +42,7 @@ async function handleShowingPopup(){
 function handleFormSubmission(code = null) {
   
     document.getElementById('newUserForm').addEventListener('submit', function(event) { 
-        //alert('submitting');
+        console.log('submitting form')
         event.preventDefault();
         var name = document.getElementById('userName').value;
         var phone = document.getElementById('userPhone').value;    
@@ -74,16 +74,21 @@ function handleFormSubmission(code = null) {
             }
         }).catch(function(error) {
             console.log(error);
+        }).finally(function() {
+            // Hide the popup after form submission attempt
+            document.getElementById('popup1').style.display = 'none';
+            localStorage.setItem('alme_contact_popupDisplayed', 'true');
         });
     });
   }
-      
+
+
 
 // Function to handle close button click
 function handleCloseButtonClick() {
     // Ensure the element is available in the DOM
     let closeBtn = document.getElementById('closeBtn');
-
+    console.log('Closing button')
     if (closeBtn) {
     closeBtn.addEventListener('click', function(event) {
         console.log('Handling close button click');

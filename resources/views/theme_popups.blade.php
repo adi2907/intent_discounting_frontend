@@ -206,7 +206,7 @@
                     </form>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-submit" id="submitButton">Submit</button>
+                    <button type="button" class="btn btn-submit" id="submitBtn">Submit</button>
                 </div>
                 </div>
             </div>
