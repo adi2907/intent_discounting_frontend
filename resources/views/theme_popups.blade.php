@@ -174,7 +174,7 @@
             </div>
         <div class="modal-body text-center">
             <p class="modal-description">Receive Whatsapp notifications on New Collections and Sale Updates.</p>
-            <form>
+            <form id="newUserForm">
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Full Name" name="fullname">
             </div>
