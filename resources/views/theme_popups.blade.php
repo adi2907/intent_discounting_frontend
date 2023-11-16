@@ -1,92 +1,92 @@
-
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
+    h1 {
+        text-align: center;
+        font-family: Tahoma, Arial, sans-serif;
+        color: #06D85F;
+        margin: 80px 0;
+    }
+    .box {
+        width: 40%;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.2);
+        padding: 35px;
+        border: 2px solid #fff;
+        border-radius: 20px/50px;
+        background-clip: padding-box;
+        text-align: center;
+    }
+    
+    .button {
+        font-size: 1em;
+        padding: 10px;
+        color: #fff;
+        border: 2px solid #06D85F;
+        border-radius: 20px/50px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease-out;
+    }
+    .button:hover {
+        background: #06D85F;
+    }
     .overlay {
-    display: none; /* Hide by default */
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1;
-}
-
-.modal {
-    background: white;
-    margin: 10% auto;
-    padding: 20px;
-    width: 50%;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.brand-logo {
-    width: 50px; /* Adjust as needed */
-}
-
-.close {
-    cursor: pointer;
-}
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-input[type="text"],
-input[type="tel"] {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Additional styles as needed */
-
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        transition: opacity 500ms;
+        visibility: hidden;
+        opacity: 0;
+    }
+    .overlay:target {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .popup {
+        margin: 70px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 5px;
+        width: 30%;
+        position: relative;
+        transition: all 5s ease-in-out;
+    }
+    
+    .popup h2 {
+        margin-top: 0;
+        color: #333;
+        font-family: Tahoma, Arial, sans-serif;
+    }
+    .popup .close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        transition: all 200ms;
+        font-size: 30px;
+        font-weight: bold;
+        text-decoration: none;
+        color: #333;
+    }
+    .popup .close:hover {
+        color: #06D85F;
+    }
+    .popup .content {
+        max-height: 30%;
+        overflow: auto;
+    }
+    
+    @media screen and (max-width: 700px){
+        .box{
+        width: 70%;
+        }
+        .popup{
+        width: 70%;
+        }
+    }
 </style>
-
-
-<!-- <a class="button" id="popupModal" href="#popup1">Let me Pop up</a>
-<div class="overlay" id="popup1" style="font-family: Arial, sans-serif; height: 100vh;">
-    <div class="modal">
-        <div class="modal-header">
-            <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
-            <h5>Become an Insider</h5>
-            <button type="button" class="close">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>Receive Whatsapp notifications on New Collections and Sale Updates.</p>
-            <form id="newUserForm">
-                <div class="form-group">
-                    <input type="text" id="userName" placeholder="Full Name" name="fullname">
-                </div>
-                <div class="form-group">
-                    <input type="tel" id="userPhone" placeholder="Mobile" name="mobile">
-                </div>
-                <button id="submit" type="submit" name="newUserSubmit">Submit</button>
-            </form>
-        </div>
-    </div>
-</div> -->
-
-
-
 <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
     <div class="popup">
@@ -106,4 +106,4 @@ button:hover {
             </form>
         </div>
     </div>
-</div>  
+</div>
