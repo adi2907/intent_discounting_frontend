@@ -111,6 +111,23 @@
 
 
 <style>
+    .overlay {
+    position: fixed; /* Use fixed positioning */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex; /* Use flexbox to center the child elements */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    }
+    .modal-dialog-centered {
+    /* Add this class to center the modal dialog */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
     .modal-header {
     display: flex;
     justify-content: center;
