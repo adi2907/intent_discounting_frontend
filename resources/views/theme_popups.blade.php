@@ -28,8 +28,9 @@
   .modal-description{
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    /*dark grey color*/
-    color: #616161;
+    /*dark brown color*/
+
+    color: #4e342e;
     margin-top: 10px; /* spacing between title and description */
   }
 
@@ -46,7 +47,7 @@
   }
 </style>
 
-
+<!--
 <a class="button" id="popupModal" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
     <div class="modal" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
@@ -79,8 +80,8 @@
         </div>
     </div>
 </div>
+-->
 
- <!-- Bootstrap Modal
 <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
     <div class="popup">
@@ -100,5 +101,5 @@
             </form>
         </div>
     </div>
-</div> -->
+</div> 
 
