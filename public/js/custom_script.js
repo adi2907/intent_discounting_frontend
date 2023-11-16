@@ -22,15 +22,14 @@ async function handleShowingPopup(){
     let obj;
     var baseURL = 'https://almeapp.co.in/';
     const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
-    console.log(res)
     obj = await res.json();
-    console.log(obj)
+   
     code = obj.code;
     popupHTML = obj.html;
 
     // Insert HTML
     var el = document.getElementById('newUserForm');
-    console.log(el);
+    console.log('el '+el);
     if(popupHTML !== null && (el == null || el.length < 1)) {
         document.body.insertAdjacentHTML('beforeend', popupHTML);
         document.getElementById('popupModal').click();
@@ -181,7 +180,6 @@ function logEvent(event_type, event_name, event) {
 
 document.addEventListener('click', async function(event) {
     logEvent('click', '', event);
-    console.log('CLick captured');
     await handleShowingPopup();
 });
 
