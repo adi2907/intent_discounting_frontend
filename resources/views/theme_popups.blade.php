@@ -123,6 +123,7 @@
             display: flex; /* Use flexbox to center the child elements */
             align-items: center; /* Center vertically */
             justify-content: center; /* Center horizontally */
+            z-index: 1050;
             }
             .modal-dialog-centered {
             /* Add this class to center the modal dialog */
