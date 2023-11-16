@@ -124,6 +124,7 @@
             align-items: center; /* Center vertically */
             justify-content: center; /* Center horizontally */
             z-index: 1050;
+            
             }
             .modal-dialog-centered {
             /* Add this class to center the modal dialog */
@@ -189,7 +190,7 @@
                             <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
                             <h5 class="modal-title">Become an Insider</h5>
                         </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeBtn">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -205,7 +206,7 @@
                     </form>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-submit">Submit</button>
+                    <button type="button" class="btn btn-submit" id="submitButton">Submit</button>
                 </div>
                 </div>
             </div>
