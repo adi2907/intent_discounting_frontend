@@ -1,88 +1,93 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
-    .modal-header {
+    .overlay {
+    display: none; /* Hide by default */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal {
+    background: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 50%;
+}
+
+.modal-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-  }
-  
-  .header-box {
-    text-align: center;
-  }
-  
-  .brand-logo {
-    max-width: 25%;
-    margin: 0 auto;
-    opacity: 0.7;
-    display: block; /* ensures the image does not inline with the title */
-  }
-  
-  .modal-title {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    color: #4e342e;
-    margin-top: 10px; /* spacing between logo and title */
-  }
-  
-  .modal-description{
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    /*dark brown color*/
+}
 
-    color: #4e342e;
-    margin-top: 10px; /* spacing between title and description */
-  }
+.brand-logo {
+    width: 50px; /* Adjust as needed */
+}
 
-  .close {
-    position: absolute;
-    right: 15px; /* or your preferred value */
-    top: 15px; /* aligns with the top of the modal */
-  }
-  
-  .btn-submit {
-    background-color: #4e342e;
-    color: #fff;
-    font-family: 'Montserrat', sans-serif;
-  }
+.close {
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="tel"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Additional styles as needed */
+
 </style>
 
-<!--
+
 <a class="button" id="popupModal" href="#popup1">Let me Pop up</a>
-<div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
-    <div class="modal" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <div class="modal-header">
-                <div class="header-box mx-auto text-center">
-                    <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo"> 
-                    <h5 class="modal-title">Become an Insider</h5>
-                </div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="modal-description">Receive Whatsapp notifications on New Collections and Sale Updates.</p>
-                <form id="newUserForm">
+<div class="overlay" id="popup1" style="font-family: Arial, sans-serif; height: 100vh;">
+    <div class="modal">
+        <div class="modal-header">
+            <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
+            <h5>Become an Insider</h5>
+            <button type="button" class="close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Receive Whatsapp notifications on New Collections and Sale Updates.</p>
+            <form id="newUserForm">
                 <div class="form-group">
-                    <input type="text" id="userName" class="form-control" placeholder="Full Name" name="fullname">
+                    <input type="text" id="userName" placeholder="Full Name" name="fullname">
                 </div>
                 <div class="form-group">
-                    <input type="tel" id="userPhone" class="form-control" placeholder="Mobile" name="mobile">
+                    <input type="tel" id="userPhone" placeholder="Mobile" name="mobile">
                 </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button id="submit" type="submit" name="newUserSubmit" class="btn btn-submit">Submit</button>
-            </div>
-            </div>
+                <button id="submit" type="submit" name="newUserSubmit">Submit</button>
+            </form>
         </div>
     </div>
 </div>
--->
 
-<a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
+
+
+<!-- <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
 <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
     <div class="popup">
         <h2>Please give us your information</h2>
@@ -101,5 +106,4 @@
             </form>
         </div>
     </div>
-</div> 
-
+</div>  -->
