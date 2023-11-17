@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\ExtensionController;
 use App\Http\Controllers\InstallationController;
+use Faker\Extension\Extension;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,10 @@ Route::middleware('cors')->group(function () {
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
         Route::post('mostViewed', [ExtensionController::class, 'getMostViewedData']);
+        Route::post('mostCarted', [ExtensionController::class, 'getMostCartedData']);
+        Route::post('carts', [ExtensionController::class, 'carts']);
+        Route::post('recommendedForYou', [ExtensionController::class, 'recommendedForYou']);
+        Route::post('userLiked', [ExtensionController::class, 'userLiked']);
     });
 });
 

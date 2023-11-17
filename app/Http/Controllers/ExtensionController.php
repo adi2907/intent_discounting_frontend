@@ -8,6 +8,7 @@ use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ExtensionController extends Controller {
 
@@ -22,24 +23,63 @@ class ExtensionController extends Controller {
 
     public function getMostViewedData(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $shop = Shop::with(['notificationSettings', 'productRackInfo'])->where('shop_url', $request->shop)->first();
+            $response = $this->handleHTMLBasedOnType($request->all(), 'most_added_prods');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
+    public function getMostCartedData(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
+    public function carts(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
+    public function recommendedForYou(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
+    public function userLiked(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
+    private function handleHTMLBasedOnType($request, $prop) {
+        try {
+            $shop = Shop::with(['notificationSettings', 'productRackInfo'])->where('shop_url', $request['shop'])->first();
             if($shop !== null && $shop->count() > 0) {
                 $productRackSettings = $shop->productRackInfo;
                 $flag = isset($productRackSettings) && $productRackSettings !== null && $productRackSettings->count() > 0;
                 if($flag) {
-                    if($productRackSettings->most_added_prods === 1 || $productRackSettings->most_added_prods === true) {
-                        $almeToken = $request->token;
-                        $getParams = '?app_name='.$this->appName.'&max_items='.$this->maxItems.'&token='.$almeToken;
-                        $endpoint = getAlmeAppURLForStore('most_visited'.$getParams);
-                        $headers = getAlmeHeaders();
-                        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-                        Log::info('Response from Alme API '.$endpoint);
-                        Log::info($response['body']);
+                    if($productRackSettings->$prop === 1 || $productRackSettings->$prop === true) {
+                        $response = $this->callAlmeAppBackend($request, $prop);
                         if($response['statusCode'] == 200) {
-                            $html = $this->getMostViewedHTML($response['body'], $shop);
-                            $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers, 'html' => $html];   
+                            $html = $this->getMostViewedHTML($response['body'], $shop, $prop);
+                            $response = ['status' => true, 'response' => $response, 'html' => $html];   
                         } else {
-                            $response = ['status' => true, 'response' => $response, 'endpoint' => $endpoint, 'headers' => $headers, 'html' => null];   
+                            $response = ['status' => true, 'response' => $response, 'html' => null];   
                         }
                     } else {
                         $response = ['status' => true, 'message' => 'Flag set false', 'debug' => $productRackSettings, 'html' => null];
@@ -50,17 +90,47 @@ class ExtensionController extends Controller {
             } else {
                 $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all(), 'html' => null];
             }
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        } catch (Throwable $th) {
+            $response = ['status' => false, 'message' => $th->getMessage().' '.$th->getLine(), 'html' => null];
         }
-        return response()->json($response);
+        
+        return $response;
+    }
+
+    private function callAlmeAppBackend($request, $prop) {
+        $getParams = '?app_name='.$request['shop'].'&max_items='.$this->maxItems.'&token='.$request['token'];
+        
+        $pathName = null;
+        switch($prop) {
+            case 'most_added_prods': $pathName = 'most_visited'; break;
+            case 'user_liked': $pathName = 'most_carted'; break;
+            case 'pop_picks': $pathName = 'carts'; break;
+            case 'feat_collect': $pathName = 'visits';break;
+            case 'high_convert_prods': $pathName = ''; break;
+            default: $pathName = 'most_visited'; 
+        }
+
+        $endpoint = getAlmeAppURLForStore($pathName.$getParams);
+        $headers = getAlmeHeaders();
+        return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
     
-    private function getMostViewedHTML($body, $shop) {
+    private function getMostViewedHTML($body, $shop, $prop) {
         try {
             if($body !== null && count($body) > 0) {
-                $products = $shop->getProducts()->whereIn('product_id', $body)->distinct('product_id')->get();
-                return view('appExt.most_viewed', ['products' => $products])->render();
+                $products = $shop->getProducts()->whereIn('product_id', $body)->get();
+                $viewFilePrefix = 'appExt.';
+                $viewFile = null;
+                switch($prop) {
+                    case 'most_added_prods': $viewFile = 'most_viewed'; break;
+                    case 'user_liked': $viewFile = 'most_carted'; break;
+                    case 'pop_picks': $viewFile = 'user_liked'; break;
+                    case 'feat_collect': $viewFile = 'carts';break;
+                    case 'high_convert_prods': $viewFile = 'recommended'; break;
+                    default: $viewFile = 'most_viewed';  
+                }
+
+                return view($viewFilePrefix.$viewFile, ['products' => $products])->render();
             }
             return null;
         } catch (\Throwable $th) {
