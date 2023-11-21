@@ -166,7 +166,7 @@ function logEvent(event_type, event_name, event) {
             hiddenInput.setAttribute("name", "properties[ALMETOKEN]");
             hiddenInput.setAttribute("value", alme_user_token);
             //append to form element that you want .
-            formElement.appendChild(input);
+            formElement.appendChild(hiddenInput);
         }
     } 
     
