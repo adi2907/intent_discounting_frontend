@@ -75,6 +75,8 @@ class ExtensionController extends Controller {
                 if($flag) {
                     if($productRackSettings->$prop === 1 || $productRackSettings->$prop === true) {
                         $response = $this->callAlmeAppBackend($request, $prop);
+                        Log::info('Response from Alme');
+                        Log::info($response);
                         if($response['statusCode'] == 200) {
                             $html = $this->getMostViewedHTML($response['body'], $shop, $prop);
                             $response = ['status' => true, 'response' => $response, 'html' => $html];   
