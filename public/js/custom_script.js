@@ -157,7 +157,8 @@ function logEvent(event_type, event_name, event) {
 
         var hiddenInputId = 'almetoken';
         var alme_user_token = localStorage.getItem('alme_user_token');
-        var elExists = document.getElementById(hiddenInputId).length;
+        var domInput = document.getElementById(hiddenInputId);
+        var elExists = domInput !== null && domInput.length;
         if(!elExists && alme_user_token !== null && alme_user_token.length > 0) {
             const formElement = document.querySelector('[data-type="add-to-cart-form"]');
             var hiddenInput = document.createElement("input");
