@@ -146,4 +146,19 @@ class AppController extends Controller {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+    public function updateProductRackSettings(Request $request) {
+        try{
+            if($request->ajax() && $request->filled('field') && $request->filled('value')) {
+                $user = Auth::user();
+                $shop = $user->shopifyStore;
+                $value = $request->value === 'on';
+                $shop->productRackInfo()->update([$request->field => $value]);
+                return response()->json(['status' => true, 'message' => 'Updated!']);
+            }
+            return response()->json(['status' => false, 'message' => 'Invalid Request']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
 }

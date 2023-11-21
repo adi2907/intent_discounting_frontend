@@ -17,7 +17,7 @@
             <div class="row mt-4">
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="customSuggestions" @if($productRackInfo['user_liked'] && $productRackInfo['user_liked'] == true) checked @endif>
+                        <input type="checkbox" data-field="user_liked" class="form-check-input" id="customSuggestions" @if($productRackInfo['user_liked'] && $productRackInfo['user_liked'] == true) checked @endif>
                         <label class="form-check-label" for="customSuggestions">
                             <span class="productrack-title">Users also liked</span><br>
                             <span class="productrack-description">Show products most viewed together with this product</span>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['crowd_fav'] && $productRackInfo['crowd_fav'] == true) checked @endif>
+                        <input type="checkbox" data-field="crowd_fav" class="form-check-input" @if($productRackInfo['crowd_fav'] && $productRackInfo['crowd_fav'] == true) checked @endif>
                         <label class="form-check-label" for="toggleSuggestions">
                             <span class="productrack-title">Crowd Favorites</span><br>
                             <span class="productrack-description">Show products which have highest conversion</span>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['pop_picks'] && $productRackInfo['pop_picks'] == true) checked @endif>
+                        <input type="checkbox" data-field="pop_picks" class="form-check-input" @if($productRackInfo['pop_picks'] && $productRackInfo['pop_picks'] == true) checked @endif>
                         <label class="form-check-label" for="styleSuggestions">
                             <span class="productrack-title">Popular Picks</span><br>
                             <span class="productrack-description"> Show products added to cart the most</span>
@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['feat_collect'] && $productRackInfo['feat_collect'] == true) checked @endif>
+                        <input type="checkbox" data-field="feat_collect" class="form-check-input" @if($productRackInfo['feat_collect'] && $productRackInfo['feat_collect'] == true) checked @endif>
                         <label class="form-check-label" for="crowdItems">
                             <span class="productrack-title">Featured collection</span><br>
                             <span class="productrack-description"> Help sell slow-moving inventory with high conversion</span>
@@ -61,8 +61,8 @@
             <div class="row mt-4">
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['prev_browsing'] && $productRackInfo['prev_browsing'] == true) checked @endif>
-                        <label class="form-check-label" for="customSuggestions">
+                        <input type="checkbox" data-field="prev_browsing" class="form-check-input" @if($productRackInfo['prev_browsing'] && $productRackInfo['prev_browsing'] == true) checked @endif>
+                        <label class="form-check-label" for="">
                             <span class="productrack-title">Pick up where you left off</span><br>
                             <span class="productrack-description">Nudge users to resume previous browsing activity</span>
                         </label>
@@ -70,8 +70,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['high_convert_prods'] && $productRackInfo['high_convert_prods'] == true) checked @endif>
-                        <label class="form-check-label" for="toggleSuggestions">
+                        <input type="checkbox" data-field="high_convert_prods" class="form-check-input" @if($productRackInfo['high_convert_prods'] && $productRackInfo['high_convert_prods'] == true) checked @endif>
+                        <label class="form-check-label" for="">
                             <span class="productrack-title">Crowd Favorites</span><br>
                             <span class="productrack-description">Show products which have highest conversion</span>
                         </label>
@@ -79,8 +79,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['most_added_prods'] && $productRackInfo['most_added_prods'] == true) checked @endif>
-                        <label class="form-check-label" for="styleSuggestions">
+                        <input type="checkbox" data-field="most_added_prods" class="form-check-input" @if($productRackInfo['most_added_prods'] && $productRackInfo['most_added_prods'] == true) checked @endif>
+                        <label class="form-check-label" for="">
                             <span class="productrack-title">Popular Picks</span><br>
                             <span class="productrack-description"> Show products added to cart the most</span>
                         </label>
@@ -88,8 +88,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" @if($productRackInfo['slow_inv'] && $productRackInfo['slow_inv'] == true) checked @endif>
-                        <label class="form-check-label" for="crowdItems">
+                        <input type="checkbox" data-field="slow_inv" class="form-check-input" @if($productRackInfo['slow_inv'] && $productRackInfo['slow_inv'] == true) checked @endif>
+                        <label class="form-check-label" for="">
                             <span class="productrack-title">Featured collection</span><br>
                             <span class="productrack-description"> Help sell slow-moving inventory with high conversion</span>
                         </label>
@@ -99,4 +99,31 @@
         </div>
     </section>
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            $('.form-check-input').change(function (e) {
+                e.preventDefault();
+                var el = $(this);
+                const field = el.data('field');
+                const value = el.is(':checked') ? 'on':'off';
+
+                $.ajax({
+                    url: "{{route('update.product.rack.settings')}}", 
+                    method: 'POST',
+                    data: {
+                        field: field,
+                        value: value
+                    },
+                    async: false,
+                    success: function (response) {
+                        //alert(response.status + ' ' + response.message);
+                        console.log(response.message);   
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
