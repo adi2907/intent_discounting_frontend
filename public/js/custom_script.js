@@ -153,7 +153,20 @@ function logEvent(event_type, event_name, event) {
         product_id = meta.product.id;
         product_name = meta.product.variants[0].name
         product_category = meta.product.type
-        product_price = meta.product.variants[0].price
+        product_price = meta.product.variants[0].price;
+
+        var hiddenInputId = 'almetoken';
+        var alme_user_token = localStorage.getItem('alme_user_token');
+        var elExists = document.getElementById(hiddenInputId).length;
+        if(!elExists && alme_user_token !== null && alme_user_token.length > 0) {
+            const formElement = document.querySelector('[data-type="add-to-cart-form"]');
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "properties[ALMETOKEN]");
+            hiddenInput.setAttribute("value", alme_user_token);
+            //append to form element that you want .
+            formElement.appendChild(input);
+        }
     } 
     
     var timestamp = Math.floor(Date.now() / 1000);
