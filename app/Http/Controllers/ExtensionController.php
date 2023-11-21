@@ -91,6 +91,7 @@ class ExtensionController extends Controller {
                 $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all(), 'html' => null];
             }
         } catch (Throwable $th) {
+            Log::info($th->getMessage().' '.$th->getLine());
             $response = ['status' => false, 'message' => $th->getMessage().' '.$th->getLine(), 'html' => null];
         }
         
@@ -111,6 +112,7 @@ class ExtensionController extends Controller {
         }
 
         $endpoint = getAlmeAppURLForStore($pathName.$getParams);
+        Log::info('Alme backend endpoint '.$endpoint);
         $headers = getAlmeHeaders();
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
@@ -132,8 +134,11 @@ class ExtensionController extends Controller {
 
                 return view($viewFilePrefix.$viewFile, ['products' => $products])->render();
             }
+            Log::info('Body null found');
+            Log::info($body);
             return null;
         } catch (\Throwable $th) {
+            Log::info($th->getMessage().' '.$th->getLine());
             return null;
         }
     }
