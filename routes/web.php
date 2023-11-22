@@ -55,4 +55,7 @@ Route::prefix('shopify/auth')->group(function () {
 Route::prefix('webhooks')->group(function () {
     Route::get('register', [WebhookController::class, 'registerWebhooks'])->name('register.webhooks');
     Route::any('cartUpdate', [WebhookController::class, 'cartUpdateWebhook'])->name('carts.update.webhook');
+    Route::any('cartCreate', [WebhookController::class, 'cartCreateWebhook'])->name('carts.create.webhook');
+    Route::any('checkoutUpdate', [WebhookController::class, 'checkoutUpdateWebhook'])->name('checkouts.update.webhook');
+    Route::any('checkoutCreate', [WebhookController::class, 'checkoutCreateWebhook'])->name('checkouts.create.webhook');
 }); 

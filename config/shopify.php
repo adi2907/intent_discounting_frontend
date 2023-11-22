@@ -7,6 +7,9 @@ return [
     "ENC_SECRET_KEY" => "dipak_almee",
     "APP_SCOPES" => env('SHOPIFY_APP_SCOPES', ''),
     "webhooks" => [
-        'carts/update' => 'carts.update.webhook'
+        'carts/update' => 'carts.update.webhook',
+        'carts/create' => 'carts.create.webhook',
+        'checkouts/create' => 'checkouts.create.webhook',
+        'checkouts/update' => 'checkouts.update.webhook'
     ]
 ];
