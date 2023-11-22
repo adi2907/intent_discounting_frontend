@@ -1,6 +1,6 @@
 if (document.readyState !== 'loading') {
     var page_load_event = {target: {innerText: ''}};
-    await logEvent('page_load', 'page_load', page_load_event);
+    logEvent('page_load', 'page_load', page_load_event);
 
 } else {
     document.addEventListener('DOMContentLoaded', async function (event) {
