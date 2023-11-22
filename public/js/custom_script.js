@@ -155,9 +155,11 @@ function logEvent(event_type, event_name, event) {
         product_category = meta.product.type
         product_price = meta.product.variants[0].price;
 
-        var cartContents = fetch(window.Shopify.routes.root + 'cart.js')
-        .then(response => response.json())
-        .then(data => { return data });
+        var cartContents = new Promise((resolve, reject) => {
+            fetch(window.Shopify.routes.root + 'cart.js')
+            .then(response => response.json())
+            .then(data => { return resolve(data) });
+        }) 
         console.log('Contents here');
         console.log(cartContents);
         /*
