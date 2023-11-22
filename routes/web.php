@@ -4,7 +4,6 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\ExtensionController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\WebhookController;
-use Faker\Extension\Extension;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +53,6 @@ Route::prefix('shopify/auth')->group(function () {
 });
 
 Route::prefix('webhooks')->group(function () {
-    Route::get('register/{id}', [WebhooksController::class, 'registerWebhooks'])->name('register.webhooks');
+    Route::get('register', [WebhookController::class, 'registerWebhooks'])->name('register.webhooks');
     Route::any('cartUpdate', [WebhookController::class, 'cartUpdateWebhook'])->name('carts.update.webhook');
 }); 

@@ -17,6 +17,8 @@ class VerifyCsrfToken extends Middleware
         'appExt/mostCarted',
         'appExt/carts',
         'appExt/recommendedForYou',
-        'appExt/userLiked'
+        'appExt/userLiked',
+        'webhooks/register',
+        'webhooks/cartUpdate'
     ];
 }
