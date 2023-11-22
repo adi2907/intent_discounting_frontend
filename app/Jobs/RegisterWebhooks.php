@@ -33,7 +33,7 @@ class RegisterWebhooks implements ShouldQueue
     public function handle(): void
     {
         try {
-            $store = Shop::where('table_id', $this->shop_id)->first();
+            $store = Shop::where('id', $this->shop_id)->first();
             $endpoint = getShopifyAPIURLForStore('webhooks.json', $store);
             $headers = getShopifyAPIHeadersForStore($store);
             $webhooksList = config('shopify.webhooks');
