@@ -155,6 +155,12 @@ function logEvent(event_type, event_name, event) {
         product_category = meta.product.type
         product_price = meta.product.variants[0].price;
 
+        var cartContents = fetch(window.Shopify.routes.root + 'cart.js')
+        .then(response => response.json())
+        .then(data => { return data });
+        console.log('Contents here');
+        console.log(cartContents);
+        /*
         var hiddenInputId = 'almetoken';
         var alme_user_token = localStorage.getItem('alme_user_token');
         var domInput = document.getElementById(hiddenInputId);
@@ -168,6 +174,7 @@ function logEvent(event_type, event_name, event) {
             //append to form element that you want .
             formElement.appendChild(hiddenInput);
         }
+        */
     } 
     
     var timestamp = Math.floor(Date.now() / 1000);
