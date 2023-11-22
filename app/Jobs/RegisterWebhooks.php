@@ -45,7 +45,7 @@ class RegisterWebhooks implements ShouldQueue
                         'format' => 'json'
                     ]
                 ];
-                $response = $this->makeAnAPICallToShopify('POST', $endpoint, null, $headers, $body);
+                $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $body);
                 Log::info('Response for topic '.$topic);
                 Log::info($response['body']);
                 //You can write a logic to save this in the database table.
