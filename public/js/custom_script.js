@@ -1,10 +1,10 @@
 if (document.readyState !== 'loading') {
     var page_load_event = {target: {innerText: ''}};
-    logEvent('page_load', 'page_load', page_load_event);
+    await logEvent('page_load', 'page_load', page_load_event);
 
 } else {
-    document.addEventListener('DOMContentLoaded', function (event) {
-        logEvent('page_load', 'page_load', event);
+    document.addEventListener('DOMContentLoaded', async function (event) {
+        await logEvent('page_load', 'page_load', event);
     });
 }
 
@@ -142,7 +142,7 @@ function sendEventsToServer() {
 }
 
 setInterval(sendEventsToServer, 10000);
-function logEvent(event_type, event_name, event) {
+async function logEvent(event_type, event_name, event) {
     var cust_email = '{{ customer.email }}'
     var cust_id = '{{ customer.id }}'
     var product_id = null;
@@ -155,11 +155,9 @@ function logEvent(event_type, event_name, event) {
         product_category = meta.product.type
         product_price = meta.product.variants[0].price;
 
-        var cartContents = new Promise((resolve, reject) => {
-            fetch(window.Shopify.routes.root + 'cart.js')
-            .then(response => response.json())
-            .then(data => { return resolve(data) });
-        }) 
+        var cartContents = await fetch(window.Shopify.routes.root + 'cart.js')
+        .then(response => response.json())
+        .then(data => { return data });
         console.log('Contents here');
         console.log(cartContents);
         /*
@@ -202,7 +200,7 @@ function logEvent(event_type, event_name, event) {
 
 
 document.addEventListener('click', async function(event) {
-    logEvent('click', '', event);
+    await logEvent('click', '', event);
     await handleShowingPopup();
 });
 
