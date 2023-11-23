@@ -133,9 +133,9 @@ window.onload = async function() {
         alme_user_token = createUserToken();
         localStorage.setItem('alme_user_token', alme_user_token);
     }
-
+    var api_base_url = 'https://almeapp.com';
     // new user set in local storage
-    new_user_check_url = base_url + '/api/new_user_check/?token=' + alme_user_token + '&app_name=' +Shopify.shop;
+    new_user_check_url = api_base_url + '/api/new_user_check/?token=' + alme_user_token + '&app_name=' +Shopify.shop;
 
     try {
         // make async call to check if user is new
@@ -200,7 +200,7 @@ async function handleShowingPopup(){
 // Function to handle form submission
 function handleFormSubmission(code = null) {
   
-    document.getElementById('newUserForm').addEventListener('submit', function(event) { 
+    document.getElementById('submitBtn').addEventListener('click', function(event) { 
         console.log('submitting form')
         event.preventDefault();
         var name = document.querySelector('[name="fullname"]').value;
@@ -234,6 +234,7 @@ function handleFormSubmission(code = null) {
         }).catch(function(error) {
             console.log(error);
         }).finally(function() {
+            console.log('finally')
             // Hide the popup after form submission attempt
             document.getElementById('newUserPopup').style.display = 'none';
             localStorage.setItem('alme_contact_popupDisplayed', 'true');
@@ -247,9 +248,8 @@ function handleFormSubmission(code = null) {
 function handleCloseButtonClick() {
     // Ensure the element is available in the DOM
     let closeBtn = document.getElementById('closeBtn');
-    console.log('Closing button')
     if (closeBtn) {
-    closeBtn.addEventListener('click', function(event) {
+        closeBtn.addEventListener('click', function(event) {
         console.log('Handling close button click');
         event.stopPropagation();
         document.getElementById('newUserPopup').style.display = 'none';
