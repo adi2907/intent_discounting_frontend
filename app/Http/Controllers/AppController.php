@@ -82,7 +82,7 @@ class AppController extends Controller {
         }
     }
 
-    private function getAlmeAnalytics($shop) {
+    private function getAlmeAnalytics($shopURL) {
         try {
             $arr = [
                 'visits_count',
@@ -95,7 +95,7 @@ class AppController extends Controller {
             $prefix = 'analytics/';
             $headers = getAlmeHeaders();
             foreach($arr as $urlPath) {
-                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shop->shop_url);
+                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
                 $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
             }
             return $responses;
