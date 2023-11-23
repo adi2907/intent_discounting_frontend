@@ -103,14 +103,14 @@ class ExtensionController extends Controller {
     private function callAlmeAppBackend($request, $prop) {
         $getParams = '?app_name='.$request['shop'].'&max_items='.$this->maxItems.'&token='.$request['token'];
         
-        $pathName = null;
+        $pathName = 'api/';
         switch($prop) {
-            case 'most_added_prods': $pathName = 'most_visited'; break;
-            case 'user_liked': $pathName = 'most_carted'; break;
-            case 'pop_picks': $pathName = 'carts'; break;
-            case 'feat_collect': $pathName = 'visits';break;
-            case 'high_convert_prods': $pathName = ''; break;
-            default: $pathName = 'most_visited'; 
+            case 'most_added_prods': $pathName .= 'most_visited'; break;
+            case 'user_liked': $pathName .= 'most_carted'; break;
+            case 'pop_picks': $pathName .= 'carts'; break;
+            case 'feat_collect': $pathName .= 'visits';break;
+            case 'high_convert_prods': $pathName .= ''; break;
+            default: $pathName .= 'most_visited'; 
         }
 
         $endpoint = getAlmeAppURLForStore($pathName.$getParams);

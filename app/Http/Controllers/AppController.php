@@ -73,11 +73,40 @@ class AppController extends Controller {
             $shop = $request['shop'] ?? Auth::user()->shopifyStore->shop_url;
             $baseShop = Shop::where('shop_url', $shop)->first();
             $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
-            return view('new_dashboard', compact('baseShop', 'shopDetails'));
+            $almeResponses = $this->getAlmeAnalytics($shop);
+            return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses'));
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         } catch(Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
+
+    private function getAlmeAnalytics($shop) {
+        try {
+            $arr = [
+                'visits_count',
+                'session_count',
+                'cart_count',
+                'visit_conversion'
+            ];
+
+            $responses = [];
+            $prefix = 'analytics/';
+            $headers = getAlmeHeaders();
+            foreach($arr as $urlPath) {
+                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shop->shop_url);
+                $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+            }
+            return $responses;
+        } catch(Exception $e) {
+            Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
+            return [
+                'visits_count' => 'N/A',
+                'session_count' => 'N/A',
+                'cart_count' => 'N/A',
+                'visit_conversion' => 'N/A'
+            ];
         }
     }
 

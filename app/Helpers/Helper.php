@@ -23,7 +23,7 @@ if (!function_exists('getShopifyAPIURLForStore')) {
     }
 
     function getAlmeAppURLForStore($path) {
-        return 'https://almeapp.com/api/'.$path;
+        return 'https://almeapp.com/'.$path;
     }
 
     function getAlmeHeaders() {
