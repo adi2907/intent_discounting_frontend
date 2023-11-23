@@ -181,8 +181,8 @@
 
 
 
-        <a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
-        <div style="font-family: Arial, sans-serif; height: 100vh;" id="popup1" class="overlay">
+        <a class="button" id="popupModal" style="visibility:hidden" href="#newUserPopup">Let me Pop up</a>
+        <div style="font-family: Arial, sans-serif; height: 100vh;" id="newUserPopup" class="overlay">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -206,7 +206,7 @@
                     </form>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-submit" id="submitBtn">Submit</button>
+                    <button type="submit" class="btn btn-submit" id="submitBtn">Submit</button>
                 </div>
                 </div>
             </div>
