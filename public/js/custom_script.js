@@ -112,7 +112,7 @@ async function logEvent(event_type, event_name, event) {
         'event_type': event_type,
         'event_name': event_name,
         'source_url': window.location.href,
-        'app_name': "test_shopify",
+        'app_name': Shopify.shop,
         'product_id': product_id,
         'product_name': product_name,
         'product_price': product_price,
@@ -188,8 +188,8 @@ async function handleShowingPopup(){
 
     // Insert HTML
     var el = document.getElementById('newUserForm');
-    console.log('el '+el);
     if(popupHTML !== null && (el == null || el.length < 1)) {
+        console.log('Inserting HTML')
         document.body.insertAdjacentHTML('beforeend', popupHTML);
         document.getElementById('popupModal').click();
         handleFormSubmission(code);
@@ -212,7 +212,7 @@ function handleFormSubmission(code = null) {
             alme_user_token: alme_user_token,
             app_name: Shopify.shop,
         };
-  
+        
         // Send data to server
         fetch('https://almeapp.com/notification/submit_contact/', {
             method: 'POST',
