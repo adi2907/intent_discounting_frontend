@@ -19,7 +19,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['session_count']) {{$almeResponses['session_count']}} @endisset</h4>
+                    <h4>@isset($almeResponses['session_count']['body']) {{$almeResponses['session_count']['body']}} @endisset</h4>
                     <p>Sessions</p>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['visits_count']) {{$almeResponses['visits_count']}} @endisset</h4>
+                    <h4>@isset($almeResponses['visits_count']['body']) {{$almeResponses['visits_count']['body']}} @endisset</h4>
                     <p>Visits</p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['cart_count']) {{$almeResponses['cart_count']}} @endisset</h4>
+                    <h4>@isset($almeResponses['cart_count']['body']) {{$almeResponses['cart_count']['body']}} @endisset</h4>
                     <p>Cart Adds</p>
                     </div>
                 </div>
