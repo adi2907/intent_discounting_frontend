@@ -1,8 +1,22 @@
 
+var submit_contact = true; // needs to be set by admin
+var CONTACT_POPUP_TIME = 20000; // 20 seconds
+
+
+// create user token and store in local storage
+// if submit_contact is true then set show popup after 20 seconds
 function createUserToken(){
     var timestamp = Date.now().toString().slice(-5);
     var random = Math.random().toString(36).substring(2, 8);
-    return timestamp + random;
+    var token = timestamp + random;
+    localStorage.setItem('alme_user_token', token);
+
+    // if submit_contact is true then set a timeout of 20 seconds to show popup
+    if (submit_contact){
+        setTimeout(function(){
+            handleShowingPopup();
+        }, CONTACT_POPUP_TIME);
+    }
 }
 
 // Log page load
@@ -29,8 +43,7 @@ function sendEventsToServer() {
     var alme_user_token = localStorage.getItem('alme_user_token');
     var lastEventTimestamp = localStorage.getItem('lastEventTimestamp');
     if (!alme_user_token) {
-        alme_user_token = createUserToken();
-        localStorage.setItem('alme_user_token', alme_user_token);
+        createUserToken();
     }
     
     var events = localStorage.getItem('events');
@@ -126,52 +139,60 @@ async function logEvent(event_type, event_name, event) {
 /*************
  * SUBMIT CONTACT POPUP CODE
  */
-// Check if user is new and if popup has not been displayed for this user
-window.onload = async function() {
-    var alme_user_token = localStorage.getItem('alme_user_token');
-    if (!alme_user_token) {
-        alme_user_token = createUserToken();
-        localStorage.setItem('alme_user_token', alme_user_token);
-    }
-    var api_base_url = 'https://almeapp.com';
-    // new user set in local storage
-    new_user_check_url = api_base_url + '/api/new_user_check/?token=' + alme_user_token + '&app_name=' +Shopify.shop;
 
-    try {
-        // make async call to check if user is new
-        const new_user_response = await fetch(new_user_check_url);
-        const new_user_data = await new_user_response.json();
-        // if new_user is True then set local storage variable new_user to true
-        if (new_user_data.new_user) {
-            localStorage.setItem('new_alme_user', 'true');
-            // set the value of new_user to false after 5 minutes
-            setTimeout(function() {
-                localStorage.setItem('new_alme_user', 'false');
-            }
-            , 5 * 60 * 1000);
-        }
+
+
+
+
+// window.onload = async function() {
+//     if (!submit_contact) {
+//         return;
+//     }
+
+//     var alme_user_token = localStorage.getItem('alme_user_token');
+//     if (!alme_user_token) {
+//         createUserToken();
+//     }
+    
+//     var api_base_url = 'https://almeapp.com';
+//     // new user set in local storage
+//     new_user_check_url = api_base_url + '/api/new_user_check/?token=' + alme_user_token + '&app_name=' +Shopify.shop;
+
+//     try {
+//         // make async call to check if user is new
+//         const new_user_response = await fetch(new_user_check_url);
+//         const new_user_data = await new_user_response.json();
+//         // if new_user is True then set local storage variable new_user to true
+//         if (new_user_data.new_user) {
+//             localStorage.setItem('new_alme_user', 'true');
+//             // set the value of new_user to false after 5 minutes
+//             setTimeout(function() {
+//                 localStorage.setItem('new_alme_user', 'false');
+//             }
+//             , 5 * 60 * 1000);
+//         }
         
-    }catch (error) {
-        console.error("Error checking if user is new: ", error);
-    }
-    var popupDisplayed = localStorage.getItem('alme_contact_popupDisplayed');
-    if (popupDisplayed === 'true') {
-    return;
-    } else {
-    var isNew = localStorage.getItem('new_alme_user') === 'true';
-    if (isNew) {
-        setTimeout(function(){
-            handleShowingPopup();
-        // document.getElementById('newUserPopup').style.display = 'block';
-        // handleFormSubmission();
-        // handleCloseButtonClick();
-    }, 20000);}
+//     }catch (error) {
+//         console.error("Error checking if user is new: ", error);
+//     }
+//     var popupDisplayed = localStorage.getItem('alme_contact_popupDisplayed');
+//     if (popupDisplayed === 'true') {
+//     return;
+//     } else {
+//     var isNew = localStorage.getItem('new_alme_user') === 'true';
+//     if (isNew) {
+//         setTimeout(function(){
+//             handleShowingPopup();
+//         // document.getElementById('newUserPopup').style.display = 'block';
+//         // handleFormSubmission();
+//         // handleCloseButtonClick();
+//     }, 20000);}
 
-    else {
-        localStorage.setItem('alme_contact_popupDisplayed', 'true');
-    }
-    }
-};
+//     else {
+//         localStorage.setItem('alme_contact_popupDisplayed', 'true');
+//     }
+//     }
+// };
 
 async function handleShowingPopup(){
     // Define HTML and CSS
@@ -228,7 +249,7 @@ function handleFormSubmission(code = null) {
                 } else {
                     document.getElementById('newUserPopup').style.display = 'none';
                 }
-                localStorage.setItem('alme_contact_popupDisplayed', 'true');
+                //localStorage.setItem('alme_contact_popupDisplayed', 'true');
                 console.log('Form submitted successfully');
             }
         }).catch(function(error) {
@@ -237,7 +258,7 @@ function handleFormSubmission(code = null) {
             console.log('finally')
             // Hide the popup after form submission attempt
             document.getElementById('newUserPopup').style.display = 'none';
-            localStorage.setItem('alme_contact_popupDisplayed', 'true');
+            //localStorage.setItem('alme_contact_popupDisplayed', 'true');
         });
     });
   }
@@ -253,7 +274,7 @@ function handleCloseButtonClick() {
         console.log('Handling close button click');
         event.stopPropagation();
         document.getElementById('newUserPopup').style.display = 'none';
-        localStorage.setItem('alme_contact_popupDisplayed', 'true');
+        //localStorage.setItem('alme_contact_popupDisplayed', 'true');
     });
     } else {
     console.error('Close button not found in DOM');
