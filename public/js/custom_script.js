@@ -39,8 +39,7 @@ if (document.readyState !== 'loading') {
 
 // Log clicks
 document.addEventListener('click', async function(event) {
-await logEvent('click', '', event);
-await handleShowingPopup();
+    await logEvent('click', '', event);
 });
 
 
