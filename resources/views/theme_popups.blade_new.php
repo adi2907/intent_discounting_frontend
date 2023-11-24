@@ -48,8 +48,8 @@
 </style>
 
 <!-- Bootstrap Modal -->
-<a class="button" id="popupModal" style="visibility:hidden" href="#popup1">Let me Pop up</a>
-<div class="modal" id="popup1" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
+<a class="button" id="popupModal" style="visibility:hidden" href="#newUserPopup">Let me Pop up</a>
+<div class="modal" id="newUserPopup" tabindex="-1" aria-labelledby="desiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
