@@ -144,6 +144,9 @@ async function logEvent(event_type, event_name, event) {
 
 
 async function handleShowingPopup(){
+    if (localStorage.getItem('alme_contact_popupDisplayed') == 'true') {
+        return;
+    }
     // Define HTML and CSS
     var popupHTML = null;
     var code = null;
