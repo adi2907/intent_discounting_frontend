@@ -25,7 +25,10 @@ function createUserToken(){
     }
 }
 
-// Log page load
+/****
+ * 
+ * EVENT LOGGING
+ */
 
 if (document.readyState !== 'loading') {
     var page_load_event = {target: {innerText: ''}};
@@ -140,7 +143,10 @@ async function logEvent(event_type, event_name, event) {
     events.push(eventDetails);
     localStorage.setItem("events", JSON.stringify(events));
 }
-
+/****
+ * 
+ * SUBMIT CONTACT POPUP
+ */
 
 async function handleShowingPopup(){
     if (localStorage.getItem('alme_contact_popupDisplayed') == 'true') {
@@ -232,4 +238,7 @@ function handleCloseButtonClick() {
     }
 }
 
-
+/****
+ * 
+ * SALE NOTIFICATION POPUP
+ */

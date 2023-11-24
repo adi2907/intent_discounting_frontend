@@ -35,6 +35,7 @@ Route::prefix('debug')->group(function () {
 
 Route::middleware('cors')->group(function () {
     Route::get('theme_popups', [AppController::class, 'themePopups']);
+    Route::get('sale_notification_popup', [AppController::class, 'saleNotificationPopup']);
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
     
     //Routes for theme app extensions
