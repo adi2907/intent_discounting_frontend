@@ -98,6 +98,8 @@ class AppController extends Controller {
 
     private function getAlmeAnalytics($shopURL) {
         try {
+            $cacheKey = 'dashboard_analytics.'.$shopURL;
+            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $arr = [
                 'visits_count',
                 'session_count',
@@ -113,6 +115,8 @@ class AppController extends Controller {
                 $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
                 $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
             }
+
+            Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
             return $responses;
         } catch(Exception $e) {
             Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
