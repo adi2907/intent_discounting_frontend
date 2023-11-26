@@ -123,41 +123,36 @@
                 
             </div>
 
+
+            @isset($almeResponses['product_cart_conversion']['body']) 
+            @if(is_array($almeResponses['product_cart_conversion']['body']['products']) && count($almeResponses['product_cart_conversion']['body']['products']) > 0)
             <!-- Products conversion stats -->
             <div class="col-12 col-md-6">
                 
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h2 class="section-title">Cart conversion</h2>
+                    <h2 class="section-title">Cart conversions</h2>
                     <div class="sort-toggle">
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
                     
-                    
+                @foreach($almeResponses['product_cart_conversion']['body']['products'] as $productId => $product)    
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
-                        <img src="images/prod1.png" alt="Floral T-Shirt" class="product-image">
-                    
-                        <h3 class="product-title">Relaxed Fit T-shirt</h3>
+                        <img src="{{$product->imageSrc}}" alt="Floral T-Shirt" class="product-image">    
+                        <h3 class="product-title"><a href="https://admin.shopify.com/{{str_replace('.shopify.com', null, $baseShop->shop_url)}}/products/{{$productId}}">{{$product->title}}</a></h3>
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
-                                <span class="percentage">10%</span>
+                                @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
+                                    <span class="percentage">{{$almeResponses['product_cart_conversion']['body']['assoc_data'][$productId]['conversion_rate']}}%</span>
+                                @else 
+                                    <span class="percentage">N/A</span>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card conversion-card">
-                    <div class="card-body d-flex align-items-center">
-                        <img src="images/prod1.png" alt="Floral T-Shirt" class="product-image">
-                    
-                        <h3 class="product-title">Relaxed Fit T-shirt</h3>
-                        <div class="ml-auto conversion-rates">
-                            <div class="conversion-rate cart-conversion mr-4">
-                                <span class="percentage">10%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @enforeach
                 <div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -170,6 +165,8 @@
                     </nav>
                 </div>
             </div>
+            @endif
+            @endisset
 
             
             </div>
