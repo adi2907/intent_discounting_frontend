@@ -87,7 +87,7 @@ class AppController extends Controller {
             $baseShop = Shop::where('shop_url', $shop)->first();
             $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
             $almeResponses = $this->getAlmeAnalytics($shop);
-            dd($almeResponses);
+            //dd($almeResponses);
             return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses'));
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
