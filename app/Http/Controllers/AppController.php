@@ -102,6 +102,7 @@ class AppController extends Controller {
                 'visits_count',
                 'session_count',
                 'cart_count',
+                'user_count',
                 'visit_conversion'
             ];
 
