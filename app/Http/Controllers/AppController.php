@@ -87,7 +87,7 @@ class AppController extends Controller {
             $baseShop = Shop::where('shop_url', $shop)->first();
             $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
             $almeResponses = $this->getAlmeAnalytics($shop);
-            //dd($almeResponses);
+            dd($almeResponses);
             return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses'));
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
@@ -99,13 +99,16 @@ class AppController extends Controller {
     private function getAlmeAnalytics($shopURL) {
         try {
             $cacheKey = 'dashboard_analytics.'.$shopURL;
-            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            
             $arr = [
                 'visits_count',
                 'session_count',
                 'cart_count',
                 'user_count',
-                'visit_conversion'
+                'visit_conversion',
+                'product_visits',
+                'product_cart_conversion'
             ];
 
             $responses = [];
