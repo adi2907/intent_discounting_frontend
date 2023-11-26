@@ -10,8 +10,9 @@ function checkIfSubmitContactIsEnabled(shop) {
         request.send();
         if (request.status && request.status === 200) {
             console.log('request responsetext');
-            console.log(request.responseText);
-            return request.responseText;
+            var response = JSON.parse(request.responseText);
+            console.log(response);
+            return response.hasOwnProperty('data') && response.data;
         }
     } catch (error) {
         console.log(error.message);
