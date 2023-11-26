@@ -99,7 +99,7 @@ class AppController extends Controller {
     private function getAlmeAnalytics($shopURL) {
         try {
             $cacheKey = 'dashboard_analytics.'.$shopURL;
-            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             
             $arr = [
                 'visits_count',
