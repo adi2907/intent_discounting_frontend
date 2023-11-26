@@ -21,6 +21,19 @@ class AppController extends Controller {
         
     }
 
+    public function checkSubmitContact(Request $request) {
+        if($request->has('shop')) {
+            $shop = Shop::with(['notificationSettings'])->where('shop_url', $request->shop)->first();
+            if($shop !== null && $shop->count() > 0) {
+                $notificationSettings = $shop->notificationSettings;
+                if(isset($notificationSettings->sale_status) && ($notificationSettings->sale_status === 1 || $notificationSettings->sale_status === true)) {
+                    return response()->json(['status' => true, 'data' => true]);
+                }
+            }
+        }
+        return response()->json(['status' => true, 'data' => false]);
+    }
+
     public function checkCronStatus() {
         $cacheKeys = config('custom.cacheKeys');
         $returnVal = [];

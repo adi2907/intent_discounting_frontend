@@ -1,7 +1,23 @@
 
-var submit_contact = true; // needs to be set by admin
+var submit_contact = checkIfSubmitContactIsEnabled(Shopify.shop); // needs to be set by admin
 var CONTACT_POPUP_TIME = 20000; // 20 seconds
 
+
+function checkIfSubmitContactIsEnabled(shop) {
+    try {
+        const request = new XMLHttpRequest();
+        request.open("GET", `https://almeapp.co.in/checkSubmitContact?shop=${shop}`, false); // `false` makes the request synchronous
+        request.send();
+        if (request.status && request.status === 200) {
+            console.log('request responsetext');
+            console.log(request.responseText);
+            return request.responseText;
+        }
+    } catch (error) {
+        console.log(error.message);
+        return false;
+    }
+}
 
 // create user token and store in local storage
 // if submit_contact is true then set show popup after 20 seconds
