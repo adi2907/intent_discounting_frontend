@@ -139,8 +139,8 @@
                 @foreach($almeResponses['product_cart_conversion']['body']['products'] as $productId => $product)    
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
-                        <img src="{{$product->imageSrc}}" alt="Floral T-Shirt" class="product-image">    
-                        <h3 class="product-title"><a href="https://admin.shopify.com/{{str_replace('.shopify.com', null, $baseShop->shop_url)}}/products/{{$productId}}">{{$product->title}}</a></h3>
+                        <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
+                        <h3 class="product-title"><a href="https://admin.shopify.com/{{str_replace('.shopify.com', null, $baseShop['shop_url'])}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
                                 @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
