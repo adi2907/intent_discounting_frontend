@@ -119,8 +119,12 @@ class AppController extends Controller {
                 $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
             }
 
+            if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
+                $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
+            }
+
             if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
-                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($shopURL, $responses['product_cart_conversion']['body']);
+                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
             }
 
             Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
@@ -136,7 +140,32 @@ class AppController extends Controller {
         }
     }
 
-    private function getProductsConvertedToCarts($shopURL, $body) {
+    private function getProductsVisits($body) {
+        try {
+            if(is_array($body) && count($body) > 0) {
+                $productIds = [];
+                $conversionArr = [];
+                foreach($body as $payload) {
+                    $productIds[] = $payload[0]; //That's the product ID.
+                    $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
+                } 
+                $shop = Auth::user()->shopifyStore;
+                $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
+                if($products !== null && $products->count() > 0) {
+                    $products = $products->keyBy('product_id')->toArray();
+                    return [
+                        'products' => $products,
+                        'assoc_data' => $conversionArr 
+                    ];
+                }
+            }
+        } catch(Exception $e) {
+            Log::info('Error in getProductsConvertedToCarts function '.$e->getMessage().' '.$e->getLine());
+        }
+        return null;
+    } 
+
+    private function getProductsConvertedToCarts($body) {
         try {
             if(is_array($body) && count($body) > 0) {
                 $productIds = [];

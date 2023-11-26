@@ -75,6 +75,9 @@
         <div class="container-fluid mt-3">
             <!-- Products-->
             <div class="row mb-3">
+            @isset($almeResponses['product_visits']['body']) 
+            @if(is_array($almeResponses['product_visits']['body']['products']) && count($almeResponses['product_visits']['body']['products']) > 0)
+        
             <!-- Products visited stats -->
             <div class="col-12 col-md-6">
                 <div class="d-flex justify-content-between align-items-start mb-2">
@@ -83,32 +86,25 @@
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
-                
+                @foreach($almeResponses['product_visits']['body']['products'] as $productId => $product)  
                 <div class="card visited-card">
                     <div class="card-body d-flex align-items-center">
-                        <img src="images/prod1.png" alt="Relaxed Fit T-Shirt" class="product-image">
+                        <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">   
                         <div class="product-details">
-                            <h3 class="product-title">Relaxed Fit T-Shirt</h3>
+                            <h3 class="product-title"><a href="https://admin.shopify.com/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         </div>
                         <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
-                            <span class="visit-number">13476</span>
+                            <!-- <span class="visit-number">13476</span> -->
+                            @if(isset($almeResponses['product_visits']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_visits']['body']['assoc_data']))
+                                <span class="visit-number">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]['visits']}}</span>
+                            @else 
+                                <span class="visit-number">N/A</span>
+                            @endif
                             <span class="visits-label">Visits</span>
                         </div>
                     </div>
                 </div>
-                <div class="card visited-card">
-                    <div class="card-body d-flex align-items-center">
-                        <img src="images/prod1.png" alt="Relaxed Fit T-Shirt" class="product-image">
-                        <div class="product-details">
-                            <h3 class="product-title">Relaxed Fit T-Shirt</h3>
-                        </div>
-                        <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
-                            <span class="visit-number">13476</span>
-                            <span class="visits-label">Visits</span>
-                        </div>
-                    </div>
-                </div>
-                    
+                @endforeach  
                 <div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -122,7 +118,8 @@
                 </div>
                 
             </div>
-
+            @endif
+            @endisset
 
             @isset($almeResponses['product_cart_conversion']['body']) 
             @if(is_array($almeResponses['product_cart_conversion']['body']['products']) && count($almeResponses['product_cart_conversion']['body']['products']) > 0)
@@ -140,7 +137,7 @@
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
-                        <h3 class="product-title"><a href="https://admin.shopify.com/{{str_replace('.shopify.com', null, $baseShop['shop_url'])}}/products/{{$productId}}">{{$product['title']}}</a></h3>
+                        <h3 class="product-title"><a href="https://admin.shopify.com/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
                                 @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
