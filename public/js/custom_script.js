@@ -42,7 +42,10 @@ function createUserToken(){
     }
 }
 
-// Log page load
+/****
+ * 
+ * EVENT LOGGING
+ */
 
 if (document.readyState !== 'loading') {
     var page_load_event = {target: {innerText: ''}};
@@ -157,7 +160,10 @@ async function logEvent(event_type, event_name, event) {
     events.push(eventDetails);
     localStorage.setItem("events", JSON.stringify(events));
 }
-
+/****
+ * 
+ * SUBMIT CONTACT POPUP
+ */
 
 async function handleShowingPopup(){
     if (localStorage.getItem('alme_contact_popupDisplayed') == 'true') {
@@ -249,4 +255,53 @@ function handleCloseButtonClick() {
     }
 }
 
+/****
+ * 
+ * SALE NOTIFICATION POPUP
+ */
 
+async function handleSaleNotificationPopup() {
+    if (localStorage.getItem('alme_sale_notification_popupDisplayed') === 'true') {
+        return;
+    }
+
+    // Define HTML and CSS
+    var salePopupHTML = null;
+    var saleDiscountCode = null;
+
+    let obj;
+    var baseURL = 'https://almeapp.co.in/';
+    const res = await fetch(baseURL+'sale_notification_popup?shop='+Shopify.shop);
+    obj = await res.json();
+
+    saleDiscountCode = obj.code;
+    salePopupHTML = obj.html;
+
+    // Insert HTML
+    var el = document.getElementById('saleNotificationPopup');
+    if (el == null) {
+        console.log('Inserting HTML for sale notification popup');
+        document.body.insertAdjacentHTML('beforeend', salePopupHTML);
+        document.getElementById('saleNotificationPopup').style.display = 'block';
+        handleSaleNotificationCloseButtonClick();
+    }
+}
+
+// Function to handle close button click for sale notification
+function handleSaleNotificationCloseButtonClick() {
+    // Ensure the element is available in the DOM
+    let closeBtn = document.getElementById('saleCloseBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(event) {
+            console.log('Handling close button click for sale notification');
+            event.stopPropagation();
+            document.getElementById('saleNotificationPopup').style.display = 'none';
+            localStorage.setItem('alme_sale_notification_popupDisplayed', 'true');
+        });
+    } else {
+        console.error('Close button not found in DOM for sale notification');
+    }
+}
+
+// Trigger the sale notification popup, for example, after a delay or when a certain condition is met
+setTimeout(handleSaleNotificationPopup, 5000);  // 20 seconds after page load

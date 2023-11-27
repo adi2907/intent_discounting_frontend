@@ -217,6 +217,18 @@ class AppController extends Controller {
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
 
+    public function saleNotificationPopup(Request $request) {
+        if($request->has('shop')) {
+            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
+            $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+            $notificationSettings = $shop->notificationSettings;
+            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->sale_status) && ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
+            $html = $saleStatus ? view('sale_notification_popup')->render() : null;
+            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+        }
+        return response()->json(['code' => null, 'status' => true, 'html' => null]);
+    }
+
     public function removeCustomScript(Request $request) {
         try {
             if($request->has('shop_id') && $request->filled('shop_id')) {
