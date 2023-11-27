@@ -1,24 +1,5 @@
 
-var submit_contact = checkIfSubmitContactIsEnabled(Shopify.shop); // needs to be set by admin
 var CONTACT_POPUP_TIME = 20000; // 20 seconds
-
-
-function checkIfSubmitContactIsEnabled(shop) {
-    try {
-        const request = new XMLHttpRequest();
-        request.open("GET", `https://almeapp.co.in/checkSubmitContact?shop=${shop}`, false); // `false` makes the request synchronous
-        request.send();
-        if (request.status && request.status === 200) {
-            console.log('request responsetext');
-            var response = JSON.parse(request.responseText);
-            console.log(response);
-            return response.hasOwnProperty('data') && response.data;
-        }
-    } catch (error) {
-        console.log(error.message);
-        return false;
-    }
-}
 
 // create user token and store in local storage
 // if submit_contact is true then set show popup after 20 seconds
@@ -30,16 +11,12 @@ function createUserToken(){
     
 
     // if submit_contact is true then set a timeout of 20 seconds to show popup
-    if (submit_contact){
-        if (localStorage.getItem('alme_contact_popupDisplayed') == 'true') {
-            return;
-        }
-        setTimeout(function(){
-            handleShowingPopup();
-            localStorage.setItem('alme_contact_popupDisplayed', 'true');
-        }, CONTACT_POPUP_TIME);
-       
-    }
+    setTimeout(function(){
+        handleShowingPopup();
+        localStorage.setItem('alme_contact_popupDisplayed', 'true');
+    }, CONTACT_POPUP_TIME);
+    
+    
 }
 
 /****
@@ -165,7 +142,7 @@ async function logEvent(event_type, event_name, event) {
  * SUBMIT CONTACT POPUP
  */
 
-async function handleShowingPopup(){
+async function handleShowingPopup() {
     if (localStorage.getItem('alme_contact_popupDisplayed') == 'true') {
         return;
     }
@@ -175,7 +152,7 @@ async function handleShowingPopup(){
 
     let obj;
     var baseURL = 'https://almeapp.co.in/';
-    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
+    const res = await fetch(baseURL+'contact_capture?shop='+Shopify.shop); //Theme popups Changed to Contact capture
     obj = await res.json();
    
     code = obj.code;

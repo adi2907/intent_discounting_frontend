@@ -34,7 +34,7 @@ Route::prefix('debug')->group(function () {
 });
 
 Route::middleware('cors')->group(function () {
-    Route::get('theme_popups', [AppController::class, 'themePopups']);
+    Route::get('contact_capture', [AppController::class, 'contactCaptureSettings']);
     Route::get('sale_notification_popup', [AppController::class, 'saleNotificationPopup']);
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
     Route::get('checkSubmitContact', [AppController::class, 'checkSubmitContact']);

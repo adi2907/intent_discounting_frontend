@@ -205,12 +205,12 @@ class AppController extends Controller {
         }
     }
 
-    public function themePopups(Request $request) {
+    public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
             $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
             $notificationSettings = $shop->notificationSettings;
-            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->sale_status) && ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
+            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
             $html = $saleStatus ? view('theme_popups')->render() : null;
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
