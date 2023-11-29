@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{asset('css/product_rack.css')}}">
 @endsection
 @section('content')
-<div class="col-md-9 nopadding">
+<div class="col-md-10 nopadding">
     <section class="page-title bg-white p-4">
         <div class="title-content">      
             <h1>Product Collection</h1>

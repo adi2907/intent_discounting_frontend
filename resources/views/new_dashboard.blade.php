@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 
-<div class="col-md-9 nopadding">
+<div class="col-md-10 nopadding">
     <section class="page-title bg-white p-4">
         <div class="title-content">
             <h1>Dashboard</h1>
@@ -53,20 +53,32 @@
             <div class="row">
                 <div class="col-12 col-md-4 mb-3">
                     <div class="text-center">
-                    <h5 class="chart-title">Visit Conversion%</h5>
-                    <img src="images/visits.png" alt="Visit Conversion Chart" class="img-fluid mt-2">
+                        <h5 class="chart-title">Visit Conversion%</h5>
+                        <div class="container" style="max-width: 450px;max-height:450px">
+                            <div>
+                                <canvas id="visitConversionGraph"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-3">
                     <div class="text-center">
-                    <h5 class="chart-title">Cart Conversion%</h5>
-                    <img src="images/conversion.png" alt="Cart Conversion Chart" class="img-fluid mt-2">
+                        <h5 class="chart-title">Cart Conversion%</h5>
+                        <div class="container" style="max-width: 450px;max-height:450px">
+                            <div>
+                                <canvas id="myChart2"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-4 mb-3">
                     <div class="text-center">
-                    <h5 class="chart-title">Checkout Conversion%</h5>
-                    <img src="images/checkout.png" alt="Checkout Chart" class="img-fluid mt-2">
+                        <h5 class="chart-title">Checkout Conversion%</h5>
+                        <div class="container" style="max-width: 450px;max-height:450px">
+                            <div>
+                                <canvas id="myChart3"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -171,4 +183,76 @@
     </section>
 </div>
 @endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        const visitConversionGraph = document.getElementById('visitConversionGraph');
+        new Chart(visitConversionGraph, {
+            type: 'bar',
+            data: {
+            labels: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['yAxis'] !!} @else [] @endif,
+            datasets: [{
+                label: '# of Votes',
+                data: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['xAxis'] !!} @else [] @endif,
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+
+        const ctx2 = document.getElementById('myChart2');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [22, 2, 13, 5, 32, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const ctx3 = document.getElementById('myChart3');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [4, 15, 2, 1, 11, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+    }) 
+  
+</script>
+ 
     

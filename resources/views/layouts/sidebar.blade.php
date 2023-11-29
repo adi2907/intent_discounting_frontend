@@ -2,10 +2,10 @@
 @php 
 $route = Route::currentRouteName()
 @endphp
-<div class="col-md-3 sidebar d-none d-md-block">
+<div class="col-md-2 sidebar d-none d-md-block">
     <div class="brand mb-4">
         <img src="{{asset('images/TextALME.png')}}" alt="M&H Clothing" class="img-fluid">
-        {{Auth::user()->name}}
+        {{Auth::check() ? Auth::user()->name : 'Some Store'}}
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">

@@ -7,6 +7,8 @@ use App\Models\ShopifyProducts;
 use Exception;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 trait FunctionTrait {
@@ -159,4 +161,130 @@ trait FunctionTrait {
             Log::info($e->getMessage().' '.$e->getLine());
         } 
     }
+
+    public function getAlmeAnalytics($shopURL) {
+        try {
+            $cacheKey = 'dashboard_analytics.'.$shopURL;
+            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            
+            $arr = [
+                'visits_count',
+                'session_count',
+                'cart_count',
+                'user_count',
+                'visit_conversion',
+                'product_visits',
+                'product_cart_conversion'
+            ];
+
+            $responses = [];
+            $prefix = 'analytics/';
+            $headers = getAlmeHeaders();
+            foreach($arr as $urlPath) {
+                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
+                $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+            }
+
+            if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
+                $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
+            }
+
+            if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
+                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
+            }
+
+            if(isset($responses['visit_conversion']['statusCode']) && $responses['visit_conversion']['statusCode'] == 200) {
+                $responses['visit_conversion']['graphData'] = $this->getGraphDataForVisitConversion($responses['visit_conversion']['body']);
+            }
+
+            Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
+            //dd($responses);
+            return $responses;
+        } catch(Exception $e) {
+            Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
+            return [
+                'visits_count' => 'N/A',
+                'session_count' => 'N/A',
+                'cart_count' => 'N/A',
+                'visit_conversion' => 'N/A'
+            ];
+        }
+    }
+
+    public function getGraphDataForVisitConversion($body) {
+        try {
+            $returnVal = [];
+            if($body !== null && count($body) > 0) {
+                foreach($body as $date => $data) {
+                    $returnVal[date('F d, Y', strtotime($date))] = $data['conversion_rate'];
+                }
+            }
+
+            $yAxis = '[';
+            $xAxis = '[';
+            $yAxisArr = [];
+            $xAxisArr = [];
+            foreach($returnVal as $key => $val) {
+                $yAxisArr[] = '"'.$key.'"';
+                $xAxisArr[] = '"'.$val.'"';
+            }
+
+            $yAxis .= implode(', ',$yAxisArr).']';
+            $xAxis .= implode(', ', $xAxisArr).']';
+            return ['xAxis' => $xAxis, 'yAxis' => $yAxis];
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    public function getProductsVisits($body) {
+        try {
+            if(is_array($body) && count($body) > 0) {
+                $productIds = [];
+                $conversionArr = [];
+                foreach($body as $payload) {
+                    $productIds[] = $payload[0]; //That's the product ID.
+                    $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
+                } 
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::first();
+                $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
+                if($products !== null && $products->count() > 0) {
+                    $products = $products->keyBy('product_id')->toArray();
+                    return [
+                        'products' => $products,
+                        'assoc_data' => $conversionArr 
+                    ];
+                }
+            }
+        } catch(Exception $e) {
+            Log::info('Error in getProductsConvertedToCarts function '.$e->getMessage().' '.$e->getLine());
+        }
+        return null;
+    } 
+
+    public function getProductsConvertedToCarts($body) {
+        try {
+            if(is_array($body) && count($body) > 0) {
+                $productIds = [];
+                $conversionArr = [];
+                foreach($body as $payload) {
+                    $productIds[] = $payload[0]; //That's the product ID.
+                    $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
+                } 
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::first();
+                $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
+                if($products !== null && $products->count() > 0) {
+                    $products = $products->keyBy('product_id')->toArray();
+                    return [
+                        'products' => $products,
+                        'assoc_data' => $conversionArr 
+                    ];
+                }
+            }
+        } catch(Exception $e) {
+            Log::info('Error in getProductsConvertedToCarts function '.$e->getMessage().' '.$e->getLine());
+        }
+        return null;
+    } 
+
 }

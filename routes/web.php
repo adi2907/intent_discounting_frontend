@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\ExtensionController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Auth;
@@ -61,3 +62,6 @@ Route::prefix('webhooks')->group(function () {
     Route::any('checkoutUpdate', [WebhookController::class, 'checkoutUpdateWebhook'])->name('checkouts.update.webhook');
     Route::any('checkoutCreate', [WebhookController::class, 'checkoutCreateWebhook'])->name('checkouts.create.webhook');
 }); 
+
+//Testing scripts
+Route::get('sampleDashboard', [HomeController::class, 'sampleDashboard']);
