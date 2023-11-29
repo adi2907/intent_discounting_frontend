@@ -165,7 +165,7 @@ trait FunctionTrait {
     public function getAlmeAnalytics($shopURL) {
         try {
             $cacheKey = 'dashboard_analytics.'.$shopURL;
-            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $endpointArr = [];
             $arr = [
                 'visits_count',

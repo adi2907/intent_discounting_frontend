@@ -10,7 +10,7 @@
         <div class="row">
             @include('layouts.sidebar')
             @include('layouts.mobile_sidebar')
-        @yield('content')
+            @yield('content')
         </div>
     </div>
     @include('layouts.scripts')

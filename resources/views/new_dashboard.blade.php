@@ -56,7 +56,7 @@
                         <h5 class="chart-title">Visit Conversion%</h5>
                         <div class="container" style="max-width: 500px;max-height:500px">
                             <div>
-                                <canvas id="visitConversionGraph"></canvas>
+                                <canvas id="visitConversionGraph" style="background-color: white;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <h5 class="chart-title">Cart Conversion%</h5>
                         <div class="container" style="max-width: 500px;max-height:500px">
                             <div>
-                                <canvas id="cartConversionGraph"></canvas>
+                                <canvas id="cartConversionGraph" style="background-color: white;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                         <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
                             <!-- <span class="visit-number">13476</span> -->
                             @if(isset($almeResponses['product_visits']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_visits']['body']['assoc_data']))
-                                <span class="visit-number">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]}}</span>
+                                <span class="visit-number" style="font-size: 1rem !important;">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]}}</span>
                             @else 
                                 <span class="visit-number">N/A</span>
                             @endif
@@ -152,7 +152,7 @@
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
                                 @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
-                                    <span class="percentage">{{round($data['conversion_rate'], 2)}}%</span>
+                                    <span class="percentage" style="font-size: 1rem !important;">{{round($data['conversion_rate'], 2)}}%</span>
                                 @else 
                                     <span class="percentage">N/A</span>
                                 @endif
@@ -185,12 +185,57 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script
-  src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
+        const graphOptions = {
+            responsive: true,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 0,
+                    top: 20,
+                    bottom: 0
+                },
+            },
+            animation: {
+                duration: 1,
+                onComplete: function({ chart }) {
+                    const ctx = chart.ctx;
+
+                    chart.config.data.datasets.forEach(function(dataset, i) {
+                    const meta = chart.getDatasetMeta(i);
+
+                    meta.data.forEach(function(bar, index) {
+                        const data = dataset.data[index];
+
+                        ctx.fillText(data, bar.x, bar.y - 5);
+                    });
+                    });
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        display: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+            }
+        }
         const visitConversionGraph = document.getElementById('visitConversionGraph');
         new Chart(visitConversionGraph, {
             type: 'bar',
@@ -198,22 +243,16 @@
             labels: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['yAxis'] !!} @else [] @endif,
             datasets: [{
                 backgroundColor: ['#3A5D59'],
-                label: 'Visit Conversion %',
+                //label: 'Visit Conversion %',
                 data: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['xAxis'] !!} @else [] @endif,
                 borderWidth: 1
             }]
             },
-            options: {
-            scales: {
-                y: {
-                beginAtZero: true
-                }
-            }
-            }
+            options: graphOptions
         });
 
-        const ctx2 = document.getElementById('cartConversionGraph');
-        new Chart(ctx2, {
+        const cartConversionGraph = document.getElementById('cartConversionGraph');
+        new Chart(cartConversionGraph, {
             type: 'bar',
             data: {
             labels: @if(isset($almeResponses['cart_conversion']['graphData'])) {!! $almeResponses['cart_conversion']['graphData']['yAxis'] !!} @else [] @endif,
@@ -224,13 +263,7 @@
                 borderWidth: 1
             }]
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            options: graphOptions
         });
 
         const ctx3 = document.getElementById('myChart3');
@@ -254,7 +287,8 @@
             }
         });
     }) 
-  
+
 </script>
+@endsection
  
     
