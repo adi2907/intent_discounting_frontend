@@ -173,6 +173,7 @@ trait FunctionTrait {
                 'cart_count',
                 'user_count',
                 'visit_conversion',
+                'cart_conversion',
                 'product_visits',
                 'product_cart_conversion'
             ];
@@ -187,7 +188,6 @@ trait FunctionTrait {
             }
 
             if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
-                dd($responses['product_visits']);
                 $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
             }
 
@@ -195,13 +195,20 @@ trait FunctionTrait {
                 $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
             }
 
+
+            //Graph Data function for Visit conversion graph
             if(isset($responses['visit_conversion']['statusCode']) && $responses['visit_conversion']['statusCode'] == 200) {
-                $responses['visit_conversion']['graphData'] = $this->getGraphDataForVisitConversion($responses['visit_conversion']['body']);
+                $responses['visit_conversion']['graphData'] = $this->getGraphDataForConversion($responses['visit_conversion']['body']);
+            }
+
+            //Graph Data function for Cart conversion graph
+            if(isset($responses['cart_conversion']['statusCode']) && $responses['cart_conversion']['statusCode'] == 200) {
+                $responses['cart_conversion']['graphData'] = $this->getGraphDataForConversion($responses['cart_conversion']['body']);
             }
 
             Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
-            dd($endpointArr);
-            dd($responses);
+            //dd($endpointArr);
+            //dd($responses);
             return $responses;
         } catch(Exception $e) {
             Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
@@ -214,7 +221,7 @@ trait FunctionTrait {
         }
     }
 
-    public function getGraphDataForVisitConversion($body) {
+    public function getGraphDataForConversion($body) {
         try {
             $returnVal = [];
             if($body !== null && count($body) > 0) {
@@ -246,8 +253,8 @@ trait FunctionTrait {
                 $productIds = [];
                 $conversionArr = [];
                 foreach($body as $payload) {
-                    $productIds[] = $payload[0]; //That's the product ID.
-                    $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
+                    $productIds[] = $payload['item__product_id']; //That's the product ID.
+                    $conversionArr[$payload['item__product_id']] = $payload['visit_count']; //That's the data associated to the product data
                 } 
                 $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::first();
                 $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();

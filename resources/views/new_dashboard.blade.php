@@ -51,30 +51,30 @@
             </div>
             <!-- charts-->
             <div class="row">
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <div class="text-center">
                         <h5 class="chart-title">Visit Conversion%</h5>
-                        <div class="container" style="max-width: 450px;max-height:450px">
+                        <div class="container" style="max-width: 500px;max-height:500px">
                             <div>
                                 <canvas id="visitConversionGraph"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <div class="text-center">
                         <h5 class="chart-title">Cart Conversion%</h5>
-                        <div class="container" style="max-width: 450px;max-height:450px">
+                        <div class="container" style="max-width: 500px;max-height:500px">
                             <div>
-                                <canvas id="myChart2"></canvas>
+                                <canvas id="cartConversionGraph"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-3">
+                <div class="col-12 col-md-4 mb-3" style="display: none;">
                     <div class="text-center">
                         <h5 class="chart-title">Checkout Conversion%</h5>
-                        <div class="container" style="max-width: 450px;max-height:450px">
+                        <div class="container" style="max-width: 500px;max-height:500px">
                             <div>
                                 <canvas id="myChart3"></canvas>
                             </div>
@@ -93,7 +93,7 @@
             <!-- Products visited stats -->
             <div class="col-12 col-md-6">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h2 class="section-title">Visited</h2>
+                    <h2 class="section-title">Top Visited</h2>
                     <div class="sort-toggle">
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
@@ -103,12 +103,12 @@
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">   
                         <div class="product-details">
-                            <h3 class="product-title" style="color:black"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
+                            <h3 class="product-title" style="color:black"><a  style="color:black;font-family:'Montserrat'" target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         </div>
                         <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
                             <!-- <span class="visit-number">13476</span> -->
                             @if(isset($almeResponses['product_visits']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_visits']['body']['assoc_data']))
-                                <span class="visit-number">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]['visits']}}</span>
+                                <span class="visit-number">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]}}</span>
                             @else 
                                 <span class="visit-number">N/A</span>
                             @endif
@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 @endforeach  
-                <div class="text-center">
+                {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
                         <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
@@ -127,7 +127,7 @@
                         <li class="page-item"><a class="page-link" href="#">Next</a></li>
                         </ul>
                     </nav>
-                </div>
+                </div>--}}
                 
             </div>
             @endif
@@ -139,21 +139,20 @@
             <div class="col-12 col-md-6">
                 
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h2 class="section-title">Cart conversions</h2>
+                    <h2 class="section-title">Top Cart conversions</h2>
                     <div class="sort-toggle">
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
-                    
-                @foreach($almeResponses['product_cart_conversion']['body']['products'] as $productId => $product)    
+                @foreach($almeResponses['product_cart_conversion']['body']['assoc_data'] as $productId => $data)    
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
-                        <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
-                        <h3 class="product-title" style="color:black"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
+                        <img src="{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
+                        <h3 class="product-title"><a style="color:black;font-family:'Montserrat'" target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['title']}}</a></h3>
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
                                 @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
-                                    <span class="percentage">{{$almeResponses['product_cart_conversion']['body']['assoc_data'][$productId]['conversion_rate']}}%</span>
+                                    <span class="percentage">{{round($data['conversion_rate'], 2)}}%</span>
                                 @else 
                                     <span class="percentage">N/A</span>
                                 @endif
@@ -162,7 +161,7 @@
                     </div>
                 </div>
                 @endforeach
-                <div class="text-center">
+                {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
                         <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
@@ -172,7 +171,7 @@
                         <li class="page-item"><a class="page-link" href="#">Next</a></li>
                         </ul>
                     </nav>
-                </div>
+                </div>--}}
             </div>
             @endif
             @endisset
@@ -198,6 +197,7 @@
             data: {
             labels: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['yAxis'] !!} @else [] @endif,
             datasets: [{
+                backgroundColor: ['#3A5D59'],
                 label: 'Visit Conversion %',
                 data: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['xAxis'] !!} @else [] @endif,
                 borderWidth: 1
@@ -212,14 +212,15 @@
             }
         });
 
-        const ctx2 = document.getElementById('myChart2');
+        const ctx2 = document.getElementById('cartConversionGraph');
         new Chart(ctx2, {
             type: 'bar',
             data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: @if(isset($almeResponses['cart_conversion']['graphData'])) {!! $almeResponses['cart_conversion']['graphData']['yAxis'] !!} @else [] @endif,
             datasets: [{
-                label: '# of Votes',
-                data: [22, 2, 13, 5, 32, 3],
+                backgroundColor: ['#3A5D59'],
+                label: 'Cart conversion %',
+                data: @if(isset($almeResponses['cart_conversion']['graphData'])) {!! $almeResponses['cart_conversion']['graphData']['xAxis'] !!} @else [] @endif,
                 borderWidth: 1
             }]
             },
@@ -238,6 +239,7 @@
             data: {
             labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
             datasets: [{
+                backgroundColor: ['#3A5D59'],
                 label: '# of Votes',
                 data: [4, 15, 2, 1, 11, 3],
                 borderWidth: 1
