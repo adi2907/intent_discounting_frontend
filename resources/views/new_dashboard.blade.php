@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 
-<div class="col-md-10 nopadding">
+<div class="col-md-9 nopadding">
     <section class="page-title bg-white p-4">
         <div class="title-content">
             <h1>Dashboard</h1>
