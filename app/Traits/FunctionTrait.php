@@ -198,7 +198,7 @@ trait FunctionTrait {
             }
 
             Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
-            //dd($responses);
+            dd($responses);
             return $responses;
         } catch(Exception $e) {
             Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());

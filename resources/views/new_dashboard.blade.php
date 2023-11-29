@@ -103,7 +103,7 @@
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">   
                         <div class="product-details">
-                            <h3 class="product-title"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
+                            <h3 class="product-title" style="color:black"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         </div>
                         <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
                             <!-- <span class="visit-number">13476</span> -->
@@ -149,7 +149,7 @@
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
-                        <h3 class="product-title"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
+                        <h3 class="product-title" style="color:black"><a target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
                         <div class="ml-auto conversion-rates">
                             <div class="conversion-rate cart-conversion mr-4">
                                 @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
@@ -198,7 +198,7 @@
             data: {
             labels: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['yAxis'] !!} @else [] @endif,
             datasets: [{
-                label: '# of Votes',
+                label: 'Visit Conversion %',
                 data: @if(isset($almeResponses['visit_conversion']['graphData'])) {!! $almeResponses['visit_conversion']['graphData']['xAxis'] !!} @else [] @endif,
                 borderWidth: 1
             }]
