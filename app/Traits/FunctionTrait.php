@@ -166,7 +166,7 @@ trait FunctionTrait {
         try {
             $cacheKey = 'dashboard_analytics.'.$shopURL;
             //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
-            
+            $endpointArr = [];
             $arr = [
                 'visits_count',
                 'session_count',
@@ -182,6 +182,7 @@ trait FunctionTrait {
             $headers = getAlmeHeaders();
             foreach($arr as $urlPath) {
                 $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
+                $endpointArr[] = $endpoint;
                 $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
             }
 
@@ -198,6 +199,7 @@ trait FunctionTrait {
             }
 
             Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
+            dd($endpointArr);
             dd($responses);
             return $responses;
         } catch(Exception $e) {
