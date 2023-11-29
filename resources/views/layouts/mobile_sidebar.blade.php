@@ -8,9 +8,9 @@ $route = Route::currentRouteName()
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="#" class="nav-link" @if($route == 'dashboard') style="background-color: white; color:#1B4332" @endif>Dashboard</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Product Collection</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Notifications</a></li>
+            <li class="nav-item"><a href="{{route('dashboard')}}" class="nav-link" @if($route == 'dashboard') style="background-color: white; color:#1B4332" @endif>Dashboard</a></li>
+            <li class="nav-item"><a href="{{route('productRacks')}}" class="nav-link">Product Collection</a></li>
+            <li class="nav-item"><a href="{{route('notifications')}}" class="nav-link">Notifications</a></li>
         </ul>
     </div>
 </nav>
