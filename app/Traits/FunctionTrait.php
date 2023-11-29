@@ -187,6 +187,7 @@ trait FunctionTrait {
             }
 
             if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
+                dd($responses['product_visits']);
                 $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
             }
 
