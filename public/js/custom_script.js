@@ -1,5 +1,6 @@
 
 var CONTACT_POPUP_TIME = 20000; // 20 seconds
+var SALE_NOTIFICATION_POPUP_TIME = 30000; // 30 seconds
 
 // create user token and store in local storage
 // if submit_contact is true then set show popup after 20 seconds
@@ -242,29 +243,59 @@ async function handleSaleNotificationPopup() {
         return;
     }
 
-    // Define HTML and CSS
-    var salePopupHTML = null;
-    var saleDiscountCode = null;
 
-    let obj;
-    var baseURL = 'https://almeapp.co.in/';
-    const res = await fetch(baseURL+'sale_notification_popup?shop='+Shopify.shop);
-    obj = await res.json();
+    // send an API request to check for sale notification
+    // retrieve session id from local storage
+    var alme_user_token = localStorage.getItem('alme_user_token');
+    var session_id = localStorage.getItem('session_id');
+    var app_name = Shopify.shop;
 
-    saleDiscountCode = obj.code;
-    salePopupHTML = obj.html;
+    if (!session_id || !alme_user_token || !app_name) {
+        console.log("Missing required parameters ")
+        return;
+    }
 
-    // Insert HTML
-    var el = document.getElementById('saleNotificationPopup');
-    if (el == null) {
-        console.log('Inserting HTML for sale notification popup');
-        document.body.insertAdjacentHTML('beforeend', salePopupHTML);
-        document.getElementById('saleNotificationPopup').style.display = 'block';
-        handleSaleNotificationCloseButtonClick();
+    // send an API request to check for sale notification with these parameters as url params
+    const saleNotificationURL = 'https://almeapp.com/notification/sale_notification/?session_id='+session_id+'&alme_user_token='+alme_user_token+'&app_name='+app_name;
+    
+    try {
+        const response = await fetch(saleNotificationURL);
+        const data = await response.json();
+        if (data.error) {
+            console.log(data.error);
+            return;
+        }
+
+        if (data.sale_notification){ // if sale_notification is True
+            // Define HTML and CSS
+            var salePopupHTML = null;
+            var saleDiscountCode = null;
+
+            let obj;
+            var baseURL = 'https://almeapp.co.in/';
+            const res = await fetch(baseURL+'sale_notification_popup?shop='+Shopify.shop);
+            obj = await res.json();
+
+            saleDiscountCode = obj.code;
+            salePopupHTML = obj.html;
+
+            // Insert HTML
+            var el = document.getElementById('saleNotificationPopup');
+            if (el == null) {
+                console.log('Inserting HTML for sale notification popup');
+                document.body.insertAdjacentHTML('beforeend', salePopupHTML);
+                document.getElementById('saleNotificationPopup').style.display = 'block';
+                handleSaleNotificationCloseButtonClick();
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
     }
 }
 
-// Function to handle close button click for sale notification
+
+
 function handleSaleNotificationCloseButtonClick() {
     // Ensure the element is available in the DOM
     let closeBtn = document.getElementById('saleCloseBtn');
@@ -280,5 +311,5 @@ function handleSaleNotificationCloseButtonClick() {
     }
 }
 
-// Trigger the sale notification popup, for example, after a delay or when a certain condition is met
-setTimeout(handleSaleNotificationPopup, 5000);  // 20 seconds after page load
+// run sale notification periodically
+setInterval(handleSaleNotificationPopup, SALE_NOTIFICATION_POPUP_TIME);
