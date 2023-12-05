@@ -228,7 +228,7 @@ trait FunctionTrait {
             $returnVal = [];
             if($body !== null && count($body) > 0) {
                 foreach($body as $date => $data) {
-                    $returnVal[date('F d, Y', strtotime($date))] = round($data['conversion_rate'], 2);
+                    $returnVal[date('M d, Y', strtotime($date))] = round($data['conversion_rate'], 2);
                 }
             }
 
