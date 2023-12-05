@@ -11,7 +11,7 @@
         </div>
     </section>
     <section class="main-content">
-        <div class="options-box p-4 mt-4">
+        <div class="options-box productpage-collections p-4 mt-4" id="productpage-collections">
             <h3 style="font-family: 'montserrat'"><strong>Product Page Collections</h3>
             <h5 style="font-family: 'montserrat'">Product collections displayed after product details on product page</h5>
             <div class="row mt-4">
@@ -54,7 +54,7 @@
                 
             </div>
         </div>
-        <div class="options-box p-4 mt-4">
+        <div class="options-box homepage-collections p-4 mt-4" id="homepage-collections">
             <h3 style="font-family: 'montserrat'"><strong>Home Page Collections</h3>
                 <h5 style="font-family: 'montserrat'">Tailormade suggestions for your users on the home page</h5>
                 
@@ -109,21 +109,43 @@
                 var el = $(this);
                 const field = el.data('field');
                 const value = el.is(':checked') ? 'on':'off';
-
-                $.ajax({
-                    url: "{{route('update.product.rack.settings')}}", 
-                    method: 'POST',
-                    data: {
-                        field: field,
-                        value: value
-                    },
-                    async: false,
-                    success: function (response) {
-                        //alert(response.status + ' ' + response.message);
-                        console.log(response.message);   
-                    }
-                });
+                var parentId = el.parent().parent().parent().parent().parent().attr('id');
+                var disableCheckboxes = ifUncheckedCheckboxesShouldBeDisabled(parentId);
+                toggleCheckboxesThatAreUnchecked(parentId, disableCheckboxes ? true : false);
+                makeTheAjaxCall(el, field, value)
             });
         });
+
+        function toggleCheckboxesThatAreUnchecked(parentId, flag) {
+            var element = '#'+parentId;
+            var checkBoxEl = $(element+' input[type=checkbox]:not(:checked)')
+            if(flag) 
+                checkBoxEl.attr('disabled', 'disabled');
+            else 
+                checkBoxEl.removeAttr('disabled');
+            return true;
+        }
+
+        function ifUncheckedCheckboxesShouldBeDisabled(parentId) {
+            var element = '#'+parentId;
+            var count = $(element+' input[type=checkbox]:not(:checked)').length
+            var result = count <= 2;
+            return result;
+        }
+
+        function makeTheAjaxCall(el, field, value) {
+            $.ajax({
+                url: "{{route('update.product.rack.settings')}}", 
+                method: 'POST',
+                data: {
+                    field: field,
+                    value: value
+                },
+                async: false,
+                success: function (response) {
+                    console.log(response.message);   
+                }
+            });
+        }
     </script>
 @endsection

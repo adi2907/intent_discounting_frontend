@@ -65,3 +65,4 @@ Route::prefix('webhooks')->group(function () {
 
 //Testing scripts
 Route::get('sampleDashboard', [HomeController::class, 'sampleDashboard']);
+Route::get('sampleProductRack', [HomeController::class, 'sampleProductRack']);

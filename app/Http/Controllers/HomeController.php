@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\User;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Exception;
@@ -41,5 +42,24 @@ class HomeController extends Controller {
         } catch(Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
+    }
+
+    public function sampleProductRack(Request $request) {
+        $user = User::first();
+        $shop = $user->shopifyStore;
+        $productRackInfo = $shop->productRackInfo;
+        if($productRackInfo == null || $productRackInfo->count() < 1) {
+            $productRackInfo = $shop->productRackInfo()->create([
+                'user_liked' => false,
+                'crowd_fav' => false,
+                'pop_picks' => false,
+                'feat_collect' => false,
+                'prev_browsing' => false,
+                'high_convert_prods' => false,
+                'most_added_prods' => false,
+                'slow_inv' => false
+            ]);
+        }
+        return view('product_racks', ['productRackInfo' => $productRackInfo]);
     }
 }
