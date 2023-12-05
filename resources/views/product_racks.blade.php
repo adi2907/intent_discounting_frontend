@@ -104,6 +104,11 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            var homeflag = ifUncheckedCheckboxesShouldBeDisabled('homepage-collections')
+            var productflag = ifUncheckedCheckboxesShouldBeDisabled('productpage-collections');
+            toggleCheckboxesThatAreUnchecked('homepage-collections', homeflag ? true : false);
+            toggleCheckboxesThatAreUnchecked('productpage-collections', productflag ? true : false);
+
             $('.form-check-input').change(function (e) {
                 e.preventDefault();
                 var el = $(this);
