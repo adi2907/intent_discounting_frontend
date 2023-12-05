@@ -1,0 +1,26 @@
+@media screen and (min-width: 990px){
+    .slider--desktop .slider__slide:first-child {
+        margin-left: 0 !important;
+        scroll-margin-left: 0 !important;
+    }
+}
+.product-card {
+    box-sizing: border-box;
+    float: left;
+    min-height: 1em;
+    padding-left: 2em;
+    vertical-align: top;
+    width: 25%;
+}
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+}
