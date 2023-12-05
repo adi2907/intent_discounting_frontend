@@ -74,8 +74,8 @@
             <div class="modal-content">
                 <span class="close" id="saleCloseBtn">&times;</span>
                 <div class="title">You are a regular visitor</div>
-                <div class="subtitle">Try out our collection<br>Get 20% off on your first purchase</div>
-                <span class="discount-code">20PERCENT</span>
+                <div class="subtitle">Try out our collection<br>Get a special discount for you</div>
+                <span class="discount-code">{{ $discountCode }}</span>
             </div>
         </div>
     </body>
