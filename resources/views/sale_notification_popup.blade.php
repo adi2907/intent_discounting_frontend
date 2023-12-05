@@ -71,12 +71,15 @@
     </head>
     <body>
         <div id="saleNotificationPopup" class="overlay">
-            <div class="modal-content">
-                <span class="close" id="saleCloseBtn">&times;</span>
+        <div class="modal-content">
+            <span class="close" id="saleCloseBtn">&times;</span>
                 <div class="title">You are a regular visitor</div>
-                <div class="subtitle">Try out our collection<br>Get a special discount for you</div>
-                <span class="discount-code">{{ $discountCode }}</span>
-            </div>
+                    <div class="subtitle">
+                        Here's a special discount of {{ $discountValue }} applicable on entire site<br>
+                        Valid only for {{ $discountExpiry }}
+                    </div>
+                    <span class="discount-code">{{ $discountCode }}</span>
+                </div>
         </div>
     </body>
 </html>

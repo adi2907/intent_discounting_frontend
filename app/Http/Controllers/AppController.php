@@ -134,10 +134,21 @@ class AppController extends Controller {
             $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
                           isset($notificationSettings->sale_status) && 
                           ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
+         
+            $html=null;
+            if ($saleStatus) {
+                $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
+                $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
     
-            // Pass the discount code to the view
-            $html = $saleStatus ? view('sale_notification_popup', ['discountCode' => $code])->render() : null;
-    
+                $html = view('sale_notification_popup', [
+                    'discountCode' => $code, 
+                    'discountValue' => $discountValue, 
+                    'discountExpiry' => $discountExpiry
+                ])->render();
+            } else {
+                $html = null;
+            }
+            
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
