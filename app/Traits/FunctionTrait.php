@@ -165,24 +165,27 @@ trait FunctionTrait {
     public function getAlmeAnalytics($shopURL) {
         try {
             $cacheKey = 'dashboard_analytics.'.$shopURL;
-            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $endpointArr = [];
             $arr = [
-                'visits_count',
-                'session_count',
-                'cart_count',
-                'user_count',
-                'visit_conversion',
-                'cart_conversion',
-                'product_visits',
-                'product_cart_conversion'
+                'visits_count' => null,
+                'session_count' => null,
+                'cart_count' => null,
+                'user_count' => null,
+                'visit_conversion' => null,
+                'cart_conversion' => null,
+                'product_visits' => null,
+                'product_cart_conversion' => 'days=7'
             ];
 
             $responses = [];
             $prefix = 'analytics/';
             $headers = getAlmeHeaders();
-            foreach($arr as $urlPath) {
+            foreach($arr as $urlPath => $additionalParams) {
                 $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
+                if($additionalParams !== null) {
+                    $endpoint .= '&'.$additionalParams;
+                }
                 $endpointArr[] = $endpoint;
                 $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
             }
@@ -194,7 +197,6 @@ trait FunctionTrait {
             if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
                 $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
             }
-
 
             //Graph Data function for Visit conversion graph
             if(isset($responses['visit_conversion']['statusCode']) && $responses['visit_conversion']['statusCode'] == 200) {
@@ -226,7 +228,7 @@ trait FunctionTrait {
             $returnVal = [];
             if($body !== null && count($body) > 0) {
                 foreach($body as $date => $data) {
-                    $returnVal[date('F d, Y', strtotime($date))] = $data['conversion_rate'];
+                    $returnVal[date('F d, Y', strtotime($date))] = round($data['conversion_rate'], 2);
                 }
             }
 
