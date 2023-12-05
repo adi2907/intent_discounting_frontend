@@ -256,7 +256,7 @@ async function handleSaleNotificationPopup() {
     }
 
     // send an API request to check for sale notification with these parameters as url params
-    const saleNotificationURL = 'https://almeapp.com/notification/sale_notification/?session_id='+session_id+'&alme_user_token='+alme_user_token+'&app_name='+app_name;
+    const saleNotificationURL = 'https://almeapp.com/notification/sale_notification/?session_id='+session_id+'&token='+alme_user_token+'&app_name='+app_name;
     
     try {
         const response = await fetch(saleNotificationURL);
