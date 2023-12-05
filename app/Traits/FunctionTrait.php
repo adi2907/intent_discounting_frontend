@@ -172,8 +172,8 @@ trait FunctionTrait {
                 'session_count' => null,
                 'cart_count' => null,
                 'user_count' => null,
-                'visit_conversion' => null,
-                'cart_conversion' => null,
+                'visit_conversion' => 'days=7',
+                'cart_conversion' => 'days=7',
                 'product_visits' => 'days=7',
                 'product_cart_conversion' => 'days=7'
             ];
