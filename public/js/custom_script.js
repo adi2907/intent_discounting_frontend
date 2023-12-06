@@ -47,6 +47,7 @@ function sendEventsToServer() {
     var lastEventTimestamp = localStorage.getItem('lastEventTimestamp');
     if (!alme_user_token) {
         createUserToken();
+        alme_user_token = localStorage.getItem('alme_user_token');
     }
     
     var events = localStorage.getItem('events');

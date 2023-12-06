@@ -116,8 +116,8 @@ class AppController extends Controller {
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
             $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
             $notificationSettings = $shop->notificationSettings;
-            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-            $html = $saleStatus ? view('theme_popups')->render() : null;
+            $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
+            $html = $contactStatus ? view('contact_capture_popup')->render() : null;
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
@@ -138,10 +138,6 @@ class AppController extends Controller {
             $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
             $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
-            // log sale status
-            Log::info('Sale status: '.json_encode($saleStatus));
-            Log::info('Discount value: '.json_encode($discountValue));
-            Log::info('Discount expiry: '.json_encode($discountExpiry));
             $html=null;
             if ($saleStatus) {
                 $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
