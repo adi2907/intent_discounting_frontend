@@ -75,8 +75,8 @@
             <span class="close" id="saleCloseBtn">&times;</span>
                 <div class="title">You are a regular visitor</div>
                     <div class="subtitle">
-                        Here's a special discount of {{ $discountValue }} applicable on entire site<br>
-                        Valid only for {{ $discountExpiry }}
+                        Here's a special discount of {{ $discountValue }}% applicable on entire site<br>
+                        Valid only for {{ $discountExpiry }} hours
                     </div>
                     <span class="discount-code">{{ $discountCode }}</span>
                 </div>
