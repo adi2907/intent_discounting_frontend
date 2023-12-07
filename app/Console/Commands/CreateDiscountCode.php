@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PriceRule;
 use App\Models\Shop;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
@@ -66,6 +67,8 @@ class CreateDiscountCode extends Command {
 
                         }
                     } else {
+                        PriceRule::where('id', $shop->getLatestPriceRule->id)->delete();
+                        $this->createPriceRuleForShop($shop);
                         Log::info('Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
                     }  
                 } else {
