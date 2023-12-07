@@ -47,6 +47,13 @@ Route::middleware('cors')->group(function () {
         Route::post('carts', [ExtensionController::class, 'carts']);
         Route::post('recommendedForYou', [ExtensionController::class, 'recommendedForYou']);
         Route::post('userLiked', [ExtensionController::class, 'userLiked']);
+
+        //New Routes
+        Route::post('homePageSectionOne', [ExtensionController::class, 'homePageSectionOne']);
+        Route::post('homePageSectionTwo', [ExtensionController::class, 'homePageSectionTwo']);
+        Route::post('productPageSectionOne', [ExtensionController::class, 'productPageSectionOne']);
+        Route::post('productPageSectionTwo', [ExtensionController::class, 'homePageSectionOne']);
+        
     });
 });
 

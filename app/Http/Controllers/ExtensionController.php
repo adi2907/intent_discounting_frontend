@@ -21,6 +21,42 @@ class ExtensionController extends Controller {
         $this->maxItems = 5;
     }
 
+    public function homePageSectionOne(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'prev_browsing');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+    
+    public function homePageSectionTwo(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'high_convert_prods');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+    
+    public function productPageSectionOne(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+    
+    public function productPageSectionTwo(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $response = $this->handleHTMLBasedOnType($request->all(), 'feat_collect');
+        } else {
+            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+        }
+        return response()->json($response);
+    }
+
     public function getMostViewedData(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             $response = $this->handleHTMLBasedOnType($request->all(), 'most_added_prods');
@@ -32,7 +68,7 @@ class ExtensionController extends Controller {
 
     public function getMostCartedData(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'prev_browsing');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -50,7 +86,7 @@ class ExtensionController extends Controller {
 
     public function recommendedForYou(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'feat_collect');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
