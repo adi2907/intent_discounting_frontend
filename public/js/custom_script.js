@@ -100,6 +100,8 @@ async function logEvent(event_type, event_name, event) {
         .then(data => { return data });
         console.log('Contents here');
         console.log(cartContents);
+
+        await sendCartContentsToAlme(cartContents);
         /*
         var hiddenInputId = 'almetoken';
         var alme_user_token = localStorage.getItem('alme_user_token');
@@ -137,6 +139,29 @@ async function logEvent(event_type, event_name, event) {
     events.push(eventDetails);
     localStorage.setItem("events", JSON.stringify(events));
 }
+/**
+ * Sending cart contents to Alme
+ */
+async function sendCartContentsToAlme(cartContents) {
+    var xhr = new XMLHttpRequest();
+    
+    var dataToSend = {
+        "shop": Shopify.shop,
+        "cartContents": cartContents
+    }
+
+    xhr.open('POST', 'https://almeapp.co.in/sendCartContents', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        console.log('here in onreadystatechange');
+        console.log(this.readyState);
+        console.log(this.state);
+        console.log(this.responseText);
+    };
+    xhr.send(JSON.stringify(dataToSend));
+}
+
+
 /****
  * 
  * SUBMIT CONTACT POPUP

@@ -80,6 +80,12 @@ class AppController extends Controller {
         return view('notifications', ['notifSettings' => $notifSettings]);
     }
 
+    public function mapCartContents(Request $request) {
+        Log::info('Cart contents request received');
+        Log::info(json_encode($request->all()));
+        return response()->json(['status' => true, 'message' => '']);
+    }
+
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');
