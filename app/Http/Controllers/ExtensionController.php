@@ -145,7 +145,7 @@ class ExtensionController extends Controller {
             case 'user_liked': $pathName .= 'most_carted'; break;
             case 'pop_picks': $pathName .= 'carts'; break;
             case 'feat_collect': $pathName .= 'visits';break;
-            case 'high_convert_prods': $pathName .= ''; break;
+            case 'high_convert_prods': $pathName .= 'most_visited'; break;
             default: $pathName .= 'most_visited'; 
         }
 
