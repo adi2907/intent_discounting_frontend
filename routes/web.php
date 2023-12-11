@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');
     Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');
+    
 });
 
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
@@ -77,3 +78,4 @@ Route::prefix('webhooks')->group(function () {
 //Testing scripts
 Route::get('sampleDashboard', [HomeController::class, 'sampleDashboard']);
 Route::get('sampleProductRack', [HomeController::class, 'sampleProductRack']);
+Route::get('checkStoreThemeInstall', [AppController::class, 'checkStoreThemeInstall'])->name('store.check.theme.installation');

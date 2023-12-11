@@ -14,15 +14,23 @@
     <section class="main-content">
         <h2 class="section-heading">Overview</h2>
         <div class="container-fluid mt-3">
-            <!-- Metric cards-->
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12 mb-3">
+                    <div class="card metric-card">
+                        <div class="card-body">
+                            <h4>Click the button to Install the theme blocks on your store! <a href="#" target="_blank" id="themeInstallBtn" class="btn btn-md btn-primary" style="float:right">Click</a></h4>
+                        </div>
+                    </div>
+                </div>    
+            </div>
             <div class="row text-center mb-4">
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
-                <div class="card metric-card">
-                    <div class="card-body">
-                    <h4>@isset($almeResponses['session_count']['body']) {{$almeResponses['session_count']['body']['session_count']}} @endisset</h4>
-                    <p>Sessions</p>
+                    <div class="card metric-card">
+                        <div class="card-body">
+                        <h4>@isset($almeResponses['session_count']['body']) {{$almeResponses['session_count']['body']['session_count']}} @endisset</h4>
+                        <p>Sessions</p>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
@@ -188,6 +196,11 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
+        var themeInstalled = checkThemeInstallation();
+        if(themeInstalled) {
+            $('#themeInstallBtn').html('Installed!').removeClass('btn-primary').addClass('btn-success').removeAttr('href');
+        }
+
         const graphOptions = {
             responsive: true,
             layout: {
@@ -287,6 +300,25 @@
             }
         });
     }) 
+
+    function checkThemeInstallation() {
+        var result = false;
+
+        $.ajax({
+            type: 'GET',
+            url: "{{route('store.check.theme.installation')}}",
+            async:false,
+            success: function (response) {
+                if(response.status) {
+                    result = true;
+                } else {
+                    $('#themeInstallBtn').html('Install here').attr('href', response.themeEditorURL);
+                }
+            }
+        })
+
+        return result;
+    }
 
 </script>
 @endsection

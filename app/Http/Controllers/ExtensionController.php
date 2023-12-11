@@ -23,7 +23,7 @@ class ExtensionController extends Controller {
 
     public function homePageSectionOne(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'prev_browsing');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'hps_one');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -32,7 +32,7 @@ class ExtensionController extends Controller {
     
     public function homePageSectionTwo(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'high_convert_prods');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'hps_two');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -41,7 +41,7 @@ class ExtensionController extends Controller {
     
     public function productPageSectionOne(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'pps_one');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -50,7 +50,7 @@ class ExtensionController extends Controller {
     
     public function productPageSectionTwo(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'feat_collect');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'pps_two');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -141,11 +141,17 @@ class ExtensionController extends Controller {
         
         $pathName = 'api/';
         switch($prop) {
+            case 'hps_one': $pathName .= 'most_visited'; break;
+            case 'hps_two': $pathName .= 'most_carted'; break;
+            case 'pps_one': $pathName .= 'most_visited'; break;
+            case 'pps_two': $pathName .= 'most_carted'; break;
+            
             case 'most_added_prods': $pathName .= 'most_visited'; break;
             case 'user_liked': $pathName .= 'most_carted'; break;
             case 'pop_picks': $pathName .= 'carts'; break;
             case 'feat_collect': $pathName .= 'visits';break;
             case 'high_convert_prods': $pathName .= 'most_visited'; break;
+            
             default: $pathName .= 'most_visited'; 
         }
 
@@ -161,16 +167,23 @@ class ExtensionController extends Controller {
                 $products = $shop->getProducts()->whereIn('product_id', $body)->get();
                 $viewFilePrefix = 'appExt.';
                 $viewFile = null;
+                $title = null;
                 switch($prop) {
+                    case 'hps_one': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                    case 'hps_two': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                    case 'pps_one': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                    case 'pps_two': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                    
                     case 'most_added_prods': $viewFile = 'most_viewed'; break;
                     case 'user_liked': $viewFile = 'most_carted'; break;
                     case 'pop_picks': $viewFile = 'user_liked'; break;
                     case 'feat_collect': $viewFile = 'carts';break;
                     case 'high_convert_prods': $viewFile = 'recommended'; break;
+                    
                     default: $viewFile = 'most_viewed';  
                 }
 
-                return view($viewFilePrefix.$viewFile, ['products' => $products])->render();
+                return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title])->render();
             }
             Log::info('Body null found');
             Log::info($body);

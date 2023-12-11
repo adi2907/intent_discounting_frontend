@@ -21,6 +21,59 @@ class AppController extends Controller {
         
     }
 
+    public function checkStoreThemeInstall() {
+        if(Auth::check()) {
+            $user = Auth::user();
+            $store = $user->shopifyStore;
+        } else {
+            $user = User::whereHas('shopifyStore')->with('shopifyStore')->first();
+            $store = $user->shopifyStore;
+        }
+
+        $endpoint = getShopifyAPIURLForStore('themes.json', $store);
+        $headers = getShopifyAPIHeadersForStore($store);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        
+        $activeTheme = null;
+        if(isset($response['body']) && $response['statusCode'] == 200) {
+            $themes = $response['body']['themes'];
+            if($themes !== null && count($themes) > 0) {
+                foreach($themes as $theme) {
+                    if(array_key_exists('role', $theme) && $theme['role'] === 'main') {
+                        $activeTheme = $theme;
+                    }
+                }
+            }
+        }
+
+        $templateData = $this->tryToFindTemplateData($store, $activeTheme);
+
+        if($activeTheme !== null) {
+            return response()->json([
+                'status' => false, 
+                'activeTheme' => $activeTheme, 
+                'templateData' => $templateData,
+                'themeEditorURL' => 'https://admin.shopify.com/store/'.(str_replace('.myshopify.com', '', $store->shop_url)).'/themes/'.$activeTheme['id'].'/editor']
+            );
+        }
+
+        return response()->json(['status' => false]);
+    }
+
+    private function tryToFindTemplateData($store, $activeTheme) {
+        $endpoint = getShopifyAPIURLForStore('themes/'.$activeTheme['id'].'/assets.json?asset[key]=templates/product.json', $store);
+        $anotherEndpoint = getShopifyAPIURLForStore('themes/'.$activeTheme['id'].'/assets.json?asset[key]=templates/index.json', $store);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, getShopifyAPIHeadersForStore($store));
+        $response = json_decode($response['body']['asset']['value'], true);
+
+        $anotherResponse = $this->makeAnAPICallToShopify('GET', $anotherEndpoint, getShopifyAPIHeadersForStore($store));
+        $anotherResponse = json_decode($anotherResponse['body']['asset']['value'], true);
+        return [
+            'productJson' => $response,
+            'homeJson' => $anotherResponse
+        ];
+    }
+
     public function checkSubmitContact(Request $request) {
         if($request->has('shop')) {
             $shop = Shop::with(['notificationSettings'])->where('shop_url', $request->shop)->first();
