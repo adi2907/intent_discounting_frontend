@@ -102,6 +102,10 @@ class AppController extends Controller {
         $productRackInfo = $shop->productRackInfo;
         if($productRackInfo == null || $productRackInfo->count() < 1) {
             $productRackInfo = $shop->productRackInfo()->create([
+                'hps_one' => false,
+                'hps_two' => false,
+                'pps_one' => false,
+                'pps_two' => false,
                 'user_liked' => false,
                 'crowd_fav' => false,
                 'pop_picks' => false,
