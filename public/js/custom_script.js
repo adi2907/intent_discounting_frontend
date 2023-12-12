@@ -155,7 +155,7 @@ async function sendCartContentsToAlme(cartContents) {
     */
 
     var baseURL = 'https://almeapp.co.in/';
-    const res = await fetch(baseURL+'sendCartContents?shop='+Shopify.shop+'&almeToken='+almeToken+'&cartContents='+cartContents.token);
+    const res = await fetch(baseURL+'sendCartContents?shop='+Shopify.shop+'&almeToken='+almeToken+'&cartId='+cartContents.token);
     obj = await res.json();
     console.log(obj);
 

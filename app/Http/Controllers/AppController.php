@@ -144,7 +144,7 @@ class AppController extends Controller {
         $shop = Shop::where('shop_url', $request->shop)->first();
         $arr = [
             'alme_token' => $request->almeToken,
-            'shopify_cart_token' => $request['cart']['id'],
+            'shopify_cart_token' => $request->cartId,
             'shop_id' => $shop->id
         ];
 
