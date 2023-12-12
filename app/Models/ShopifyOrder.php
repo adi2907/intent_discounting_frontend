@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ShopifyOrder extends Model
 {
     use SoftDeletes;
-
+    protected $guarded = [];
     protected $primaryKey = 'table_id';
     public $timestamps = false;
 }

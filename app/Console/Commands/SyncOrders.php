@@ -41,13 +41,10 @@ class SyncOrders extends Command
                 $endpoint = getShopifyAPIURLForStore('orders.json?since_id='.$sinceId, $shop);
                 $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
                 $this->info('Status code '.$response['statusCode']);
-                $this->info($response['body']);
-                Log::info('Response');
-                Log::info($response);
                 if($response['statusCode'] == 200) {
                     foreach($response['body']['orders'] as $order) {
                         $updateArr = [
-                            'shop_id' => $shop->table_id,
+                            'shop_id' => $shop->id,
                             'id' => $order['id']
                         ];
 
