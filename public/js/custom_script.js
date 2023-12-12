@@ -146,23 +146,30 @@ async function sendCartContentsToAlme(cartContents) {
     var xhr = new XMLHttpRequest();
     var almeToken = localStorage.getItem('alme_user_token');
     
+    /*
     var dataToSend = {
         "shop": Shopify.shop,
         "cartContents": cartContents.token,
         "almeToken": almeToken
     }
+    */
 
-    xhr.open('GET', 'https://almeapp.co.in/sendCartContents', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhr.onreadystatechange = function() {
-        console.log('here in onreadystatechange');
-        console.log(this.readyState);
-        console.log(this.state);
-        console.log(this.responseText);
-    };
-    xhr.send(JSON.stringify(dataToSend));
+    var baseURL = 'https://almeapp.co.in/';
+    const res = await fetch(baseURL+'sendCartContents?shop='+Shopify.shop+'&almeToken='+almeToken+'&cartContents='+cartContents.token);
+    obj = await res.json();
+    console.log(obj);
+
+    // xhr.open('GET', 'https://almeapp.co.in/sendCartContents', true);
+    // xhr.setRequestHeader('Content-Type', 'application/json');
+    // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    // xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+    // xhr.onreadystatechange = function() {
+    //     console.log('here in onreadystatechange');
+    //     console.log(this.readyState);
+    //     console.log(this.state);
+    //     console.log(this.responseText);
+    // };
+    // xhr.send(JSON.stringify(dataToSend));
 }
 
 
