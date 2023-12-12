@@ -23,34 +23,34 @@ class ExtensionController extends Controller {
 
     public function pickUpWhereYouLeftOff(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'hps_one');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'pickUpWhereYouLeftOff');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
         return response()->json($response);
     }
     
-    public function homePageSectionTwo(Request $request) {
+    public function crowdFavorites(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'hps_two');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'crowdFavorites');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
         return response()->json($response);
     }
     
-    public function productPageSectionOne(Request $request) {
+    public function usersAlsoLiked(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'pps_one');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'usersAlsoLiked');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
         return response()->json($response);
     }
     
-    public function productPageSectionTwo(Request $request) {
+    public function featuredCollection(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'pps_two');
+            $response = $this->handleHTMLBasedOnType($request->all(), 'featuredCollection');
         } else {
             $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
         }
@@ -141,18 +141,20 @@ class ExtensionController extends Controller {
         
         $pathName = 'api/';
         switch($prop) {
-            case 'hps_one': $pathName .= 'most_visited'; break;
-            case 'hps_two': $pathName .= 'most_carted'; break;
-            case 'pps_one': $pathName .= 'most_visited'; break;
-            case 'pps_two': $pathName .= 'most_carted'; break;
+            case 'usersAlsoLiked': $pathName .= 'users_also_liked'; break;
+            case 'pickUpWhereYouLeftOff': $pathName .= 'pick_up_where_you_left_off'; break;
+            case 'crowdFavorites': $pathName .= 'crowd_favorites'; break;
+            case 'featuredCollection': $pathName .= 'featured_collection'; break;
             
+            /*
             case 'most_added_prods': $pathName .= 'most_visited'; break;
             case 'user_liked': $pathName .= 'most_carted'; break;
             case 'pop_picks': $pathName .= 'carts'; break;
             case 'feat_collect': $pathName .= 'visits';break;
             case 'high_convert_prods': $pathName .= 'most_visited'; break;
             
-            default: $pathName .= 'most_visited'; 
+            default: $pathName .= 'most_visited';
+            */ 
         }
 
         $endpoint = getAlmeAppURLForStore($pathName.$getParams);
@@ -169,11 +171,12 @@ class ExtensionController extends Controller {
                 $viewFile = null;
                 $title = null;
                 switch($prop) {
-                    case 'hps_one': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
-                    case 'hps_two': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
-                    case 'pps_one': $viewFile = 'productList'; $title = 'Users also liked'; break;
-                    case 'pps_two': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                    case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                    case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                    case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                    case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
                     
+                    /*
                     case 'most_added_prods': $viewFile = 'most_viewed'; break;
                     case 'user_liked': $viewFile = 'most_carted'; break;
                     case 'pop_picks': $viewFile = 'user_liked'; break;
@@ -181,6 +184,7 @@ class ExtensionController extends Controller {
                     case 'high_convert_prods': $viewFile = 'recommended'; break;
                     
                     default: $viewFile = 'most_viewed';  
+                    */
                 }
 
                 return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title])->render();

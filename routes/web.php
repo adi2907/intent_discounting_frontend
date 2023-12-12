@@ -44,12 +44,13 @@ Route::middleware('cors')->group(function () {
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
+        /*
         Route::post('mostViewed', [ExtensionController::class, 'getMostViewedData']);
         Route::post('mostCarted', [ExtensionController::class, 'getMostCartedData']);
         Route::post('carts', [ExtensionController::class, 'carts']);
         Route::post('recommendedForYou', [ExtensionController::class, 'recommendedForYou']);
         Route::post('userLiked', [ExtensionController::class, 'userLiked']);
-
+        */
         //New Routes
         Route::post('pickUpWhereYouLeftOff', [ExtensionController::class, 'pickUpWhereYouLeftOff']);
         Route::post('crowdFavorites', [ExtensionController::class, 'crowdFavorites']);
