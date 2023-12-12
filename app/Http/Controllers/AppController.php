@@ -103,18 +103,10 @@ class AppController extends Controller {
         $productRackInfo = $shop->productRackInfo;
         if($productRackInfo == null || $productRackInfo->count() < 1) {
             $productRackInfo = $shop->productRackInfo()->create([
-                'hps_one' => false,
-                'hps_two' => false,
-                'pps_one' => false,
-                'pps_two' => false,
-                'user_liked' => false,
-                'crowd_fav' => false,
-                'pop_picks' => false,
-                'feat_collect' => false,
-                'prev_browsing' => false,
-                'high_convert_prods' => false,
-                'most_added_prods' => false,
-                'slow_inv' => false
+                'usersAlsoLiked' => false,
+                'crowdFavorites' => false,
+                'pickUpWhereYouLeftOff' => false,
+                'featuredCollection' => false
             ]);
         }
         return view('product_racks', ['productRackInfo' => $productRackInfo]);

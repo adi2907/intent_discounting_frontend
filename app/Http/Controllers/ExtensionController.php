@@ -21,7 +21,7 @@ class ExtensionController extends Controller {
         $this->maxItems = 5;
     }
 
-    public function homePageSectionOne(Request $request) {
+    public function pickUpWhereYouLeftOff(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             $response = $this->handleHTMLBasedOnType($request->all(), 'hps_one');
         } else {

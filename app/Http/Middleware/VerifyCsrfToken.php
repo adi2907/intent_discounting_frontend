@@ -23,6 +23,6 @@ class VerifyCsrfToken extends Middleware
         'webhooks/cartCreate',
         'webhooks/checkoutUpdate',
         'webhooks/checkoutCreate',
-        'sendCartContents'
+        'sendCartContents',
     ];
 }

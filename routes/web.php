@@ -51,10 +51,10 @@ Route::middleware('cors')->group(function () {
         Route::post('userLiked', [ExtensionController::class, 'userLiked']);
 
         //New Routes
-        Route::post('homePageSectionOne', [ExtensionController::class, 'homePageSectionOne']);
-        Route::post('homePageSectionTwo', [ExtensionController::class, 'homePageSectionTwo']);
-        Route::post('productPageSectionOne', [ExtensionController::class, 'productPageSectionOne']);
-        Route::post('productPageSectionTwo', [ExtensionController::class, 'homePageSectionOne']);
+        Route::post('pickUpWhereYouLeftOff', [ExtensionController::class, 'pickUpWhereYouLeftOff']);
+        Route::post('crowdFavorites', [ExtensionController::class, 'crowdFavorites']);
+        Route::post('usersAlsoLiked', [ExtensionController::class, 'usersAlsoLiked']);
+        Route::post('featuredCollection', [ExtensionController::class, 'featuredCollection']);
         
     });
 });
