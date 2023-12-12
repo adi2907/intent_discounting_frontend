@@ -28,7 +28,7 @@
                     <div class="card__content">   
                         <div class="card__information">
                             <h3 class="card__heading h5" id="title-template--19392271745334__featured_collection-8404321960246">
-                                <a href="{{$product->handle}}" class="CardLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="CardLink-template--19392271745334__featured_collection-8404321960246 Badge-template--19392271745334__featured_collection-8404321960246" style="color: black; text-decoration: none; ">
+                                <a href="products/{{$product->handle}}" class="CardLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="CardLink-template--19392271745334__featured_collection-8404321960246 Badge-template--19392271745334__featured_collection-8404321960246" style="color: black; text-decoration: none; ">
                                     {{$product->title}}
                                 </a>       
                             </h3>                   
