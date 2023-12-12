@@ -148,11 +148,11 @@ async function sendCartContentsToAlme(cartContents) {
     
     var dataToSend = {
         "shop": Shopify.shop,
-        "cartContents": cartContents,
+        "cartContents": cartContents.token,
         "almeToken": almeToken
     }
 
-    xhr.open('POST', 'https://almeapp.co.in/sendCartContents', true);
+    xhr.open('GET', 'https://almeapp.co.in/sendCartContents', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
