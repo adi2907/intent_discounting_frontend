@@ -154,6 +154,8 @@ async function sendCartContentsToAlme(cartContents) {
 
     xhr.open('POST', 'https://almeapp.co.in/sendCartContents', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
     xhr.onreadystatechange = function() {
         console.log('here in onreadystatechange');
         console.log(this.readyState);
