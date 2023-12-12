@@ -144,10 +144,12 @@ async function logEvent(event_type, event_name, event) {
  */
 async function sendCartContentsToAlme(cartContents) {
     var xhr = new XMLHttpRequest();
+    var almeToken = localStorage.getItem('alme_user_token');
     
     var dataToSend = {
         "shop": Shopify.shop,
-        "cartContents": cartContents
+        "cartContents": cartContents,
+        "almeToken": almeToken
     }
 
     xhr.open('POST', 'https://almeapp.co.in/sendCartContents', true);

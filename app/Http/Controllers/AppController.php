@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlmeShopifyOrders;
 use App\Models\Shop;
 use App\Models\ShopDetail;
 use App\Models\User;
@@ -140,7 +141,15 @@ class AppController extends Controller {
     public function mapCartContents(Request $request) {
         Log::info('Cart contents request received');
         Log::info(json_encode($request->all()));
-        return response()->json(['status' => true, 'message' => '']);
+        $shop = Shop::where('shop_url', $request->shop)->first();
+        $arr = [
+            'alme_token' => $request->almeToken,
+            'shopify_cart_token' => $request['cart']['id'],
+            'shop_id' => $shop->id
+        ];
+
+        AlmeShopifyOrders::updateOrCreate($arr, $arr);
+        return response()->json(['status' => true, 'message' => 'Recorded!']);
     }
 
     public function showDashboard(Request $request) {
