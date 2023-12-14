@@ -131,10 +131,11 @@ class AppController extends Controller {
     }
 
     public function mapCartContents(Request $request) {
-        Log::info('Cart contents request received');
-        Log::info(json_encode($request->all()));
+        // Log::info('Cart contents request received');
+        // Log::info(json_encode($request->all()));
         $shop = Shop::where('shop_url', $request->shop)->first();
         $arr = [
+            'session_id' => $request->session_id,
             'alme_token' => $request->almeToken,
             'shopify_cart_token' => $request->cartId,
             'shop_id' => $shop->id
