@@ -134,14 +134,18 @@ class AppController extends Controller {
         // Log::info('Cart contents request received');
         // Log::info(json_encode($request->all()));
         $shop = Shop::where('shop_url', $request->shop)->first();
-        $arr = [
-            'session_id' => $request->session_id,
-            'alme_token' => $request->almeToken,
-            'shopify_cart_token' => $request->cartId,
-            'shop_id' => $shop->id
+
+        $updateArr = [
+            'shop_id' => $shop->id,
+            'shopify_cart_token' => $request->cartId
         ];
 
-        AlmeShopifyOrders::updateOrCreate($arr, $arr);
+        $createArr = array_merge($updateArr, [
+            'session_id' => $request->session_id,
+            'alme_token' => $request->almeToken
+        ]);
+
+        AlmeShopifyOrders::updateOrCreate($updateArr, $createArr);
         return response()->json(['status' => true, 'message' => 'Recorded!']);
     }
 

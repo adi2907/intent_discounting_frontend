@@ -66,7 +66,6 @@ class HomeController extends Controller {
     }
 
     public function checkPurchaseEvent(Request $request) {
-        $almePayload = AlmeShopifyOrders::join('shopify_orders', 'shopify_orders.cart_token', '=', 'alme_shopify_orders.shopify_cart_token')->first();
-        dd($almePayload);
+        
     }
 }
