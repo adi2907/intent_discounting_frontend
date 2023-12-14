@@ -185,24 +185,46 @@ class AppController extends Controller {
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
             $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
             $notificationSettings = $shop->notificationSettings;
-            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-            $html = $saleStatus ? view('theme_popups')->render() : null;
+            $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
+            $html = $contactStatus ? view('contact_capture_popup')->render() : null;
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
 
     public function saleNotificationPopup(Request $request) {
-        if($request->has('shop')) {
-            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
+        if ($request->has('shop')) {
+            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])
+                        ->where('shop_url', $request->shop)
+                        ->first();
+    
             $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
             $notificationSettings = $shop->notificationSettings;
-            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->sale_status) && ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
-            $html = $saleStatus ? view('sale_notification_popup')->render() : null;
+            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
+                          isset($notificationSettings->sale_status) && 
+                          ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
+            
+            $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
+            $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
+
+            $html=null;
+            if ($saleStatus) {
+                $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
+                $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
+                $html = view('sale_notification_popup', [
+                    'discountCode' => $code, 
+                    'discountValue' => $discountValue, 
+                    'discountExpiry' => $discountExpiry
+                ])->render();
+            } else {
+                $html = null;
+            }
+            
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
+    
 
     public function removeCustomScript(Request $request) {
         try {
