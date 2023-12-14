@@ -145,7 +145,7 @@ async function logEvent(event_type, event_name, event) {
 async function sendCartContentsToAlme(cartContents) {
     var xhr = new XMLHttpRequest();
     var almeToken = localStorage.getItem('alme_user_token');
-    
+    var session_id = localStorage.getItem('session_id') || "";
     /*
     var dataToSend = {
         "shop": Shopify.shop,
@@ -155,7 +155,7 @@ async function sendCartContentsToAlme(cartContents) {
     */
 
     var baseURL = 'https://almeapp.co.in/';
-    const res = await fetch(baseURL+'sendCartContents?shop='+Shopify.shop+'&almeToken='+almeToken+'&cartId='+cartContents.token);
+    const res = await fetch(baseURL+'sendCartContents?session_id='+session_id+'shop='+Shopify.shop+'&almeToken='+almeToken+'&cartId='+cartContents.token);
     obj = await res.json();
     console.log(obj);
 

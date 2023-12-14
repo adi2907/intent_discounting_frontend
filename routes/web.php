@@ -79,3 +79,4 @@ Route::prefix('webhooks')->group(function () {
 Route::get('sampleDashboard', [HomeController::class, 'sampleDashboard']);
 Route::get('sampleProductRack', [HomeController::class, 'sampleProductRack']);
 Route::get('checkStoreThemeInstall', [AppController::class, 'checkStoreThemeInstall'])->name('store.check.theme.installation');
+Route::get('checkPurchaseEvent', [HomeController::class, 'checkPurchaseEvent']);

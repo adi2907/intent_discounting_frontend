@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlmeShopifyOrders;
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\ShopifyOrder;
 use App\Models\User;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
@@ -61,5 +63,10 @@ class HomeController extends Controller {
             ]);
         }
         return view('product_racks', ['productRackInfo' => $productRackInfo]);
+    }
+
+    public function checkPurchaseEvent(Request $request) {
+        $almePayload = AlmeShopifyOrders::join('shopify_orders', 'shopify_orders.cart_token', '=', 'alme_shopify_orders.shopify_cart_token')->first();
+        dd($almePayload);
     }
 }

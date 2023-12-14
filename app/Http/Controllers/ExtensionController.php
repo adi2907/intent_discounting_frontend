@@ -57,6 +57,7 @@ class ExtensionController extends Controller {
         return response()->json($response);
     }
 
+    /*
     public function getMostViewedData(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             $response = $this->handleHTMLBasedOnType($request->all(), 'most_added_prods');
@@ -101,6 +102,7 @@ class ExtensionController extends Controller {
         }
         return response()->json($response);
     }
+    */
 
     private function handleHTMLBasedOnType($request, $prop) {
         try {
