@@ -106,7 +106,7 @@ class InstallationController extends Controller {
                     ]);
                     User::updateOrCreate($updateArr, $createArr);
                     //if(!$this->isShopifyStoreVersionNew($shop, $accessToken)) {
-                        $this->addScriptTagToStore($storeObj);
+                        //$this->addScriptTagToStore($storeObj);
                     //}
                 }
                 return redirect()->to("https://$shop/admin/apps/".$this->apiKey);
