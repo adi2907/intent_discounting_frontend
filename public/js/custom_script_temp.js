@@ -98,7 +98,7 @@ async function handleShowingPopup(){
 
     let obj;
 
-    const res = await fetch(baseURL+'theme_popups?shop='+Shopify.shop);
+    const res = await fetch(baseURL+'contact_capture_popup?shop='+Shopify.shop);
 
     obj = await res.json();
 
