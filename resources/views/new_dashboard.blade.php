@@ -152,7 +152,8 @@
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
-                @foreach($almeResponses['product_cart_conversion']['body']['assoc_data'] as $productId => $data)    
+                @foreach($almeResponses['product_cart_conversion']['body']['assoc_data'] as $productId => $data)   
+                @if((int) $data['conversion_rate'] > 0) 
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
@@ -168,6 +169,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endforeach
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
