@@ -37,17 +37,29 @@ trait RequestTrait {
         }
     }
 
-    public function makeAnAlmeAPICall($method, $endpoint, $headers) {
+    public function makeAnAlmeAPICall($method, $endpoint, $headers, $requestBody = null) {
         try {
             $client = new Client();
             $response = null;
-            if($method == 'GET' || $method == 'DELETE') {
+            if($method === 'POST') {
+                $this->info('Making a POST request');
+                $response = $client->request($method, $endpoint, [ 'headers' => $headers, 'json' => $requestBody ]);
+                return [
+                    'statusCode' => $response->getStatusCode(),
+                    'body' => json_decode($response->getBody(), true)
+                ];
+            }
+
+            if($method === 'GET' || $method === 'DELETE') {
                 $response = $client->request($method, $endpoint, [ 'headers' => $headers ]);
                 return [
                     'statusCode' => $response->getStatusCode(),
                     'body' => json_decode($response->getBody(), true)
                 ];
             } 
+
+            
+
             return [
                 'statusCode' => 404,
                 'body' => 'Request method found '.$method

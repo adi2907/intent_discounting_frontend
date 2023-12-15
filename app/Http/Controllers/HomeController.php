@@ -64,8 +64,4 @@ class HomeController extends Controller {
         }
         return view('product_racks', ['productRackInfo' => $productRackInfo]);
     }
-
-    public function checkPurchaseEvent(Request $request) {
-        
-    }
 }
