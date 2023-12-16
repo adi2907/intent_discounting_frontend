@@ -241,8 +241,8 @@ class AppController extends Controller {
                         }
                     }
                     //Install the script tag
-                    //$installResponse = $this->addScriptTagToStore($shop);
-                    $installResponse = null;
+                    $installResponse = $this->addScriptTagToStore($shop);
+                    //$installResponse = null;
                     return response()->json(['status' => true, 'response' => $installResponse]);
                 }
             }
