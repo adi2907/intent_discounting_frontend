@@ -19,3 +19,5 @@ yarn-error.log
 /.vscode
 .htaccess
 .DS_Store
+__MACOSX/
+
