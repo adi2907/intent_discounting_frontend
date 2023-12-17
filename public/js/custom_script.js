@@ -83,10 +83,38 @@ function sendEventsToServer() {
     }
 }
 
+function getCustomerId() {
+    try {
+        let curr = window.ShopifyAnalytics.meta.page.customerId;
+        if (curr !== undefined && curr !== null && curr !== "") {
+          return curr;
+        }
+    } catch(e) { }
+    try {
+        let curr = window.meta.page.customerId;
+        if (curr !== undefined && curr !== null && curr !== "") {
+            return curr;
+        }
+    } catch (e) { }    
+    try {
+        let curr = _st.cid;
+        if (curr !== undefined && curr !== null && curr !== "") {
+            return curr;
+        }
+    } catch (e) { }
+    try {
+        let curr = ShopifyAnalytics.lib.user().traits().uniqToken;
+        if (curr !== undefined && curr !== null && curr !== "") {
+            return curr;
+        }
+    } catch (e) { }
+    return null;
+}
+
 setInterval(sendEventsToServer, 10000);
 async function logEvent(event_type, event_name, event) {
-    var cust_email = '{{ customer.email }}'
-    var cust_id = '{{ customer.id }}'
+    //var cust_email = '{{ customer.email }}'
+    var cust_id = getCustomerId();
     var product_id = null;
     var product_name = null;
     var product_price = null;
@@ -123,7 +151,7 @@ async function logEvent(event_type, event_name, event) {
     
     var timestamp = Math.floor(Date.now() / 1000);
     var eventDetails = {
-        'user_login': cust_email,
+        'user_login': null,
         'user_id': cust_id,
         'user_regd': "",
         'click_time': timestamp,
