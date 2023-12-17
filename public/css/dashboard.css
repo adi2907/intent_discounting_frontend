@@ -95,13 +95,20 @@ color: #666;
 
 
 .chart-title {
-    display: flex;
+    /* display: flex;
     align-items: left;
     justify-content: space-between;
-    margin-bottom: 10px; /* Adjust as needed */
-    padding: 0 15px; /* Adjust as needed */
-    border-radius: 20px; /* Rounded corners */
+    
+    padding: 0 15px; 
+    border-radius: 20px;  */
+    font-size: 1.5rem;
     font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.chart-subtitle {
+    margin-left: 0; 
+    margin-bottom: 10px;
 }
 
 .title {
