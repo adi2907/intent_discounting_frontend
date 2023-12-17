@@ -108,7 +108,9 @@
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
+                @php $productCount = 0; @endphp
                 @foreach($almeResponses['product_visits']['body']['products'] as $productId => $product)  
+                @if($productCount < 5)
                 <div class="card visited-card">
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">   
@@ -126,6 +128,8 @@
                         </div>
                     </div>
                 </div>
+                @php $productCount += 1; @endphp
+                @endif
                 @endforeach  
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
@@ -154,8 +158,9 @@
                         <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
                     </div>
                 </div>
+                @php $conversionCount = 0; @endphp
                 @foreach($almeResponses['product_cart_conversion']['body']['assoc_data'] as $productId => $data)   
-                @if((int) $data['conversion_rate'] > 0) 
+                @if((int) $data['conversion_rate'] > 0 && $conversionCount < 5) 
                 <div class="card conversion-card">
                     <div class="card-body d-flex align-items-center">
                         <img src="{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
@@ -171,6 +176,7 @@
                         </div>
                     </div>
                 </div>
+                @php $conversionCount += 1; @endphp
                 @endif
                 @endforeach
                 {{--<div class="text-center">
