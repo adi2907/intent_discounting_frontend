@@ -20,7 +20,7 @@
                         <input type="checkbox" data-field="usersAlsoLiked" class="form-check-input" id="customSuggestions" @if($productRackInfo['usersAlsoLiked'] && $productRackInfo['usersAlsoLiked'] == true) checked @endif>
                         <label class="form-check-label" for="customSuggestions">
                             <span class="productrack-title">Users also liked</span><br>
-                            <span class="productrack-description">Show products most viewed together with this product (PPS1)</span>
+                            <span class="productrack-description">Show products most viewed together with this product</span>
                         </label>
                     </div>
                 </div>
