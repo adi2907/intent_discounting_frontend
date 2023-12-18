@@ -59,12 +59,12 @@
                     <!-- Add more rows as needed -->
                     </tbody>
                 </table>
-                </div>
+            </div>
                 
-                <div class="button-group d-flex justify-content-end mt-3">
+            <div class="button-group d-flex justify-content-end mt-3">
                 <button id="sendWhatsApp" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
                 <button id="downloadExcel" class="btn btn-success">Download as Excel</button>
-                </div> 
+            </div> 
 
 
         </section>
