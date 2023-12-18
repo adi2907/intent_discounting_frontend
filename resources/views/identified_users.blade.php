@@ -33,7 +33,7 @@
                         <td>Rohan Patel</td>
                         <td>rohan.patel@gmail.com</td>
                         <td>9876543210</td>
-                        <td>13</td>
+                        <td>35</td>
                         <td>10</td>
                         <td>7</td>
                         <td>High</td>
@@ -47,7 +47,7 @@
                         <td>Aria Kapoor</td>
                         <td>aria.kapoor@gmail.com</td>
                         <td>8765432109</td>
-                        <td>12</td>
+                        <td>42</td>
                         <td>8</td>
                         <td>5</td>
                         <td>Medium</td>
