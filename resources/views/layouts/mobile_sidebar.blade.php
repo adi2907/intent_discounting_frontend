@@ -11,6 +11,7 @@ $route = Route::currentRouteName()
             <li class="nav-item"><a href="{{route('dashboard')}}" class="nav-link" @if($route == 'dashboard') style="background-color: white; color:#1B4332" @endif>Dashboard</a></li>
             <li class="nav-item"><a href="{{route('productRacks')}}" class="nav-link">Product Collection</a></li>
             <li class="nav-item"><a href="{{route('notifications')}}" class="nav-link">Notifications</a></li>
+            <li class="nav-item"><a href="{{route('identifiedUsers')}}" class="nav-link">Identified Users</a></li>
         </ul>
     </div>
 </nav>

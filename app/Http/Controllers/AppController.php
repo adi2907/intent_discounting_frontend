@@ -164,6 +164,10 @@ class AppController extends Controller {
         }
     }
 
+    public function showIdentifiedUsers(Request $request){
+        return view('identified_users');
+    }
+
     public function getDiscountCodeForStore(Request $request) {
         try{
             if($request->has('shop') && $request->filled('shop')) {

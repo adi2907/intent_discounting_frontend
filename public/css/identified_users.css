@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+.body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.table-bordered {
+    border: 2px solid #dee2e6;
+}
+  
+.table thead th {
+border-bottom: 2px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+border: 1px solid #dee2e6;
+}
+
+/* Add rounded corners to the table */
+.table-responsive {
+border-radius: 0.25rem;
+overflow: hidden; /* Ensures the rounded corners are visible */
+}
+/* Style for the button group at the bottom */
+.button-group {
+    display: flex;
+    justify-content: flex-end; /* Aligns buttons to the right */
+    gap: 10px; /* Space between buttons */
+  }
+  
+  /* Style for buttons */
+  #sendWhatsApp {
+    padding: 5px 15px;
+    background-color: #1B4332;
+  }
+  
+  #downloadExcel {
+    padding: 5px 15px;
+    background-color: #1B4332;
+  }
