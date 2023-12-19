@@ -65,6 +65,13 @@ Route::prefix('shopify/auth')->group(function () {
     Route::get('redirect', [InstallationController::class, 'handleRedirect'])->name('shopify.auth.redirect');
 });
 
+//Mandatory GDPR Webhooks
+Route::prefix('gdpr/webhooks')->group(function () {
+    Route::any('customer_data_request', [WebhookController::class, 'handleCustomerDataRequest']);
+    Route::any('customer_data_erasure', [WebhookController::class, 'handleCustomerDataErasure']);
+    Route::any('shop_data_erasure', [WebhookController::class, 'handleShopDataErasure']);
+});
+
 Route::prefix('webhooks')->group(function () {
     Route::get('register', [WebhookController::class, 'registerWebhooks'])->name('register.webhooks');
     Route::any('cartUpdate', [WebhookController::class, 'cartUpdateWebhook'])->name('carts.update.webhook');

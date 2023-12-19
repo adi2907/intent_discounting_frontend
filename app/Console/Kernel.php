@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:discount')->everyThirtyMinutes();
         $schedule->command('app:check-cron-status')->everyFiveSeconds();
         $schedule->command('app:sync-orders')->everyOddHour();
+        $schedule->command('app:purchase-event-alme')->everyFiveMinutes();
+        $schedule->command('app:sync-products')->everyOddHour();
     }
 
     /**

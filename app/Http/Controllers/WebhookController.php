@@ -3,11 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\RegisterWebhooks;
+use App\Traits\FunctionTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller {
+    use FunctionTrait;
 
+    public function handleCustomerDataRequest(Request $request) {
+        $request = $request->all();
+        $validRequest = $this->validateRequestFromShopify($request);
+        if($validRequest) {
+            $response = [
+                'status' => true,
+                'message' => 'Not Found',
+                'code' => 404,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'message' => 'Invalid Request',
+                'code' => 401
+            ];
+        }
+        return response()->json($response, $response['code']);
+    }
+
+    public function handleCustomerDataErasure(Request $request) {
+        $request = $request->all();
+        $validRequest = $this->validateRequestFromShopify($request);
+        if($validRequest) {
+            $response = [
+                'status' => true,
+                'message' => 'Not Found',
+                'code' => 404,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'message' => 'Invalid Request',
+                'code' => 401
+            ];
+        }
+        return response()->json($response, $response['code']);
+    }
+
+    public function handleShopDataErasure(Request $request) {
+        $request = $request->all();
+        $validRequest = $this->validateRequestFromShopify($request);
+        if($validRequest) {
+            $response = [
+                'status' => true,
+                'message' => 'Not Found',
+                'code' => 404,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'message' => 'Invalid Request',
+                'code' => 401
+            ];
+        }
+        return response()->json($response, $response['code']);
+    }
     public function registerWebhooks(Request $request) {
         RegisterWebhooks::dispatch($request->shop_id)->onConnection('sync');
         return response()->json(['status' => true, 'message' => 'Done']);
