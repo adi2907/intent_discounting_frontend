@@ -105,32 +105,14 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h2 class="section-title">Top Visited</h2>
                     <div class="sort-toggle">
-                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
+                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc" style="color:green;font-weight:bold">&#8595;</span>
                     </div>
                 </div>
-                @php $productCount = 0; @endphp
-                @foreach($almeResponses['product_visits']['body']['products'] as $productId => $product)  
-                @if($productCount < 5)
-                <div class="card visited-card">
-                    <div class="card-body d-flex align-items-center">
-                        <img src="{{$product['imageSrc']}}" alt="Floral T-Shirt" class="product-image">   
-                        <div class="product-details">
-                            <h3 class="product-title" style="color:black"><a  style="color:black;font-family:'Montserrat'" target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$product['title']}}</a></h3>
-                        </div>
-                        <div class="visit-count-border d-flex flex-column align-items-center justify-content-center">
-                            <!-- <span class="visit-number">13476</span> -->
-                            @if(isset($almeResponses['product_visits']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_visits']['body']['assoc_data']))
-                                <span class="visit-number" style="font-size: 1rem !important;">{{$almeResponses['product_visits']['body']['assoc_data'][$productId]}}</span>
-                            @else 
-                                <span class="visit-number">N/A</span>
-                            @endif
-                            <span class="visits-label">Visits</span>
-                        </div>
-                    </div>
-                </div>
-                @php $productCount += 1; @endphp
-                @endif
-                @endforeach  
+                @include('dashboard.top_products', [
+                    'assoc_data' => $almeResponses['product_visits']['body']['assoc_data'],
+                    'products' => $almeResponses['product_visits']['body']['products'],
+                    'baseShop' => $baseShop
+                ])  
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -155,30 +137,14 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h2 class="section-title">Top Cart conversions</h2>
                     <div class="sort-toggle">
-                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc">&#8595;</span>
+                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc" style="color:green;font-weight:bold">&#8595;</span>
                     </div>
                 </div>
-                @php $conversionCount = 0; @endphp
-                @foreach($almeResponses['product_cart_conversion']['body']['assoc_data'] as $productId => $data)   
-                @if((int) $data['conversion_rate'] > 0 && $conversionCount < 5) 
-                <div class="card conversion-card">
-                    <div class="card-body d-flex align-items-center">
-                        <img src="{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
-                        <h3 class="product-title"><a style="color:black;font-family:'Montserrat'" target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">{{$almeResponses['product_cart_conversion']['body']['products'][$productId]['title']}}</a></h3>
-                        <div class="ml-auto conversion-rates">
-                            <div class="conversion-rate cart-conversion mr-4">
-                                @if(isset($almeResponses['product_cart_conversion']['body']['assoc_data']) && array_key_exists($productId, $almeResponses['product_cart_conversion']['body']['assoc_data']))
-                                    <span class="percentage" style="font-size: 1rem !important;">{{round($data['conversion_rate'], 2)}}%</span>
-                                @else 
-                                    <span class="percentage">N/A</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @php $conversionCount += 1; @endphp
-                @endif
-                @endforeach
+                @include('dashboard.top_cart_conversions', [
+                    'assoc_data' => $almeResponses['product_cart_conversion']['body']['assoc_data'],
+                    'products' => $almeResponses['product_cart_conversion']['body']['products'],
+                    'baseShop' => $baseShop
+                ])
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -192,9 +158,7 @@
                 </div>--}}
             </div>
             @endif
-            @endisset
-
-            
+            @endisset 
             </div>
         </div>
     </section>
@@ -203,7 +167,7 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function () {
         var themeInstalled = checkThemeInstallation();

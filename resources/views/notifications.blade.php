@@ -38,7 +38,7 @@
                     </div>
                     <input class="contact-input blurInputChange" data-fieldtype="text" data-fieldName="description" type="text" value="{{$notifSettings['description']}}" placeholder="Receive Whatsapp notifications on New Collections">
                 </div>
-                <div class="settings-option">
+                <div class="settings-option" style="display: none;">
                     <div class="settings-text">
                         <span class="settings-card-title">Discount for submitting contact</span>
                         <p class="settings-card-description">Incentivise your users to submit their contact details by giving an exclusive discount</p>

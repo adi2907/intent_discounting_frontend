@@ -162,20 +162,23 @@ trait FunctionTrait {
         } 
     }
 
-    public function getAlmeAnalytics($shopURL) {
+    public function getAlmeAnalytics($shopURL, $request = null) {
         try {
+            $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';
+            $days = $request != null && isset($request['days']) && strlen($request['days']) > 0 && in_array($request['days'], ['asc', 'desc']) ? $request['days'] : 7;
+
             $cacheKey = 'dashboard_analytics.'.$shopURL;
             //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $endpointArr = [];
             $arr = [
-                'visits_count' => null,
-                'session_count' => null,
-                'cart_count' => null,
-                'user_count' => null,
-                'visit_conversion' => 'days=7',
-                'cart_conversion' => 'days=7',
-                'product_visits' => 'days=7',
-                'product_cart_conversion' => 'days=7'
+                'visits_count' => 'days='.$days,
+                'session_count' => 'days='.$days,
+                'cart_count' => 'days='.$days,
+                'user_count' => 'days='.$days,
+                'visit_conversion' => 'days='.$days.'&order='.$order,
+                'cart_conversion' => 'days='.$days.'&order='.$order,
+                'product_visits' => 'days='.$days.'&order='.$order,
+                'product_cart_conversion' => 'days='.$days.'&order='.$order
             ];
 
             $responses = [];
@@ -258,7 +261,7 @@ trait FunctionTrait {
                     $productIds[] = $payload['item__product_id']; //That's the product ID.
                     $conversionArr[$payload['item__product_id']] = $payload['visit_count']; //That's the data associated to the product data
                 } 
-                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::first();
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('id', 8)->first();
                 $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
                 if($products !== null && $products->count() > 0) {
                     $products = $products->keyBy('product_id')->toArray();
@@ -283,7 +286,7 @@ trait FunctionTrait {
                     $productIds[] = $payload[0]; //That's the product ID.
                     $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
                 } 
-                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::first();
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('id', 8)->first();
                 $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
                 if($products !== null && $products->count() > 0) {
                     $products = $products->keyBy('product_id')->toArray();

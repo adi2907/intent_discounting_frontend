@@ -24,7 +24,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="display:none">
                     <div class="form-check mb-3">
                         <input type="checkbox" data-field="crowd_fav" class="form-check-input" @if($productRackInfo['crowd_fav'] && $productRackInfo['crowd_fav'] == true) checked @endif>
                         <label class="form-check-label" for="toggleSuggestions">
@@ -33,7 +33,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="display:none">
                     <div class="form-check mb-3">
                         <input type="checkbox" data-field="pop_picks" class="form-check-input" @if($productRackInfo['pop_picks'] && $productRackInfo['pop_picks'] == true) checked @endif>
                         <label class="form-check-label" for="styleSuggestions">
@@ -77,7 +77,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="display:none">
                     <div class="form-check mb-3">
                         <input type="checkbox" data-field="most_added_prods" class="form-check-input" @if($productRackInfo['most_added_prods'] && $productRackInfo['most_added_prods'] == true) checked @endif>
                         <label class="form-check-label" for="">
@@ -86,7 +86,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="display:none">
                     <div class="form-check mb-3">
                         <input type="checkbox" data-field="slow_inv" class="form-check-input" @if($productRackInfo['slow_inv'] && $productRackInfo['slow_inv'] == true) checked @endif>
                         <label class="form-check-label" for="">
