@@ -113,13 +113,11 @@ class ExtensionController extends Controller {
                 if($flag) {
                     if($productRackSettings->$prop === 1 || $productRackSettings->$prop === true) {
                         $response = $this->callAlmeAppBackend($request, $prop);
-                        Log::info('Response from Alme');
-                        Log::info($response);
                         if($response['statusCode'] == 200) {
-                            $html = $this->getMostViewedHTML($response['body'], $shop, $prop);
+                            $html = $this->getHTML($response['body'], $shop, $prop);
                             $response = ['status' => true, 'response' => $response, 'html' => $html];   
                         } else {
-                            $response = ['status' => true, 'response' => $response, 'html' => null];   
+                            $response = ['status' => true, 'response' => $response, 'html' => null, 'debug' => 'Status code not 200 - '.$response['statusCode']];   
                         }
                     } else {
                         $response = ['status' => true, 'message' => 'Flag set false', 'debug' => $productRackSettings, 'html' => null];
@@ -160,12 +158,11 @@ class ExtensionController extends Controller {
         }
 
         $endpoint = getAlmeAppURLForStore($pathName.$getParams);
-        Log::info('Alme backend endpoint '.$endpoint);
         $headers = getAlmeHeaders();
-        return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+        return array_merge(['almebackend' => $endpoint], $this->makeAnAlmeAPICall('GET', $endpoint, $headers));
     }
     
-    private function getMostViewedHTML($body, $shop, $prop) {
+    private function getHTML($body, $shop, $prop) {
         try {
             if($body !== null && count($body) > 0) {
                 $products = $shop->getProducts()->whereIn('product_id', $body)->get();
