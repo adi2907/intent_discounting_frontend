@@ -1,6 +1,8 @@
 @extends('layouts.new_app')
 @section('css')
 <link rel="stylesheet" href="{{asset('css/dashboard.css')}}">
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 @section('content')
 
@@ -12,7 +14,19 @@
         </div>
     </section>
     <section class="main-content">
-        <h2 class="section-heading">Overview</h2>
+        <div class="row">
+            <div class="col-9 col-md-9 col-lg-9">
+                <h2 class="section-heading">   
+                    Overview
+                </h2>
+            </div>
+            <div class="col-3 col-md-3 col-lg-3">
+                Select Date Range: &nbsp;
+                <input id="date-range" class="form-control" style="width:80%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
+                <input type="hidden" id="date-start">
+                <input type="hidden" id="date-end">
+            </div>
+        </div>
         <div class="container-fluid mt-3">
             <!-- <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 mb-3">
@@ -27,7 +41,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                     <div class="card metric-card">
                         <div class="card-body">
-                        <h4>@isset($almeResponses['session_count']['body']) {{$almeResponses['session_count']['body']['session_count']}} @endisset</h4>
+                        <h4 id="session-count-header">@isset($almeResponses['session_count']['body']) {{$almeResponses['session_count']['body']['session_count']}} @endisset</h4>
                         <p>Sessions</p>
                         </div>
                     </div>
@@ -35,7 +49,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['user_count']['body']) {{$almeResponses['user_count']['body']['user_count']}} @endisset</h4>
+                    <h4 id="user-count-header">@isset($almeResponses['user_count']['body']) {{$almeResponses['user_count']['body']['user_count']}} @endisset</h4>
                     <p>Users</p>
                     </div>
                 </div>
@@ -43,7 +57,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['visits_count']['body']) {{$almeResponses['visits_count']['body']['visit_count']}} @endisset</h4>
+                    <h4 id="visit-count-header">@isset($almeResponses['visits_count']['body']) {{$almeResponses['visits_count']['body']['visit_count']}} @endisset</h4>
                     <p>Visits</p>
                     </div>
                 </div>
@@ -51,7 +65,7 @@
                 <div class="col-6 col-md-6 col-lg-3 mb-3">
                 <div class="card metric-card">
                     <div class="card-body">
-                    <h4>@isset($almeResponses['cart_count']['body']) {{$almeResponses['cart_count']['body']['cart_count']}} @endisset</h4>
+                    <h4 id="cart-count-header">@isset($almeResponses['cart_count']['body']) {{$almeResponses['cart_count']['body']['cart_count']}} @endisset</h4>
                     <p>Cart Adds</p>
                     </div>
                 </div>
@@ -168,8 +182,11 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 <script>
     $(document).ready(function () {
+        setDateTimePicker();
         var themeInstalled = checkThemeInstallation();
         if(themeInstalled) {
             $('#themeInstallBtn').html('Installed!').removeClass('btn-primary').addClass('btn-success').removeAttr('href');
@@ -293,6 +310,56 @@
 
         return result;
     }
+
+    function reloadDashboardWithDateRange(start, end) {
+        console.log(start);
+        console.log(end);
+
+        $.ajax({
+            url: "{{route('reload.dashboard')}}",
+            type: 'GET',
+            async: false,
+            data: {start: start, end:end},
+            success: function (res) {
+                console.log(res);
+                if(res.status) {
+                    $('#session-count-header').html(res.response.session_count.body.session_count);
+                    $('#user-count-header').html(res.response.user_count.body.user_count);
+                    $('#visit-count-header').html(res.response.visits_count.body.visit_count);
+                    $('#cart-count-header').html(res.response.cart_count.body.cart_count);
+                }
+            }
+        })
+    }
+
+    function setDateTimePicker() {
+        var startDate = moment().subtract(14, 'days');
+        var endDate = moment();
+        $("#date-start").val(startDate.unix());
+        $("#date-end").val(endDate.unix());
+        $('#date-range').daterangepicker({
+          opens: 'left',
+          showDropdowns: true,
+          startDate,
+          endDate,
+          orientation: 'bottom',
+          alwaysShowCalendars: true,
+          drops: 'down',
+          locale: {
+            format: 'L',
+            // cancelLabel: 'Clear'
+          },
+          ranges: {
+            'Last 15 Days': [moment().subtract(14, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+            'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+            'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+          }
+        }, function(start, end, label) {
+            reloadDashboardWithDateRange(Math.round(start/1000), Math.round(end/1000));
+        });
+      }
 
 </script>
 @endsection

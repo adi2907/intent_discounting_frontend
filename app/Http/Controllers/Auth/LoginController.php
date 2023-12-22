@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -26,7 +27,20 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = 'dashboard';
+
+    public function showLoginForm() {
+
+        $isLoggedIn = Auth::check(); 
+
+        if(config('app.env') == 'local') {
+            if($isLoggedIn) 
+                return redirect()->route('dashboard');
+            return view('auth.login');
+        }
+
+        return response()->json(['status' => false, 'message' => 'Please access the app with your Shopify Admin']);        
+    }
 
     /**
      * Create a new controller instance.

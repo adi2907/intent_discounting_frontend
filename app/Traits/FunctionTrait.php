@@ -162,23 +162,32 @@ trait FunctionTrait {
         } 
     }
 
-    public function getAlmeAnalytics($shopURL, $request = null) {
+    public function getAlmeAnalytics($shopURL, $request = null, $setCache = true) {
         try {
             $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';
-            $days = $request != null && isset($request['days']) && strlen($request['days']) > 0 && in_array($request['days'], ['asc', 'desc']) ? $request['days'] : 7;
+            //$days = $request != null && isset($request['days']) && strlen($request['days']) > 0 && in_array($request['days'], ['asc', 'desc']) ? $request['days'] : 7;
+            $days = 7;
 
+            $hasStartAndEndDate = $request !== null ? array_key_exists('start', $request) && array_key_exists('end', $request) : false;
+            $startDate = null;
+            $endDate = null;
+            if($hasStartAndEndDate) {
+                $startDate = date('Y-m-d', $request['start']);
+                $endDate = date('Y-m-d', $request['end']);
+            }
+            
             $cacheKey = 'dashboard_analytics.'.$shopURL;
             //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $endpointArr = [];
             $arr = [
-                'visits_count' => 'days='.$days,
-                'session_count' => 'days='.$days,
-                'cart_count' => 'days='.$days,
-                'user_count' => 'days='.$days,
-                'visit_conversion' => 'days='.$days.'&order='.$order,
-                'cart_conversion' => 'days='.$days.'&order='.$order,
-                'product_visits' => 'days='.$days.'&order='.$order,
-                'product_cart_conversion' => 'days='.$days.'&order='.$order
+                'visits_count' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate)) : 'days='.$days,
+                'session_count' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate)) : 'days='.$days,
+                'cart_count' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate)) : 'days='.$days,
+                'user_count' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate)) : 'days='.$days,
+                'visit_conversion' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order,
+                'cart_conversion' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order,
+                'product_visits' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order,
+                'product_cart_conversion' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order
             ];
 
             $responses = [];
@@ -211,9 +220,11 @@ trait FunctionTrait {
                 $responses['cart_conversion']['graphData'] = $this->getGraphDataForConversion($responses['cart_conversion']['body']);
             }
 
-            Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
-            //dd($endpointArr);
-            //dd($responses);
+            if($setCache)
+                Cache::set($cacheKey, $responses, now()->addMinutes(30)); //30 minutes expiry limit to save some API calls
+
+            $responses['endpoints'] = $endpointArr;
+            
             return $responses;
         } catch(Exception $e) {
             Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());

@@ -18,10 +18,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::middleware('auth')->group(function () {
-    Route::get('dashboard', [AppController::class, 'showDashboard'])->name('dashboard');
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [AppController::class, 'showDashboard'])->name('dashboard');
+        Route::get('reloadAnalytics', [AppController::class, 'reloadDashboard'])->name('reload.dashboard');
+    });
+
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::get('identified_users', [AppController::class, 'showIdentifiedUsers'])->name('identifiedUsers');

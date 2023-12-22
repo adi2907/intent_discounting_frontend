@@ -8,8 +8,10 @@
     <img id="site-logo" src="{{asset('images/TextALME.png')}}" alt="Alme Logo">
     <div class="container-fluid">
         <div class="row">
-            @include('layouts.sidebar')
-            @include('layouts.mobile_sidebar')
+            @if(Auth::check())
+                @include('layouts.sidebar')
+                @include('layouts.mobile_sidebar')
+            @endif
             @yield('content')
         </div>
     </div>

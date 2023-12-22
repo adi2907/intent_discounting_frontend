@@ -22,6 +22,13 @@ class AppController extends Controller {
         
     }
 
+    public function reloadDashboard(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $almeResponses = $this->getAlmeAnalytics($shop->shop_url, $request->all(), false);
+        return response()->json(['status' => true, 'response'=> $almeResponses, 'request' => $request->all()]);
+    }
+
     public function checkStoreThemeInstall() {
         if(Auth::check()) {
             $user = Auth::user();

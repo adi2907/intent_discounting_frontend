@@ -42,7 +42,7 @@ trait RequestTrait {
             $client = new Client();
             $response = null;
             if($method === 'POST') {
-                $this->info('Making a POST request');
+                //$this->info('Making a POST request');
                 $response = $client->request($method, $endpoint, [ 'headers' => $headers, 'json' => $requestBody ]);
                 return [
                     'statusCode' => $response->getStatusCode(),
@@ -57,8 +57,6 @@ trait RequestTrait {
                     'body' => json_decode($response->getBody(), true)
                 ];
             } 
-
-            
 
             return [
                 'statusCode' => 404,
