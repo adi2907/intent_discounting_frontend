@@ -29,6 +29,16 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'response'=> $almeResponses, 'request' => $request->all()]);
     }
 
+    public function downloadIdentifiedUsersAsExcel() {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $data = $this->callAlmeAppIdentifiedUsers($shop);
+        if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
+            
+        }
+        return back()->with('error', 'No Data Found To Export');
+    }
+
     public function checkStoreThemeInstall() {
         if(Auth::check()) {
             $user = Auth::user();
@@ -172,7 +182,16 @@ class AppController extends Controller {
     }
 
     public function showIdentifiedUsers(Request $request){
-        return view('identified_users');
+        $user = Auth::user();
+        $shopifyStore = $user->shopifyStore;
+        $response = $this->callAlmeAppIdentifiedUsers($shopifyStore);
+        return view('identified_users', ['data' => $response]);
+    }
+
+    public function callAlmeAppIdentifiedUsers($shop) {
+        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?app_name='.$shop->shop_url);
+        $headers = getAlmeHeaders();
+        return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
 
     public function getDiscountCodeForStore(Request $request) {

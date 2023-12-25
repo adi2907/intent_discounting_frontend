@@ -12,59 +12,54 @@
             </div>
             
         </section>
-        <section class="main-content">
-            
+        <section class="main-content mt-3">
+            @if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0)        
+            <div class="button-group d-flex justify-content-end mt-3 mb-3 mr-3">
+                <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
+                <a id="downloadExcel" class="btn btn-success" href="{{route('downloadIdentifiedUsersExcel')}}">Download as Excel</a>
+            </div> 
+            @endif
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered mr-4 ml-4">
                     <thead class="thead-light">
                     <tr>
+                        <th scope="col">#</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Products Visited</th>
                         <th scope="col">Added To Cart</th>
                         <th scope="col">Purchases</th>
-                        <th scope="col">Conversion Prob</th>
-                        <th scope="col">Action</th>
+                        <!-- <th scope="col">Conversion Prob</th> -->
+                        <!-- <th scope="col">Action</th> -->
                     </tr>
                     </thead>
                     <tbody>
+                    @if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0)
+                    @foreach($data['body'] as $info)
                     <tr>
-                        <td>Rohan Patel</td>
-                        <td>rohan.patel@gmail.com</td>
-                        <td>9876543210</td>
-                        <td>35</td>
-                        <td>10</td>
-                        <td>7</td>
+                        <td>{{$info['serial_number'] ?? 'N/A'}}</td>
+                        <td>{{$info['name'] ?? 'N/A'}}</td>
+                        <td>{{$info['phone'] ?? 'N/A'}}</td>
+                        <td>{{$info['visited'] ?? 'N/A'}}</td>
+                        <td>{{$info['added_to_cart'] ?? 'N/A'}}</td>
+                        <td>{{$info['purchased'] ?? 'N/A'}}</td>
+                        <!-- 
                         <td>High</td>
                         <td>
                             <i class="fab fa-whatsapp"></i>
                             <i class="fa fa-envelope"></i>
-                        </td>
+                        </td> -->
 
                     </tr>
-                    <tr>
-                        <td>Aria Kapoor</td>
-                        <td>aria.kapoor@gmail.com</td>
-                        <td>8765432109</td>
-                        <td>42</td>
-                        <td>8</td>
-                        <td>5</td>
-                        <td>Medium</td>
-                        <td>
-                            <i class="fab fa-whatsapp"></i>
-                            <i class="fa fa-envelope"></i>
-                        </td>
-                    </tr>
+                    @endforeach
+                    @endif
+                    
                     <!-- Add more rows as needed -->
                     </tbody>
                 </table>
             </div>
                 
-            <div class="button-group d-flex justify-content-end mt-3">
-                <button id="sendWhatsApp" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
-                <button id="downloadExcel" class="btn btn-success">Download as Excel</button>
-            </div> 
+            
 
 
         </section>

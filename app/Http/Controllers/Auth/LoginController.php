@@ -33,13 +33,11 @@ class LoginController extends Controller
 
         $isLoggedIn = Auth::check(); 
 
-        if(config('app.env') == 'local') {
-            if($isLoggedIn) 
-                return redirect()->route('dashboard');
-            return view('auth.login');
-        }
-
-        return response()->json(['status' => false, 'message' => 'Please access the app with your Shopify Admin']);        
+        if($isLoggedIn) 
+            return redirect()->route('dashboard');
+    
+        return view('auth.login');
+        //return response()->json(['status' => false, 'message' => 'Please access the app with your Shopify Admin']);        
     }
 
     /**
