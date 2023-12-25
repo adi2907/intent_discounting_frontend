@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 */
 Auth::routes(['register' => false]);
 
+Route::get('/', [HomeController::class, 'index']);
+
 Route::middleware('auth')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [AppController::class, 'showDashboard'])->name('dashboard');

@@ -20,7 +20,7 @@
                     Overview
                 </h2>
             </div>
-            <div class="col-3 col-md-3 col-lg-3">
+            <div class="col-3 col-md-3 col-lg-3" style="display: none;">
                 Select Date Range: &nbsp;
                 <input id="date-range" class="form-control" style="width:80%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
                 <input type="hidden" id="date-start">
