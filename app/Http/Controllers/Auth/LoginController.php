@@ -37,7 +37,6 @@ class LoginController extends Controller
             return redirect()->route('dashboard');
     
         return view('auth.login');
-        //return response()->json(['status' => false, 'message' => 'Please access the app with your Shopify Admin']);        
     }
 
     /**

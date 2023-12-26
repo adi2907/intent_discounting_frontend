@@ -34,7 +34,43 @@ class AppController extends Controller {
         $shop = $user->shopifyStore;
         $data = $this->callAlmeAppIdentifiedUsers($shop);
         if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
-            
+            $headers = [
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Content-type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename=IdentifiedUsers-'.time().'.csv',
+                'Expires' => '0',
+                'Pragma' => 'public'
+            ];
+        
+            $list = $data['body'];
+        
+            # add headers for each column in the CSV download
+            //array_unshift($list, array_keys($list[0]));
+        
+            $callback = function() use ($list) 
+            {
+                $FH = fopen('php://output', 'w');
+                fputcsv($FH, [
+                    'Serial No',
+                    'Name',
+                    'Phone',
+                    'Visit Count',
+                    'Cart Adds',
+                    'Purchases Count'
+                ]);
+                foreach ($list as $info) { 
+                    fputcsv($FH, [
+                        $info['serial_number'] ?? 'N/A',
+                        $info['name'] ?? 'N/A',
+                        $info['phone'] ?? 'N/A',
+                        $info['visited'] ?? 'N/A',
+                        $info['added_to_cart'] ?? 'N/A',
+                        $info['purchased'] ?? 'N/A',
+                    ]);
+                }
+                fclose($FH);
+            }; 
+            return response()->stream($callback, 200, $headers);
         }
         return back()->with('error', 'No Data Found To Export');
     }
