@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 trait FunctionTrait {
     public function getStoreByDomain($shop) {
@@ -84,10 +85,14 @@ trait FunctionTrait {
 
     public function verifyInstallation($shopDetails = null) {
         if($shopDetails == null) return false;
-        $endpoint = getShopifyAPIURLForStore('shop.json', $shopDetails);
-        $headers = getShopifyAPIHeadersForStore($shopDetails);
-        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
-        return array_key_exists('statusCode', $response) && $response['statusCode'] == 200; 
+        try {
+            $endpoint = getShopifyAPIURLForStore('shop.json', $shopDetails);
+            $headers = getShopifyAPIHeadersForStore($shopDetails);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            return array_key_exists('statusCode', $response) && $response['statusCode'] == 200; 
+        } catch(Exception $e) {
+            return false;
+        }
     }
 
     public function isPriceRuleValid($priceRule, $shop) {
@@ -160,6 +165,213 @@ trait FunctionTrait {
             Log::info('Error inserting products');
             Log::info($e->getMessage().' '.$e->getLine());
         } 
+    }
+
+    public function checkAlmeScriptRunningOrNot($shop) {
+        try {
+            $liveTheme = $this->getLiveThemeForShop($shop);
+            if($liveTheme !== null && array_key_exists('id', $liveTheme)) {
+                $assetKey = 'asset[key]=config/settings_data.json';
+                $asset = $this->getAssetsForTheme($shop, $liveTheme, $assetKey);
+                $assetContents = json_decode($asset['value'], true);
+                if(is_array($assetContents['current'])) {
+                    foreach($assetContents['current']['blocks'] as $blockId => $data) {
+                        $themeBlockId = config('shopify.APP_BLOCK_ID');
+                        if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
+                            return !$data['disabled'];
+                        }
+                    }    
+                }
+            }
+        } catch(Exception $e) {
+            Log::info($e->getMessage().' '.$e->getLine());
+        }
+        return false;        
+    }
+
+    public function checkIfThemeHasAppBlocksAdded($field, $shop) {
+        $liveTheme = $this->getLiveThemeForShop($shop);
+        if($liveTheme !== null && array_key_exists('id', $liveTheme)) {
+            $pageTarget = $this->checkWhetherItsProductOrMainPage($field);
+            $mainPage = 'asset[key]=templates/index.json';
+            $productPage = 'asset[key]=templates/product.json';
+            $asset = $this->getAssetsForTheme($shop, $liveTheme, $pageTarget == 'main' ? $mainPage : $productPage);
+            $assetContents = json_decode($asset['value'], true);
+            try {
+                foreach($assetContents['sections'] as $key => $obj) {
+                    if($obj['type'] == 'apps') {
+                        return true;
+                    }
+                }
+            } catch(Exception $e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public function getStoreBlockName($field) {
+        switch($field) {
+            case 'pickUpWhereYouLeftOff': return 'pickupWhereYouLeftOff';
+            case 'crowdFavorites': return 'crowdFavorites';
+            case 'usersAlsoLiked': return 'usersAlsoLiked';
+            case 'featuredCollection': return 'featuredCollection'; 
+        }
+    }
+
+    public function checkWhetherItsProductOrMainPage($field) {
+        if($field == 'usersAlsoLiked' || $field == 'featuredCollection') return 'product';
+        return 'main';
+    }
+
+    public function manageBlocksForThemeEditor($field, $value, $shop) {
+        try {
+            $liveTheme = $this->getLiveThemeForShop($shop);
+            if($liveTheme !== null && array_key_exists('id', $liveTheme)) {
+                $pageTarget = $this->checkWhetherItsProductOrMainPage($field);
+                if($value) {
+                    //Block has to be added
+                    if($pageTarget == 'main') {
+                        $blockExists = $this->checkIfBlockExistsOnStore($pageTarget, $field, $shop, $liveTheme);
+                        if(!$blockExists) {
+                            //Now we can add here
+                            return $this->addBlockOnPage($pageTarget, $field, $shop, $liveTheme);
+                        } 
+                    } else {
+                        $blockExists = $this->checkIfBlockExistsOnStore($pageTarget, $field, $shop, $liveTheme);
+                        if(!$blockExists) {
+                            //Now we can add here
+                            return $this->addBlockOnPage($pageTarget, $field, $shop, $liveTheme);
+                        } 
+                    }
+                } else {
+                    //Block has to be deleted
+                    if($pageTarget == 'main') {
+                        $blockExists = $this->checkIfBlockExistsOnStore($pageTarget, $field, $shop, $liveTheme);
+                        if($blockExists) {
+                            //Now we can delete here
+                            return $this->removeBlockOnPage($pageTarget, $field, $shop, $liveTheme);
+                        } 
+                    } else {
+                        $blockExists = $this->checkIfBlockExistsOnStore($pageTarget, $field, $shop, $liveTheme);
+                        if($blockExists) {
+                            //Now we can delete here
+                            return $this->removeBlockOnPage($pageTarget, $field, $shop, $liveTheme);
+                        } 
+                    }
+                }
+                return true;
+            } 
+            return 'Live theme not found';
+        } catch (Throwable $th) {
+            return $th->getMessage().' '.$th->getLine();
+        }
+    }
+
+    public function removeBlockOnPage($pageTarget, $field, $shop, $liveTheme) {
+        //TODO: Add the remove logic
+    }
+
+    public function addBlockOnPage($pageTarget, $field, $shop, $liveTheme) {
+        try {
+            $mainPage = 'asset[key]=templates/index.json';
+            $productPage = 'asset[key]=templates/product.json';
+            $blockId = config('shopify.APP_BLOCK_ID');
+            $storeBlockName = $this->getStoreBlockName($field);
+            $asset = $this->getAssetsForTheme($shop, $liveTheme, $pageTarget == 'main' ? $mainPage : $productPage);
+            $assetContents = json_decode($asset['value'], true);
+            $randomId = $this->getRandomIdForField($field);
+            $copyVar = $assetContents; //I need to keep a copy of this
+            foreach($assetContents['sections'] as $key => $obj) {
+                if($obj['type'] == 'apps') {
+                    
+                    if(!array_key_exists('blocks', $obj)) {
+                        $obj['blocks'] = [];
+                    }
+
+                    if(!array_key_exists('block_order', $obj)) {
+                        $obj['block_order'] = [];
+                    }
+
+                    $newArr = array_merge($obj['blocks'], [
+                        $randomId => [
+                            'type'=> "shopify://apps/alme/blocks/$storeBlockName/$blockId",
+                            'settings' => []
+                        ]
+                    ]);
+
+                    $copyVar['sections'][$key]['blocks'] = $newArr;
+                    $copyVar['sections'][$key]['block_order'][] = $randomId;
+                }
+            }
+            
+            $payload = [
+                'asset' => [
+                    'key' => $pageTarget == 'main' ? 'templates/index.json':'templates/product.json',
+                    'value' => str_replace('"settings":[]', '"settings":{}', json_encode($copyVar)) 
+                ]
+            ];
+            $endpoint = getShopifyAPIURLForStore('themes/'.$liveTheme['id'].'/assets.json', $shop, '2023-01');
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('PUT', $endpoint, $headers, $payload);
+            return $response;
+        } catch (\Throwable $th) {
+            dd($th->getMessage().' '.$th->getLine());
+        }
+    }
+
+    public function getRandomIdForField($field) {
+        switch($field) {
+            case 'pickUpWhereYouLeftOff': return '68483392-ba47-4275-b382-d4590c5a7d98';
+            case 'crowdFavorites': return 'fb943017-1c5c-4435-bec2-6d738d279810';
+            case 'usersAlsoLiked': return 'b431eb3a-cf17-40aa-a3d9-e2a63417c086';
+            case 'featuredCollection': return '5c90c8e7-81b3-4745-bf64-7e8d6757df13'; 
+        }
+    }
+
+    public function checkIfBlockExistsOnStore($pageTarget, $field, $shop, $liveTheme) {
+        $mainPage = 'asset[key]=templates/index.json';
+        $productPage = 'asset[key]=templates/product.json';
+        $blockId = config('shopify.APP_BLOCK_ID');
+        $storeBlockName = $this->getStoreBlockName($field);
+        $asset = $this->getAssetsForTheme($shop, $liveTheme, $pageTarget == 'main' ? $mainPage : $productPage);
+        $assetContents = json_decode($asset['value'], true);
+        try {
+            foreach($assetContents['sections'] as $key => $obj) {
+                if($obj['type'] == 'apps') {
+                    foreach($obj['blocks'] as $randomId => $innerObj) {
+                        $valueToCompare = "shopify://apps/alme/blocks/$storeBlockName/$blockId";
+                        if($innerObj['type'] === $valueToCompare) {
+                            return true;
+                        } 
+                    }
+                }
+            }
+        } catch(Exception $e) {
+            return false;
+        }
+        return false;
+    }
+
+    public function getAssetsForTheme($shop, $liveTheme, $type) {
+        $endpoint = getShopifyAPIURLForStore('themes/'.$liveTheme['id'].'/assets.json?'.$type, $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        return $response['body']['asset'];
+    }
+
+    public function getLiveThemeForShop($shop) {
+        $endpoint = getShopifyAPIURLForStore('themes.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        if(array_key_exists('statusCode', $response) && $response['statusCode'] == 200) {
+            foreach($response['body']['themes'] as $theme) {
+                if(array_key_exists('role', $theme) && $theme['role'] == 'main') {
+                    return $theme;
+                }
+            }
+        }
+        return null; 
     }
 
     public function getAlmeAnalytics($shopURL, $request = null, $setCache = true) {

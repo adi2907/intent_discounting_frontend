@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('identified_users/downloadExcel', [AppController::class, 'downloadIdentifiedUsersAsExcel'])->name('downloadIdentifiedUsersExcel');
     Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');
     Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');
+
+    Route::get('turnOnScript', [AppController::class, 'turnAlmeScriptOn'])->name('alme.turn.script.on');
     
 });
 

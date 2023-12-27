@@ -8,10 +8,11 @@ if (!function_exists('getShopifyAPIURLForStore')) {
      * @param
      * @return
      */
-    function getShopifyAPIURLForStore($path, $store)
+    function getShopifyAPIURLForStore($path, $store, $apiVersion = null)
     {
         $shop_url = $store['myshopify_domain'] ?? $store['shop_url'];
-        return 'https://'.$shop_url.'/admin/api/'.config('shopify.API_VERSION').'/'.$path;
+        $apiVersion = $apiVersion !== null ? $apiVersion : config('shopify.API_VERSION');
+        return 'https://'.$shop_url.'/admin/api/'.$apiVersion.'/'.$path;
     }
 
     function getShopifyAPIHeadersForStore($store) {

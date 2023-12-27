@@ -102,6 +102,7 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.2/popup.min.js"></script>
     <script>
         $(document).ready(function () {
             var homeflag = ifUncheckedCheckboxesShouldBeDisabled('homepage-collections')
@@ -148,7 +149,23 @@
                 },
                 async: false,
                 success: function (response) {
-                    console.log(response.message);   
+                    if(response.status) {
+                        var myPopup = new Popup({
+                            id: "my-popup",
+                            title: response.message ,
+                            content: null   
+                        });
+                        myPopup.show();
+                    } else {
+                        el.prop('checked', false);
+                        var myPopup = new Popup({
+                            id: "my-popup",
+                            title: response.message,
+                            content: response.htmlContent    
+                        });
+                        myPopup.show();
+                        
+                    }
                 }
             });
         }

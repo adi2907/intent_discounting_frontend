@@ -14,6 +14,20 @@
         </div>
     </section>
     <section class="main-content">
+
+        @if(!$checkScriptRunning)
+        <div class="row">
+            <div class="col-9 col-md-9 col-lg-9">
+                <h2 class="section-heading" style="color:red">   
+                    Please turn on the script 
+                </h2>
+            </div>
+            <div class="col-3 col-md-3 col-lg-3">
+                <a href="{{route('alme.turn.script.on')}}" target="_blank" class="btn btn-secondary mt-2 mr-2" style="float:right;">Click here</a>
+            </div>
+        </div>    
+        @endif
+
         <div class="row">
             <div class="col-9 col-md-9 col-lg-9">
                 <h2 class="section-heading">   

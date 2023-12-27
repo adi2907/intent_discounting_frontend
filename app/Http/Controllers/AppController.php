@@ -22,6 +22,40 @@ class AppController extends Controller {
         
     }
 
+    public function turnAlmeScriptOn() {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $liveTheme = $this->getLiveThemeForShop($shop);
+        $scriptIsRunning = $this->checkAlmeScriptRunningOrNot($shop);
+        if(!$scriptIsRunning) {
+            $assetKey = 'asset[key]=config/settings_data.json';
+            $asset = $this->getAssetsForTheme($shop, $liveTheme, $assetKey);
+            $assetContents = json_decode($asset['value'], true);
+            $copyAssetContents = $assetContents;
+            if(is_array($assetContents['current'])) {
+                foreach($assetContents['current']['blocks'] as $blockId => $data) {
+                    $themeBlockId = config('shopify.APP_BLOCK_ID');
+                    if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
+                        $copyAssetContents['current']['blocks'][$blockId]['disabled'] = false;
+                    }
+                }
+            }
+
+            $payload = [
+                'asset' => [
+                    'key' => 'config/settings_data.json',
+                    'value' => str_replace('"settings":[]', '"settings":{}', json_encode($copyAssetContents)) 
+                ]
+            ];
+
+            $endpoint = getShopifyAPIURLForStore('themes/'.$liveTheme['id'].'/assets.json', $shop, '2023-01');
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $this->makeAnAPICallToShopify('PUT', $endpoint, $headers, $payload);
+
+            return back();
+        }
+    }
+
     public function reloadDashboard(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
@@ -208,8 +242,11 @@ class AppController extends Controller {
             $shop = $request['shop'] ?? Auth::user()->shopifyStore->shop_url;
             $baseShop = Shop::where('shop_url', $shop)->first();
             $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
+            $checkScriptRunning = $this->checkAlmeScriptRunningOrNot($baseShop);
+            // $liveTheme = $this->getLiveThemeForShop($baseShop);
+            // $appEmbedURL = 'https://admin.shopify.com/store/'.str_replace('.myshopify.com', '', $shop).'/themes/'.$liveTheme['id'].'/editor?context=apps';
             $almeResponses = $this->getAlmeAnalytics($shop);
-            return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses'));
+            return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses', 'checkScriptRunning'));
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         } catch(Throwable $e) {
@@ -337,12 +374,25 @@ class AppController extends Controller {
                 $user = Auth::user();
                 $shop = $user->shopifyStore;
                 $value = $request->value === 'on';
-                $shop->productRackInfo()->update([$request->field => $value]);
-                return response()->json(['status' => true, 'message' => 'Updated!']);
+                $field = $request->field;
+
+                $check = $this->checkIfThemeHasAppBlocksAdded($field, $shop);
+                if($check) {
+                    $response = $this->manageBlocksForThemeEditor($field, $value, $shop);
+                    $shop->productRackInfo()->update([$field => $value]);
+                    return response()->json(['status' => true, 'message' => 'Updated!', 'response' => $response]);
+                } else {
+                    $liveTheme = $this->getLiveThemeForShop($shop);
+                    $themeURL = 'https://admin.shopify.com/store/'.str_replace('.myshopify.com', '', $shop->shop_url).'/themes/'.$liveTheme['id'].'/editor';
+                    $htmlContent = '<a href="'.$themeURL.'" class="btn btn-link" target="_blank">Please add theme app blocks to your store. Click here to add it.</a>';
+                    return response()->json(['status' => false, 'message' => 'Your store needs changes', 'themeURL' => $themeURL, 'htmlContent' => $htmlContent]);
+                }
             }
             return response()->json(['status' => false, 'message' => 'Invalid Request']);
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+  
 }
