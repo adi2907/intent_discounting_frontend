@@ -1,7 +1,7 @@
 @php $conversionCount = 0; @endphp
 @foreach($assoc_data as $productId => $data)   
 @if((int) $data['conversion_rate'] > 0 && $conversionCount < 5) 
-<div class="card conversion-card">
+<div class="card conversion-card product-cart-converted">
     <div class="card-body d-flex align-items-center">
         <img src="{{$products[$productId]['imageSrc']}}" alt="Floral T-Shirt" class="product-image">    
         <h3 class="product-title">

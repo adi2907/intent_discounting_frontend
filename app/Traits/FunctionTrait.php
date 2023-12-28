@@ -449,6 +449,103 @@ trait FunctionTrait {
         }
     }
 
+    public function getTopCarted($shopURL, $request = null) {
+        try {
+            $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';
+            $days = 7;
+
+            $hasStartAndEndDate = $request !== null ? array_key_exists('start', $request) && array_key_exists('end', $request) : false;
+            $startDate = null;
+            $endDate = null;
+            if($hasStartAndEndDate) {
+                $startDate = date('Y-m-d', $request['start']);
+                $endDate = date('Y-m-d', $request['end']);
+            }
+            
+            $endpointArr = [];
+            $arr = [
+                'product_cart_conversion' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order
+            ];
+
+            $responses = [];
+            $prefix = 'analytics/';
+            $headers = getAlmeHeaders();
+            foreach($arr as $urlPath => $additionalParams) {
+                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
+                if($additionalParams !== null) {
+                    $endpoint .= '&'.$additionalParams;
+                }
+                $endpointArr[] = $endpoint;
+                $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+            }
+
+            //Graph Data function for Cart conversion graph
+            if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
+                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
+            }
+            
+            $responses['endpoints'] = $endpointArr;
+            
+            return $responses;
+        } catch(Exception $e) {
+            Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
+            return [
+                'visits_count' => 'N/A',
+                'session_count' => 'N/A',
+                'cart_count' => 'N/A',
+                'visit_conversion' => 'N/A'
+            ];
+        }
+    }
+
+    public function getTopVisits($shopURL, $request = null) {
+        try {
+            $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';
+            $days = 7;
+
+            $hasStartAndEndDate = $request !== null ? array_key_exists('start', $request) && array_key_exists('end', $request) : false;
+            $startDate = null;
+            $endDate = null;
+            if($hasStartAndEndDate) {
+                $startDate = date('Y-m-d', $request['start']);
+                $endDate = date('Y-m-d', $request['end']);
+            }
+            
+            $endpointArr = [];
+            $arr = [
+                'product_visits' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate).'&order='.$order) : 'days='.$days.'&order='.$order,
+            ];
+
+            $responses = [];
+            $prefix = 'analytics/';
+            $headers = getAlmeHeaders();
+            foreach($arr as $urlPath => $additionalParams) {
+                $endpoint = getAlmeAppURLForStore($prefix.$urlPath.'?app_name='.$shopURL);
+                if($additionalParams !== null) {
+                    $endpoint .= '&'.$additionalParams;
+                }
+                $endpointArr[] = $endpoint;
+                $responses[$urlPath] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+            }
+
+            if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
+                $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
+            }
+
+            $responses['endpoints'] = $endpointArr;
+            
+            return $responses;
+        } catch(Exception $e) {
+            Log::info('Dashboard route error '.$e->getMessage().' '.$e->getLine());
+            return [
+                'visits_count' => 'N/A',
+                'session_count' => 'N/A',
+                'cart_count' => 'N/A',
+                'visit_conversion' => 'N/A'
+            ];
+        }
+    }
+
     public function getGraphDataForConversion($body) {
         try {
             $returnVal = [];

@@ -63,6 +63,43 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'response'=> $almeResponses, 'request' => $request->all()]);
     }
 
+    public function orderTopCarted(Request $request) {
+        if($request->ajax()) {
+            $user = Auth::user();
+            $shop = $user->shopifyStore;
+            $almeResponses = $this->getTopCarted($shop->shop_url, $request->all());
+            //dd($almeResponses);
+            if($almeResponses['product_cart_conversion'] && $almeResponses['product_cart_conversion']['statusCode'] == 200) {
+                $html = view('dashboard.top_cart_conversions', [
+                    'assoc_data' => $almeResponses['product_cart_conversion']['body']['assoc_data'],
+                    'products' => $almeResponses['product_cart_conversion']['body']['products'],
+                    'baseShop' => $shop
+                ])->render();
+                
+                return response()->json(['status' => true, 'response'=> $almeResponses, 'html' => $html, 'request' => $request->all()]);
+            }
+            return response()->json(['status' => true, 'response'=> $almeResponses, 'html' => '', 'request' => $request->all()]);
+        }
+    }
+
+    public function orderTopVisited(Request $request) {
+        if($request->ajax()) {
+            $user = Auth::user();
+            $shop = $user->shopifyStore;
+            $almeResponses = $this->getTopVisits($shop->shop_url, $request->all());
+            if($almeResponses['product_visits'] && $almeResponses['product_visits']['statusCode'] == 200) {
+                $html = view('dashboard.top_products', [
+                    'assoc_data' => $almeResponses['product_visits']['body']['assoc_data'],
+                    'products' => $almeResponses['product_visits']['body']['products'],
+                    'baseShop' => $shop
+                ])->render();
+                
+                return response()->json(['status' => true, 'response'=> $almeResponses, 'html' => $html, 'request' => $request->all()]);
+            }
+            return response()->json(['status' => true, 'response'=> $almeResponses, 'html' => '', 'request' => $request->all()]);
+        }
+    }
+
     public function downloadIdentifiedUsersAsExcel() {
         $user = Auth::user();
         $shop = $user->shopifyStore;

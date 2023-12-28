@@ -1,7 +1,7 @@
 @php $productCount = 0; @endphp
 @foreach($assoc_data as $productId => $countVisit)  
 @if($productCount < 5)
-<div class="card visited-card">
+<div class="card visited-card top-visited-product">
     <div class="card-body d-flex align-items-center visited-card-body">
         <img src="{{$products[$productId]['imageSrc'] ?? ''}}" alt="Floral T-Shirt" class="product-image">   
         <div class="product-details">

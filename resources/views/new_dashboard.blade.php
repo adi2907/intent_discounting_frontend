@@ -133,14 +133,16 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h2 class="section-title">Top Visited</h2>
                     <div class="sort-toggle">
-                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc" style="color:green;font-weight:bold">&#8595;</span>
+                        <span class="sort-asc sort-top-visited" data-order="asc">&#8593;</span> / <span class="sort-desc sort-top-visited" data-order="desc" style="color:green;font-weight:bold">&#8595;</span>
                     </div>
                 </div>
-                @include('dashboard.top_products', [
-                    'assoc_data' => $almeResponses['product_visits']['body']['assoc_data'],
-                    'products' => $almeResponses['product_visits']['body']['products'],
-                    'baseShop' => $baseShop
-                ])  
+                <div class="parent-top-visited">
+                    @include('dashboard.top_products', [
+                        'assoc_data' => $almeResponses['product_visits']['body']['assoc_data'],
+                        'products' => $almeResponses['product_visits']['body']['products'],
+                        'baseShop' => $baseShop
+                    ])  
+                </div>
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -165,14 +167,16 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h2 class="section-title">Top Cart conversions</h2>
                     <div class="sort-toggle">
-                        <span class="sort-asc">&#8593;</span> / <span class="sort-desc" style="color:green;font-weight:bold">&#8595;</span>
+                        <span class="sort-asc sort-top-carted" data-order="asc">&#8593;</span> / <span class="sort-desc sort-top-carted" data-order="desc" style="color:green;font-weight:bold">&#8595;</span>
                     </div>
                 </div>
+                <div class="parent-top-converted">
                 @include('dashboard.top_cart_conversions', [
                     'assoc_data' => $almeResponses['product_cart_conversion']['body']['assoc_data'],
                     'products' => $almeResponses['product_cart_conversion']['body']['products'],
                     'baseShop' => $baseShop
                 ])
+                </div>
                 {{--<div class="text-center">
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
@@ -201,10 +205,58 @@
 <script>
     $(document).ready(function () {
         setDateTimePicker();
+
+        $('.sort-top-carted').click(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var dir = el.data('order');
+            var sortClass = '.sort-top-carted';
+            var productCardClass = '.product-cart-converted';
+            var parentsProductClass = '.parent-top-converted';
+            $(sortClass).css({"color":"black"});
+            el.css({"color":"green"});
+            $(productCardClass).css({"opacity": "50%"})
+            $.ajax({
+                type: 'GET',
+                url: "{{route('order.top.carted')}}",
+                data: {"order": dir},
+                success: function (response) {
+                    if(response.status) {
+                        $(parentsProductClass).html(response.html);
+                    }
+                }
+            })
+            $(productCardClass).css({"opacity": "100%"})
+        })
+
+        $('.sort-top-visited').click(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var dir = el.data('order');
+            var sortClass = '.sort-top-visited';
+            var productCardClass = '.top-visited-product';
+            var parentsProductClass = '.parent-top-visited';
+            $(sortClass).css({"color":"black"});
+            el.css({"color":"green"});
+            $(productCardClass).css({"opacity": "50%"})
+            $.ajax({
+                type: 'GET',
+                url: "{{route('order.top.visited')}}",
+                data: {"order": dir},
+                success: function (response) {
+                    if(response.status) {
+                        $(parentsProductClass).html(response.html);
+                    }
+                }
+            })
+            $(productCardClass).css({"opacity": "100%"})
+        })
+        /*
         var themeInstalled = checkThemeInstallation();
         if(themeInstalled) {
             $('#themeInstallBtn').html('Installed!').removeClass('btn-primary').addClass('btn-success').removeAttr('href');
         }
+        */
 
         const graphOptions = {
             responsive: true,

@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [AppController::class, 'showDashboard'])->name('dashboard');
         Route::get('reloadAnalytics', [AppController::class, 'reloadDashboard'])->name('reload.dashboard');
+        Route::get('orderTopVisited', [AppController::class, 'orderTopVisited'])->name('order.top.visited');
+        Route::get('orderTopCarted', [AppController::class, 'orderTopCarted'])->name('order.top.carted');
     });
 
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
