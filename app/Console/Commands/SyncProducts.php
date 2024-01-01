@@ -33,7 +33,7 @@ class SyncProducts extends Command
         $shops = Shop::get();
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
-                SyncShopifyProducts::dispatch($shop)->onConnection('sync');
+                SyncShopifyProducts::dispatch($shop)->onConnection('database');
             }
         }
         $this->info('================= PRODUCT SYNC FINISHED =================');
