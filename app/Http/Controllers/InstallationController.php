@@ -45,7 +45,8 @@ class InstallationController extends Controller {
 
         if($shopDetails != null && $shopDetails->count() > 0 && $this->verifyInstallation($shopDetails)) {
             $baseShop = Shop::where('shop_url', $shop)->first();
-            $user = User::where('shop_id', $baseShop->id)->first();
+            $userShop = UserShops::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first();
+            $user = User::where('id', $userShop->user_id)->first();
             $shopDetails = ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first();
             Auth::loginUsingId($user->id);
             return redirect()->route('dashboard');
