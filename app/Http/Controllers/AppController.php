@@ -293,24 +293,6 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'message' => 'Recorded!']);
     }
 
-    public function testSettings(Request $request) {
-        try {
-            $request = $request->only('shop');
-            $shop = 'almestore1.myshopify.com';
-            $baseShop = Shop::where('shop_url', $shop)->first();
-            $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
-            $checkScriptRunning = $this->checkAlmeScriptRunningOrNot($baseShop);
-            // $liveTheme = $this->getLiveThemeForShop($baseShop);
-            // $appEmbedURL = 'https://admin.shopify.com/store/'.str_replace('.myshopify.com', '', $shop).'/themes/'.$liveTheme['id'].'/editor?context=apps';
-            $almeResponses = $this->getAlmeAnalytics($shop);
-            return view('new_dashboard', compact('baseShop', 'shopDetails', 'almeResponses', 'checkScriptRunning'));
-        } catch(Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
-        } catch(Throwable $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
-        }
-    }
-
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');
