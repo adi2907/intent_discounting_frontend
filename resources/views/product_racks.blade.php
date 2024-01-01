@@ -149,6 +149,8 @@
                 },
                 async: false,
                 success: function (response) {
+                    console.log(response);
+                    /*
                     if(response.status) {
                         var myPopup = new Popup({
                             id: "my-popup",
@@ -164,8 +166,8 @@
                             content: response.htmlContent    
                         });
                         myPopup.show();
-                        
                     }
+                    */
                 }
             });
         }
