@@ -296,7 +296,6 @@ class AppController extends Controller {
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');
-            dd(Auth::user());
             $shop = $request['shop'] ?? Auth::user()->shopifyStore->shop_url;
             $baseShop = Shop::where('shop_url', $shop)->first();
             $shopDetails = $baseShop !== null ? ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first() : null;
