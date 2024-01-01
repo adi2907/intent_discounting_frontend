@@ -15,7 +15,7 @@
     </section>
     <section class="main-content">
 
-        @if(!$checkScriptRunning)
+        {{-- @if(!$checkScriptRunning)
         <div class="row">
             <div class="col-9 col-md-9 col-lg-9">
                 <h2 class="section-heading" style="color:red">   
@@ -26,7 +26,7 @@
                 <a href="{{route('alme.turn.script.on')}}" target="_blank" class="btn btn-secondary mt-2 mr-2" style="float:right;">Click here</a>
             </div>
         </div>    
-        @endif
+        @endif --}}
 
         <div class="row">
             <div class="col-9 col-md-9 col-lg-9">
