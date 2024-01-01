@@ -45,7 +45,7 @@ class User extends Authenticatable
     ];
 
     public function shopifyStore() {
-        return $this->hasOneThrough(Shop::class, UserShops::class);
+        return $this->hasOneThrough(Shop::class, UserShops::class, 'first_col', 'second_col', 'third_col', 'fourth_col');
     }
 
     /**
