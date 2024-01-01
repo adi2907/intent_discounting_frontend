@@ -108,6 +108,7 @@ class InstallationController extends Controller {
                     ]);
                     $user = User::updateOrCreate($updateArr, $createArr);
                     $user->markEmailAsVerified();
+                    UserShops::where('user_id', $user->id)->update(['active' => 0]);
                     UserShops::updateOrCreate([
                         'user_id' => $user->id,
                         'shop_id' => $dbShop->id
