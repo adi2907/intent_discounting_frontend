@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserShops extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
 }
