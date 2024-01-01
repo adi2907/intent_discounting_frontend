@@ -45,6 +45,17 @@ class User extends Authenticatable
     ];
 
     public function shopifyStore() {
-        return $this->hasOneThrough(Shop::class, UserShops::class, 'user_id', 'shop_id', 'id', 'user_id');
+        return $this->hasOneThrough(Shop::class, UserShops::class, 'shop_id', 'id', 'id', 'user_id');
     }
+
+    /**
+     * SELECT
+  *`shop`.*,
+  *`user_shops`.`user_id` AS `laravel_through_key`
+*FROM
+ * `shop`
+  *INNER JOIN `user_shops` ON `user_shops`.`user_id` = `shop`.`shop_id`
+*WHERE
+ * `user_shops`.`user_id` IN (1)
+     */
 }
