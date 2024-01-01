@@ -35,7 +35,7 @@
                 </h2>
             </div>
             <div class="col-3 col-md-3 col-lg-3">
-                <a href="{{route('show.setup.page')}}" style="float:right" class="btn btn-secondary">Setup the App</a>
+                <a href="{{route('show.setup.page')}}" style="float:right" class="btn btn-secondary mt-2 mr-2">Setup the App</a>
             </div>
             <div class="col-3 col-md-3 col-lg-3" style="display: none;">
                 Select Date Range: &nbsp;
