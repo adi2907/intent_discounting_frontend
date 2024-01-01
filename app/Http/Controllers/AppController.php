@@ -22,6 +22,7 @@ class AppController extends Controller {
         
     }
 
+    /*
     public function turnAlmeScriptOn() {
         $user = Auth::user();
         $shop = $user->shopifyStore;
@@ -54,6 +55,25 @@ class AppController extends Controller {
 
             return back();
         }
+    }
+    */
+
+    public function turnAlmeScriptOn() {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $liveTheme = $this->getLiveThemeForShop($shop);
+        $storeName = str_replace('.myshopify.com', '', $shop->shop_url);
+        $url = 'https://admin.shopify.com/store/'.$storeName.'/themes/'.$liveTheme['id'].'/editor?context=apps';
+        return redirect($url);
+    }
+
+    public function showSetupPage() {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $liveTheme = $this->getLiveThemeForShop($shop);
+        $storeName = str_replace('.myshopify.com', '', $shop->shop_url);
+        $url = 'https://admin.shopify.com/store/'.$storeName.'/themes/'.$liveTheme['id'].'/editor';
+        return view('store_setup', compact('user', 'shop', 'liveTheme', 'storeName', 'url'));
     }
 
     public function reloadDashboard(Request $request) {
@@ -413,11 +433,11 @@ class AppController extends Controller {
                 $value = $request->value === 'on';
                 $field = $request->field;
 
-                $check = $this->checkIfThemeHasAppBlocksAdded($field, $shop);
-                if($check) {
-                    $response = $this->manageBlocksForThemeEditor($field, $value, $shop);
+                //$check = $this->checkIfThemeHasAppBlocksAdded($field, $shop);
+                if(true) {
+                    //$response = $this->manageBlocksForThemeEditor($field, $value, $shop);
                     $shop->productRackInfo()->update([$field => $value]);
-                    return response()->json(['status' => true, 'message' => 'Updated!', 'response' => $response]);
+                    return response()->json(['status' => true, 'message' => 'Updated!']);
                 } else {
                     $liveTheme = $this->getLiveThemeForShop($shop);
                     $themeURL = 'https://admin.shopify.com/store/'.str_replace('.myshopify.com', '', $shop->shop_url).'/themes/'.$liveTheme['id'].'/editor';

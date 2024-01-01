@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Shop;
 use App\Models\ShopDetail;
 use App\Models\User;
+use App\Models\UserShops;
+use App\Models\UserStores;
 use App\Traits\RequestTrait;
 use App\Traits\FunctionTrait;
 use Exception;
@@ -97,17 +99,22 @@ class InstallationController extends Controller {
                     $dbShop = Shop::updateOrCreate($updateArr, $createArr);
                     
                     $updateArr = [
-                        'shop_id' => $dbShop->id,
                         'email' => $shopifyShopData['email']
                     ];
                     $createArr = array_merge($updateArr, [
                         'password' => Hash::make(123456),
                         'name' => $shopifyShopData['name']
                     ]);
-                    User::updateOrCreate($updateArr, $createArr);
-                    //if(!$this->isShopifyStoreVersionNew($shop, $accessToken)) {
-                        //$this->addScriptTagToStore($storeObj);
-                    //}
+                    $user = User::updateOrCreate($updateArr, $createArr);
+                    $user->markEmailAsVerified();
+                    UserShops::updateOrCreate([
+                        'user_id' => $user->id,
+                        'shop_id' => $dbShop->id
+                    ],[
+                        'user_id' => $user->id,
+                        'shop_id' => $dbShop->id,
+                        'active' => true
+                    ]);
                 }
                 return redirect()->to("https://$shop/admin/apps/".$this->apiKey);
             }

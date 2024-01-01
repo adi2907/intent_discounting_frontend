@@ -153,7 +153,7 @@
                         var myPopup = new Popup({
                             id: "my-popup",
                             title: response.message ,
-                            content: null   
+                            content: ""   
                         });
                         myPopup.show();
                     } else {
