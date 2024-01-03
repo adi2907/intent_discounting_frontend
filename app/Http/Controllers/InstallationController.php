@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\FinishInstallation;
 use App\Jobs\SyncShopifyProducts;
 use App\Models\Shop;
 use App\Models\ShopDetail;
@@ -12,6 +13,7 @@ use App\Traits\RequestTrait;
 use App\Traits\FunctionTrait;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -118,7 +120,7 @@ class InstallationController extends Controller {
                         'shop_id' => $dbShop->id,
                         'active' => true
                     ]);
-                    SyncShopifyProducts::dispatch($dbShop)->onConnection('database');
+                    FinishInstallation::dispatch($dbShop, $user)->onConnection('database');
                 }
                 return redirect()->to("https://$shop/admin/apps/".$this->apiKey);
             }
