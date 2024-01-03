@@ -352,36 +352,41 @@ class AppController extends Controller {
     }
 
     public function saleNotificationPopup(Request $request) {
-        if ($request->has('shop')) {
-            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])
-                        ->where('shop_url', $request->shop)
-                        ->first();
-    
-            $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-            $notificationSettings = $shop->notificationSettings;
-            $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
-                          isset($notificationSettings->sale_status) && 
-                          ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
-            
-            $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
-            $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
-
-            $html=null;
-            if ($saleStatus) {
+        try {
+            if ($request->has('shop')) {
+                $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])
+                            ->where('shop_url', $request->shop)
+                            ->first();
+        
+                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                $notificationSettings = $shop->notificationSettings;
+                $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
+                              isset($notificationSettings->sale_status) && 
+                              ($notificationSettings->sale_status === true || $notificationSettings->sale_status === 1);
+                
                 $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                 $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
-                $html = view('sale_notification_popup', [
-                    'discountCode' => $code, 
-                    'discountValue' => $discountValue, 
-                    'discountExpiry' => $discountExpiry
-                ])->render();
-            } else {
-                $html = null;
+    
+                $html=null;
+                if ($saleStatus) {
+                    $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
+                    $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
+                    $html = view('sale_notification_popup', [
+                        'discountCode' => $code, 
+                        'discountValue' => $discountValue, 
+                        'discountExpiry' => $discountExpiry
+                    ])->render();
+                } else {
+                    $html = null;
+                }
+                
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
             }
-            
-            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+            return response()->json(['code' => null, 'status' => true, 'html' => null]);
+        } catch (Exception $th) {
+            return response()->json(['code' => null, 'status' => false, 'debug' => $th->getMessage().' '.$th->getLine(), 'html' => null]);
         }
-        return response()->json(['code' => null, 'status' => true, 'html' => null]);
+        
     }
     
 
