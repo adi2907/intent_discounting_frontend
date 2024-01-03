@@ -358,7 +358,7 @@ class AppController extends Controller {
                             ->where('shop_url', $request->shop)
                             ->first();
         
-                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
                 $notificationSettings = $shop->notificationSettings;
                 $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
                               isset($notificationSettings->sale_status) && 
