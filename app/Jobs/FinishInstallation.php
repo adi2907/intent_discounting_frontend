@@ -34,7 +34,9 @@ class FinishInstallation implements ShouldQueue {
                 'discount_value' => 15,
                 'sale_status' => true,
                 'sale_discount_value' => 15,
-                'discount_expiry' => 8
+                'discount_expiry' => 8,
+                'title' => 'Become an Insider',
+                'description' => 'Receive WhatsApp notification of new collection and sales updates'
             ]);
             $this->store->productRackInfo()->firstOrCreate([
                 'usersAlsoLiked' => false,
