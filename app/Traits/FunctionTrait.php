@@ -367,7 +367,17 @@ trait FunctionTrait {
         } catch(Exception $e) {
             return ['status' => false, 'response' => $e->getMessage().' '.$e->getLine()];
         }
-        
+    }
+
+    public function getShopDetails($shop) {
+        try{
+            $endpoint = getShopifyAPIURLForStore('shop.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            return $response['body']['shop'];
+        } catch(Exception $e) {
+            return ['status' => false, 'response' => $e->getMessage().' '.$e->getLine()];
+        }
     }
 
     public function getLiveThemeForShop($shop) {
