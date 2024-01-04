@@ -175,12 +175,17 @@ trait FunctionTrait {
                 $asset = $this->getAssetsForTheme($shop, $liveTheme, $assetKey);
                 $assetContents = json_decode($asset['value'], true);
                 if(is_array($assetContents['current'])) {
-                    foreach($assetContents['current']['blocks'] as $blockId => $data) {
-                        $themeBlockId = config('shopify.APP_BLOCK_ID');
-                        if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
-                            return !$data['disabled'];
+                    if(array_key_exists('blocks', $assetContents['current']) && isset($assetContents['current']['blocks'])) {
+                        foreach($assetContents['current']['blocks'] as $blockId => $data) {
+                            $themeBlockId = config('shopify.APP_BLOCK_ID');
+                            if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
+                                return !$data['disabled'];
+                            }
                         }
-                    }    
+                    } else {
+                        Log::info('Invalid response for '.$shop['shop_url']);
+                        Log::info($assetContents);
+                    }
                 }
             }
         } catch(Exception $e) {
