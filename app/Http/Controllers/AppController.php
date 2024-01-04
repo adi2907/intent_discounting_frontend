@@ -63,9 +63,9 @@ class AppController extends Controller {
         return APP_BLOCK_TEMPLATES.some(template => file.key === `templates/${template}.json`);
         })
         if (templateJSONFiles.length > 0 && (templateJSONFiles.length === APP_BLOCK_TEMPLATES.length)) {
-        console.log('All desired templates support sections everywhere!')
+            console.log('All desired templates support sections everywhere!')
         } else if (templateJSONFiles.length) {
-        console.log('Only some of the desired templates support sections everywhere.')
+            console.log('Only some of the desired templates support sections everywhere.')
         }
         // Retrieve the body of JSON templates and find what section is set as `main`
         const templateMainSections = (await Promise.all(templateJSONFiles.map(async (file, index) => {
