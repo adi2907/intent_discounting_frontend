@@ -184,7 +184,7 @@ trait FunctionTrait {
                 }
             }
         } catch(Exception $e) {
-            Log::info($e->getMessage().' '.$e->getLine());
+            Log::info('Shop '.$shop['shop_url'].' '.$e->getMessage().' '.$e->getLine());
         }
         return false;        
     }
