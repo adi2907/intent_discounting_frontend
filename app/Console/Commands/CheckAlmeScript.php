@@ -6,6 +6,7 @@ use App\Models\Shop;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class CheckAlmeScript extends Command
@@ -33,8 +34,7 @@ class CheckAlmeScript extends Command
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
                 $result = $this->checkAlmeScriptRunningOrNot($shop);
-                Log::info('Result for '.$shop->shop_url);
-                Log::info($result);
+                Cache::put('Alme:Scripts:Stores.'.$shop->shop_url, $result);
             }
         }
     }
