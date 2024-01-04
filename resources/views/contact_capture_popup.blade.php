@@ -79,14 +79,27 @@
                     <div class="modal-header">
                         <div class="header-box mx-auto text-center">
                             <img src="{{asset('images/TextALME.png')}}" alt="Brand Logo" class="brand-logo">
-                            <h5 class="modal-title">{{$settings['title']}}</h5>
+                            <h5 class="modal-title">
+                                @if(isset($settings['title']) && strlen($settings['title']) > 0)
+                                    {{$settings['title']}}
+                                @else 
+                                    Become an insider
+                                @endif
+                            </h5>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeBtn">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 <div class="modal-body text-center">
-                    <p class="modal-description">{{$settings['description']}} </p>
+                    <p class="modal-description"> 
+                        @if(isset($settings['description']) && strlen($settings['description']) > 0)
+                            {{$settings['description']}} 
+                        @else 
+                            Receive WhatsApp notification about our new collections and sales updates.
+                        @endif
+                    </p>
+
                     <form id="newUserForm">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Full Name" name="fullname">
