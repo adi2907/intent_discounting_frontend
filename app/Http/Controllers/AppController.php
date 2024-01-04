@@ -22,6 +22,31 @@ class AppController extends Controller {
         
     }
 
+    public function checkAlmeScripts() {
+        $returnVal = [];
+        $shops = Shop::get();
+        foreach($shops as $shop) {
+            $liveTheme = $this->getLiveThemeForShop($shop);
+            $returnVal['theme'][$shop->shop_url] = $liveTheme;
+            $assetKey = 'asset[key]=config/settings_data.json';
+            $asset = $this->getAssetsForTheme($shop, $liveTheme, $assetKey);
+            $assetContents = json_decode($asset['value'], true);
+            $liveTheme['assetContents'][$shop->shop_url] = $assetContents;
+            if(is_array($assetContents['current'])) {
+                if(array_key_exists('blocks', $assetContents['current']) && isset($assetContents['current']['blocks'])) {
+                    foreach($assetContents['current']['blocks'] as $blockId => $data) {
+                        $themeBlockId = config('shopify.APP_BLOCK_ID');
+                        if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
+                            return !$data['disabled'];
+                        }
+                    }
+                } 
+            } 
+        }
+
+        return response()->json($returnVal);
+    }
+
     /*
     public function turnAlmeScriptOn() {
         $user = Auth::user();

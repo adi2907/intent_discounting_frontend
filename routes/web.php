@@ -44,6 +44,7 @@ Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
 
 Route::prefix('debug')->group(function () {
     Route::get('cron', [AppController::class, 'checkCronStatus']);
+    Route::get('checkAlmeScripts', [AppController::class, 'checkAlmeScripts']);
 });
 
 Route::middleware('cors')->group(function () {
