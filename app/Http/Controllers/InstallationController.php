@@ -52,6 +52,8 @@ class InstallationController extends Controller {
             $user = User::where('id', $userShop->user_id)->first();
             $shopDetails = ShopDetail::where('shop_id', $baseShop->id)->orderBy('id', 'desc')->first();
             Auth::loginUsingId($user->id);
+            UserShops::where('user_id', $user->id)->update(['active' => 0]);
+            UserShops::where('user_id', $user->id)->where('shop_id', $shopDetails->id)->update(['active' => 1]);
             return redirect()->route('dashboard');
         } else {
             $redirectUrl = urlencode(route('shopify.auth.redirect'));
