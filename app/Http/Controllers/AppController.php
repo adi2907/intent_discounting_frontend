@@ -28,8 +28,9 @@ class AppController extends Controller {
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
                 $liveTheme = $this->getLiveThemeForShop($shop);
-                $returnVal['theme'][$shop->shop_url] = $liveTheme;
+                //$returnVal['theme'][$shop->shop_url] = $liveTheme;
                 $assets = $this->getAssets($shop, $liveTheme);
+                $returnVal['assets'][$shop->shop_url] = $assets;
                 $shopDetails = $this->getShopDetails($shop);
                 $returnVal['shop'][$shop->shop_url] = $shopDetails;
             } else {
