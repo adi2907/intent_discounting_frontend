@@ -40,9 +40,15 @@ class AppController extends Controller {
                             if(array_key_exists('type', $data) && $data['type'] == 'shopify://apps/alme/blocks/app-embed/'.$themeBlockId) {
                                 $returnVal['result'][$shop->shop_url] = !$data['disabled'];
                                 $returnVal['themeBlockId'][$shop->shop_url] = $themeBlockId;
+                            } else {    
+                                $returnVal['result'][$shop->shop_url] = 'data type found '.$data['type'];
                             }
                         }
-                    } 
+                    } else {
+                        $returnVal['result'][$shop->shop_url] = 'blocks not in array';
+                    }
+                } else {
+                    $returnVal['result'][$shop->shop_url] = 'Current block not an array';
                 }
             } else {
                 $returnVal['result'][$shop->shop_url] = 'Invalid installation';
