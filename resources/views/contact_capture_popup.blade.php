@@ -79,14 +79,14 @@
                     <div class="modal-header">
                         <div class="header-box mx-auto text-center">
                             <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
-                            <h5 class="modal-title">{{$notificationSettings['title']}}</h5>
+                            <h5 class="modal-title">{{$settings['title']}}</h5>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeBtn">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 <div class="modal-body text-center">
-                    <p class="modal-description">{{$notificationSettings['description']}} </p>
+                    <p class="modal-description">{{$settings['description']}} </p>
                     <form id="newUserForm">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Full Name" name="fullname">
