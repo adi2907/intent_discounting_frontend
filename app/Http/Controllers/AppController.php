@@ -32,7 +32,7 @@ class AppController extends Controller {
                 $assetKey = 'asset[key]=config/settings_data.json';
                 $asset = $this->getAssetsForTheme($shop, $liveTheme, $assetKey);
                 $assetContents = json_decode($asset['value'], true);
-                $liveTheme['assetContents'][$shop->shop_url] = $assetContents;
+                $returnVal['assetContents'][$shop->shop_url] = $assetContents;
                 if(is_array($assetContents['current'])) {
                     if(array_key_exists('blocks', $assetContents['current']) && isset($assetContents['current']['blocks'])) {
                         foreach($assetContents['current']['blocks'] as $blockId => $data) {
