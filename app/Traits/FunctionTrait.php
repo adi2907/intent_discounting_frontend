@@ -359,10 +359,15 @@ trait FunctionTrait {
     }
 
     public function getAssetsForTheme($shop, $liveTheme, $type) {
-        $endpoint = getShopifyAPIURLForStore('themes/'.$liveTheme['id'].'/assets.json?'.$type, $shop);
-        $headers = getShopifyAPIHeadersForStore($shop);
-        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
-        return $response['body']['asset'];
+        try{
+            $endpoint = getShopifyAPIURLForStore('themes/'.$liveTheme['id'].'/assets.json?'.$type, $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            return $response['body']['asset'];
+        } catch(Exception $e) {
+            return ['status' => false, 'response' => $e->getMessage().' '.$e->getLine()];
+        }
+        
     }
 
     public function getLiveThemeForShop($shop) {
