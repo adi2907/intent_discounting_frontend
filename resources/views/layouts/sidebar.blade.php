@@ -5,7 +5,7 @@ $route = Route::currentRouteName()
 <div class="col-md-3 sidebar d-none d-md-block">
     <div class="brand mb-4">
         <img src="{{asset('images/TextALME.png')}}" alt="M&H Clothing" class="img-fluid">
-        {{Auth::check() ? Auth::user()->shopifyStore->name : 'Some Store'}}
+        {{Auth::check() ? Auth::user()->shopifyStore->shop_url : 'Some Store'}}
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
