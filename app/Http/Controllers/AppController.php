@@ -29,8 +29,8 @@ class AppController extends Controller {
             if($this->verifyInstallation($shop)) {
                 $liveTheme = $this->getLiveThemeForShop($shop);
                 $returnVal['theme'][$shop->shop_url] = $liveTheme;
-                $shop = $this->getShopDetails($shop);
-                $returnVal['shop'][$shop->shop_url] = $shop;
+                $shopDetails = $this->getShopDetails($shop);
+                $returnVal['shop'][$shop->shop_url] = $shopDetails;
             } else {
                 $returnVal['result'][$shop->shop_url] = 'Invalid installation';
             }
