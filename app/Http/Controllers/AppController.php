@@ -432,7 +432,7 @@ class AppController extends Controller {
             $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
             $notificationSettings = $shop->notificationSettings;
             $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-            $html = $contactStatus ? view('contact_capture_popup')->render() : null;
+            $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);

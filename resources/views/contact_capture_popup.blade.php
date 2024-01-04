@@ -79,14 +79,14 @@
                     <div class="modal-header">
                         <div class="header-box mx-auto text-center">
                             <img src="images/brand_logo.png" alt="Brand Logo" class="brand-logo">
-                            <h5 class="modal-title">Become an Insider</h5>
+                            <h5 class="modal-title">{{$notificationSettings['title'] ?? 'Become an Insider'}}</h5>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeBtn">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 <div class="modal-body text-center">
-                    <p class="modal-description">Receive Whatsapp notifications on New Collections and Sale Updates.</p>
+                    <p class="modal-description">{{$notificationSettings['description'] ?? 'Receive Whatsapp notifications on New Collections and Sale Updates.'}} </p>
                     <form id="newUserForm">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Full Name" name="fullname">
