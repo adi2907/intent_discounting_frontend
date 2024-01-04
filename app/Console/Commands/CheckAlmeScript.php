@@ -31,11 +31,16 @@ class CheckAlmeScript extends Command
      */
     public function handle() {
         $shops = Shop::get();
+        $cacheArr = [];
+        $count = 0;
         foreach($shops as $shop) {
             if($this->verifyInstallation($shop)) {
+                $count += 1;
                 $result = $this->checkAlmeScriptRunningOrNot($shop);
-                Cache::put('Alme:Scripts:Stores.'.$shop->shop_url, $result);
+                $cacheArr[$shop->shop_url] = $result;
             }
         }
+        Cache::put('Alme:Scripts:Stores', $cacheArr);
+        $this->info('Completed check for '.$count.' stores');
     }
 }
