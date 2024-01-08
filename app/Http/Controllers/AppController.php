@@ -402,11 +402,13 @@ class AppController extends Controller {
         $user = Auth::user();
         $shopifyStore = $user->shopifyStore;
         $response = $this->callAlmeAppIdentifiedUsers($shopifyStore);
+        //dd($response);
         return view('identified_users', ['data' => $response]);
     }
 
     public function callAlmeAppIdentifiedUsers($shop) {
-        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?app_name='.$shop->shop_url);
+        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?days=7&app_name='.$shop->shop_url);
+        //dd($endpoint);
         $headers = getAlmeHeaders();
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
