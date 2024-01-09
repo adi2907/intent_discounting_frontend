@@ -45,37 +45,32 @@
 </style>
 </head>
 <body>
-
-<!-- Modal -->
-<div class="modal show" id="widgetsModal" tabindex="-1" role="dialog" aria-labelledby="widgetsModalLabel" aria-modal="true" style="display: block; padding-right: 17px;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="widgetsModalLabel"><b>Alme widgets setup Instructions</b></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Please click on "Customize Button". To add <b>Home page recommendations</b>, select Home page from the top and click on "Add block" under Apps from the left and add the Alme app block which you want to show on your Home page.</p>
-        <img src="{{asset('images/homepage.png')}}" class="img-fluid" alt="Responsive image">
-        <p><p><p></p>
-        <p>To add <b>Product page recommendations </b>, go to Home page on top center and select "Default product" from the dropdown</p>
-        <img src="{{asset('images/product nav.png')}}" class="img-fluid" alt="Responsive image">
-        <p><p><p></p>
-        <p>Now click on "Add block" under Apps from the left and add the Alme app block which you want to show on your Product page.</p>
-        <img src="{{asset('images/product page.png')}}" class="img-fluid" alt="Responsive image">
-        <p><p><p></p>
-        <p>To enable <b>smart notifications</b>, you will need to enable Alme script in app embeds. Go to "App embeds" on top left and toggle "Alme Script" to on</p>
-        <img src="{{asset('images/app embed.png')}}" class="img-fluid" alt="Responsive image">
-      </div>
-      
-      <div class="modal-footer">
-        <a href="{{$url}}" target="_blank" class="btn btn-primary">Go to theme editor</a>
-        <a href="{{url()->previous()}}" class="btn btn-danger">Back</a>
+  <div class="container">
+    <div class="row" style="margin-top:40px !important">
+      <div class="card" >
+        <div class="card-title mt-4 text-center">
+          <a href="{{$url}}" target="_blank" class="btn btn-primary">Go to theme editor</a>
+          <a href="{{url()->previous()}}" class="btn btn-danger">Back</a>
+        </div>
+        <div class="card-body">
+          <p class="mt-1"><b>Step 1:</b> Please click on "Customize Button". To add <b>Home page recommendations</b>, select Home page from the top and click on "Add block" under Apps from the left and add the Alme app block which you want to show on your Home page.</p>
+          <img src="{{asset('images/homepage.png')}}" class="img-fluid" alt="Responsive image">
+          <p><p><p></p>
+          <p class="mt-4"><b>Step 2:</b> To add <b>Product page recommendations </b>, go to Home page on top center and select "Default product" from the dropdown</p>
+          <img src="{{asset('images/product nav.png')}}" class="img-fluid" alt="Responsive image">
+          <p><p><p></p>
+          <p class="mt-4"><b>Step 3:</b> Now click on "Add block" under Apps from the left and add the Alme app block which you want to show on your Product page.</p>
+          <img src="{{asset('images/product page.png')}}" class="img-fluid" alt="Responsive image">
+          <p><p><p></p>
+          <p class="mt-4"><b>Step 4:</b> To enable <b>smart notifications</b>, you will need to enable Alme script in app embeds. Go to "App embeds" on top left and toggle "Alme Script" to on</p>
+          <img src="{{asset('images/app embed.png')}}" class="img-fluid" alt="Responsive image">
+        </div>
+        <div class="card-footer text-center mb-4">
+          <a href="{{$url}}" target="_blank" class="btn btn-primary">Go to theme editor</a>
+          <a href="{{url()->previous()}}" class="btn btn-danger">Back</a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </body>
 </html>
