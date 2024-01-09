@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:sync-orders')->everyOddHour();
         $schedule->command('app:purchase-event-alme')->everyFiveMinutes();
         $schedule->command('app:sync-products')->everyOddHour();
+        $schedule->command('app:sync-identified-users')->everyThreeHours();
     }
 
     /**
