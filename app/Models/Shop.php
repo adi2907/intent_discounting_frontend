@@ -39,4 +39,8 @@ class Shop extends Model {
     public function getProducts() {
         return $this->hasMany(ShopifyProducts::class, 'shop_id', 'id');
     }
+
+    public function getIdentifiedUsers() {
+        return $this->hasMany(IdentifiedUsers::class, 'shop_id', 'id');
+    }
 }

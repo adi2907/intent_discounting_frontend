@@ -469,6 +469,13 @@ trait FunctionTrait {
         }
     }
 
+    public function callAlmeAppIdentifiedUsers($shop) {
+        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?days=7&app_name='.$shop->shop_url);
+        //dd($endpoint);
+        $headers = getAlmeHeaders();
+        return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+    }
+
     public function getTopCarted($shopURL, $request = null) {
         try {
             $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';
