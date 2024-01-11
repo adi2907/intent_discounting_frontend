@@ -1,7 +1,6 @@
-@extends('layouts.new_app')
+@extends('dashboard.layout')
 @section('css')
 <link rel="stylesheet" href="{{asset('css/dashboard.css')}}">
-
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 @section('content')
@@ -201,13 +200,46 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    //$.noConflict();
+    
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <script>
+
+    function drawDataTables(tableIds) {
+        for(var i in tableIds) {
+            if($(tableIds[i]).length) {
+                $(tableIds[i]).DataTable({
+                    info: false,
+                    dom: 'rtip',
+                    pageLength: 20,
+                    searching: false,
+                    drawCallback: function( settings ) {
+                        $(tableIds[i]+" thead").remove(); 
+                    }
+                });
+            }
+        }
+    } 
+    
+        
     $(document).ready(function () {
         setDateTimePicker();
+
+        drawDataTables(['#topCartTable', '#topVisitedTable']);
 
         $('.sort-top-carted').click(function (e) {
             e.preventDefault();
@@ -226,6 +258,7 @@
                 success: function (response) {
                     if(response.status) {
                         $(parentsProductClass).html(response.html);
+                        drawDataTables(['#topCartTable', '#topVisitedTable']);
                     }
                 }
             })
@@ -428,7 +461,7 @@
         }, function(start, end, label) {
             reloadDashboardWithDateRange(Math.round(start/1000), Math.round(end/1000));
         });
-      }
+    }
 
 </script>
 @endsection

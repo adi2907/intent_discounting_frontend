@@ -12,10 +12,10 @@ class Kernel extends ConsoleKernel {
     protected function schedule(Schedule $schedule): void {
         $schedule->command('app:discount')->everyThirtyMinutes();
         $schedule->command('app:check-cron-status')->everyFiveSeconds();
-        $schedule->command('app:sync-orders')->everyOddHour();
-        $schedule->command('app:purchase-event-alme')->everyFiveMinutes();
+        $schedule->command('app:sync-orders')->everyMinute();
+        $schedule->command('app:purchase-event-alme')->everyMinute();
         $schedule->command('app:sync-products')->everyOddHour();
-        $schedule->command('app:sync-identified-users')->everyThreeHours();
+        $schedule->command('app:sync-identified-users')->everyOddHour();
     }
 
     /**

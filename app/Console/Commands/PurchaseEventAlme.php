@@ -31,7 +31,7 @@ class PurchaseEventAlme extends Command
      */
     public function handle()
     {
-        $orders = ShopifyOrder::where('purchase_event_status', null)->limit(5)->get();
+        $orders = ShopifyOrder::where('purchase_event_status', null)->get();
         if($orders !== null && $orders->count() > 0) {
             $shopIds = $orders->pluck('shop_id')->toArray();
             $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
@@ -56,6 +56,7 @@ class PurchaseEventAlme extends Command
                     $payload = [
                         "cart_token" => $order->cart_token,
                         "alme_user_token" => $almeInfo->alme_token,
+                        "timestamp" => $order->created_at,
                         "app_name" => $shops[$order->shop_id]['shop_url'],
                         "session_id" => $almeInfo->session_id,
                         "products" => $productsArr

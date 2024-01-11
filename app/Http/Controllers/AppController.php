@@ -422,16 +422,28 @@ class AppController extends Controller {
                 $limit = $request['length'];
                 $offset = $request['start'];
                 $builder = $builder->offset($offset)->limit($limit); //LIMIT and OFFSET logic for MySQL
-                /*
+
+                if(isset($request['start_date']) && isset($request['end_date'])) {
+                    if(strlen($request['start_date']) && strlen($request['end_date'])) {
+                        $builder = $builder->where('last_visited', '>', date('Y-m-d 00:00:00', $request['start_date']))
+                                ->where('last_visited', '<', date('Y-m-d 23:59:59', $request['end_date']));
+                    }
+                }
+                
                 if(isset($request['order']) && isset($request['order'][0]))
-                    $customers = $this->orderCustomers($customers, $request); //Order customers based on the column
-                */
+                    $builder = $this->orderIdentifiedUsers($builder, $request); //Order customers based on the column
+                
                 $data = [];
                 $query = $builder->toSql(); //For debugging the SQL query generated so far
                 $rows = $builder->get(); //Fetch from DB by using get() function
-                if($rows !== null)
-                    foreach ($rows as $item)
-                        $data[] = $item->toArray();
+                if($rows !== null){
+                    foreach ($rows as $item) {
+                        $item['last_visited'] = date('M d, Y', strtotime($item['last_visited']));
+                        $data[] = $item;
+                    }
+                }
+                    
+                        //$data[] = $item->toArray();
                 return response()->json([
                     "draw" => intval(request()->query('draw')),
                     "recordsTotal"    => intval($count),
@@ -447,6 +459,28 @@ class AppController extends Controller {
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()], 500);
         }
+    }
+
+    public function getListOfStores() {
+        $shops = Shop::select(['id', 'shop_url'])->get()->toArray();
+        return response()->json(['status' => true, 'data' => $shops]);
+    }
+
+    public function orderIdentifiedUsers($builder, $request) {
+        $column = $request['order'][0]['column'];
+        $dir = $request['order'][0]['dir'];
+        $db_column = null;
+        switch($column) {
+            case 0: $db_column = 'id'; break;
+            case 1: $db_column = 'name'; break;
+            case 2: $db_column = 'last_visited'; break;
+            case 3: $db_column = 'phone'; break; 
+            case 4: $db_column = 'visited'; break;
+            case 5: $db_column = 'added_to_cart'; break;
+            case 6: $db_column = 'purchased'; break;
+            default: $db_column = 'id';
+        }
+        return $builder->orderBy($db_column, $dir);   
     }
 
     public function getDiscountCodeForStore(Request $request) {
@@ -511,9 +545,7 @@ class AppController extends Controller {
         } catch (Exception $th) {
             return response()->json(['code' => null, 'status' => false, 'debug' => $th->getMessage().' '.$th->getLine(), 'html' => null]);
         }
-        
     }
-    
 
     public function removeCustomScript(Request $request) {
         try {
