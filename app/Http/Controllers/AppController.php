@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AlmeShopifyOrders;
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\ShopifyOrder;
 use App\Models\User;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
@@ -20,6 +21,15 @@ class AppController extends Controller {
     use FunctionTrait, RequestTrait;
     public function __construct() {
         
+    }
+    
+    public function getPurchaseEvents() {
+        $user = Auth::user();
+        if($user->email == 'helloworld.adi@gmail.com') {
+            $data = ShopifyOrder::orderBy('created_at', 'desc')->limit(20)->get();
+            return response()->json(['status' => true, 'data' => $data]);
+        }
+        return response()->json(['status' => false]);
     }
 
     public function checkAlmeScripts(Request $request) {

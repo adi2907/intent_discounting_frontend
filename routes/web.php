@@ -41,7 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');
     Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');
     Route::get('setup', [AppController::class, 'showSetupPage'])->name('show.setup.page');
-    Route::get('turnOnScript', [AppController::class, 'turnAlmeScriptOn'])->name('alme.turn.script.on');    
+    Route::get('turnOnScript', [AppController::class, 'turnAlmeScriptOn'])->name('alme.turn.script.on');  
+    Route::get('getPurchaseEvents', [AppController::class, 'getPurchaseEvents']);  
     Route::get('getStores', [AppController::class, 'getListOfStores']);
 });
 
