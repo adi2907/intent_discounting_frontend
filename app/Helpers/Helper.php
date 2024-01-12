@@ -30,7 +30,8 @@ if (!function_exists('getShopifyAPIURLForStore')) {
     function getAlmeHeaders() {
         return [
             'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
+            'Origin'=> 'https://www.almeapp.co.in'
         ];
     }
 }
