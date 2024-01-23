@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CallAlmeWebhookEvent;
 use App\Jobs\RegisterWebhooks;
 use App\Traits\FunctionTrait;
 use Illuminate\Http\Request;
@@ -97,13 +98,13 @@ class WebhookController extends Controller {
     
     public function orderCreateWebhook(Request $request) {
         Log::info('Request for order create');
-        Log::info($request->all());
+        CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
         return response()->json(['status' => true]);
     }
 
     public function orderUpdateWebhook(Request $request) {
         Log::info('Request for order update');
-        Log::info($request->all());
+        //Log::info($request->all());
         return response()->json(['status' => true]);
     }
 }

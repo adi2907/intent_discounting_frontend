@@ -649,4 +649,10 @@ trait FunctionTrait {
         return null;
     } 
 
+    //TODO: Do this logic later
+    public function validateWebhookRequest($request, $headers) {
+        $hmac_header = $headers['HTTP_X_SHOPIFY_HMAC_SHA256'] ?? null;
+        $calculated_hmac = base64_encode(hash_hmac('sha256', $request, config('shopify.SECRET_KEY'), true));
+        return $hmac_header == $calculated_hmac;
+    }
 }
