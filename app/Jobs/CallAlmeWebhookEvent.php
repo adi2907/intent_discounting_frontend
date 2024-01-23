@@ -48,6 +48,9 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                             'payload' => json_encode($payload),
                             'api_response' => json_encode($response)
                         ]);
+                        Cache::put($cacheKey, $response);
+                    } else {
+                        Log::info('Cache already has the key '.$cacheKey.' so rejecting the process');
                     }
                 } else {
                     Log::info('Request duplicated! Cache key '.$cacheKey);
