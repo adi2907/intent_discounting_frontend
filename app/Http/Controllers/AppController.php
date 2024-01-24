@@ -329,6 +329,18 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'message' => 'Recorded!']);
     }
 
+    public function checkAlmeAPIs(Request $request) {
+        try {
+            $shop = Shop::where('shop_url', $request->shop ?? 'almestore1.myshopify.com')->first();
+            if($shop !== null) {
+                return response()->json(['status' => true, 'data' => $this->getAlmeAnalytics($shop->shop_url)]);
+            }
+            return response()->json(['status' => false, 'message' => 'Null shop']);
+        } catch (Exception $e) {
+            dd($e->getMessage().' '.$e->getLine());
+        }
+    }
+
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');
