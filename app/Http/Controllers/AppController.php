@@ -22,6 +22,17 @@ class AppController extends Controller {
     public function __construct() {
         
     }
+
+    public function mapIp(Request $request) {
+        try{
+            $ip = $request->ip();
+            $cacheKey = 'ipmap.'.$ip;
+            Cache::put($cacheKey, $request->token);
+            return response()->json(['status' => true, 'message' => 'OK']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
     
     public function getPurchaseEvents() {
         $user = Auth::user();

@@ -60,6 +60,7 @@ Route::middleware('cors')->group(function () {
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
     Route::get('checkSubmitContact', [AppController::class, 'checkSubmitContact']);
     Route::any('sendCartContents', [AppController::class, 'mapCartContents']);
+    Route::get('mapIp', [AppController::class, 'mapIp']);
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
