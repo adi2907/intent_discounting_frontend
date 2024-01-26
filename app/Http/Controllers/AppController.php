@@ -28,7 +28,7 @@ class AppController extends Controller {
             $ip = $request->ip();
             $cacheKey = 'ipmap.'.$ip;
             Cache::put($cacheKey, $request->token);
-            return response()->json(['status' => true, 'message' => 'OK']);
+            return response()->json(['status' => true, 'message' => 'OK', 'cacheKey' => $cacheKey]);
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
         }
