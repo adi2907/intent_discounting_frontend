@@ -25,7 +25,7 @@ class AppController extends Controller {
 
     public function mapIp(Request $request) {
         try{
-            $ip = $request->ip();
+            $ip = $request->getClientIp();
             $cacheKey = 'ipmap.'.$ip;
             Cache::put($cacheKey, $request->token);
             return response()->json(['status' => true, 'message' => 'OK', 'cacheKey' => $cacheKey]);
