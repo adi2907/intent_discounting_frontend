@@ -67,6 +67,7 @@ class WebhookController extends Controller {
         }
         return response()->json($response, $response['code']);
     }
+    
     public function registerWebhooks(Request $request) {
         RegisterWebhooks::dispatch($request->shop_id)->onConnection('sync');
         return response()->json(['status' => true, 'message' => 'Done']);
