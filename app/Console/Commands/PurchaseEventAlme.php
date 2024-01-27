@@ -69,6 +69,7 @@ class PurchaseEventAlme extends Command
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                     $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
                 } else {
+                    /*
                     $payload = $this->getOrderRequestPayloadForAlmeEvent($order);
                     if($payload != null) {
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
@@ -81,7 +82,7 @@ class PurchaseEventAlme extends Command
                         ]);
                     } else {
                         Log::info('Payload came null for order create event!');
-                    }
+                    }*/
                     $order->update(['purchase_event_status' => 'Called order create webhook endpoint']);
                 }
             }
