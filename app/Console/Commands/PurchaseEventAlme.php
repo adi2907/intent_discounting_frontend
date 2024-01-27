@@ -69,21 +69,38 @@ class PurchaseEventAlme extends Command
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                     $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
                 } else {
-                    /*
-                    $payload = $this->getOrderRequestPayloadForAlmeEvent($order);
-                    if($payload != null) {
-                        $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
-                        $headers = getAlmeHeaders();
-                        $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                        $shopDetails = Shop::where('id', $order->shop_id)->first();
-                        $shopDetails->getAlmeWebhookEvents()->create([
-                            'payload' => json_encode($payload),
-                            'api_response' => json_encode($response)
-                        ]);
+                    if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
+                        $cacheKey = 'ipmap.'.$order['browser_ip'];
+                        $hasCache = Cache::has($cacheKey);
+                        if($hasCache) {
+                            $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
+                            $productsArr = [];
+                            foreach($line_items as $item) {
+                                $productsArr[] = [
+                                    "product_id" => $item['product_id'],
+                                    "product_name" => $item['title'],
+                                    "product_price" => $item['price'],
+                                    "product_qty" => $item['quantity']
+                                ];
+                            }
+                            $payload = [
+                                "cart_token" => $order->cart_token,
+                                "alme_user_token" => Cache::get($cacheKey),
+                                "timestamp" => $order->created_at,
+                                "app_name" => $shops[$order->shop_id]['shop_url'],
+                                "session_id" => $almeInfo->session_id,
+                                "products" => $productsArr
+                            ];
+                            $endpoint = getAlmeAppURLForStore('events/purchase/');
+                            $headers = getAlmeHeaders();
+                            $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                            $order->update(['purchase_event_status' => 'Buy it now event called']);
+                        } else {
+                            $order->update(['purchase_event_status' => 'Cache IP map not found']);
+                        }
                     } else {
-                        Log::info('Payload came null for order create event!');
-                    }*/
-                    $order->update(['purchase_event_status' => 'Called order create webhook endpoint']);
+                        $order->update(['purchase_event_status' => 'Browser IP found null']);
+                    }
                 }
             }
         }
