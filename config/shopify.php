@@ -13,6 +13,6 @@ return [
         'checkouts/create' => 'checkouts.create.webhook',
         'checkouts/update' => 'checkouts.update.webhook',
         'orders/create' => 'orders.create.webhook',
-        'orders/update' => 'orders.update.webhook'
+        'orders/updated' => 'orders.update.webhook'
     ]
 ];
