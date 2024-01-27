@@ -45,6 +45,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                         $headers = getAlmeHeaders();
                         $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                         $shopDetails->getAlmeWebhookEvents()->create([
+                            'order_id' => $this->request['id'],
                             'payload' => json_encode($payload),
                             'api_response' => json_encode($response)
                         ]);
