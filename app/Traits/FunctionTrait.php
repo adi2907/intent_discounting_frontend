@@ -669,12 +669,13 @@ trait FunctionTrait {
         }
     }
 
-    public function getLineItemsPayload($request) {
+    public function getLineItemsPayload($obj) {
         $arrKey = 'line_items';
         $returnVal = null;
-        if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
+        if(!is_array($obj)) $obj = $obj->toArray();
+        if(array_key_exists($arrKey, $obj) && is_array($obj[$arrKey]) && count($obj[$arrKey]) > 0) {
             $returnVal = [];
-            foreach($request[$arrKey] as $lineItem) {
+            foreach($obj[$arrKey] as $lineItem) {
                 $returnVal[] = [
                     "product_id" => $lineItem['product_id'],
                     "title" => $lineItem['title'],
