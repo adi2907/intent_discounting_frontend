@@ -39,7 +39,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                 $cacheKey = "Webhook:Order:{$this->request['id']}";
                 $verify = $this->verifyRequestDuplication($cacheKey);
                 if($verify) {
-                    $payload = $this->getRequestPayload($this->request);
+                    $payload = $this->getOrderRequestPayloadForAlmeEvent($this->request);
                     if($payload != null) {
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
                         $headers = getAlmeHeaders();
@@ -62,63 +62,5 @@ class CallAlmeWebhookEvent implements ShouldQueue {
             Log::info('Error in call alme webhook event');
             Log::info($th->getMessage().' '.$th->getLine());
         }
-    }
-
-    private function getRequestPayload($request) {
-        try {
-            return [
-                "cart_token" => $request['cart_token'],
-                "email" => $request['email'] ?? null,
-                "user_id" => $request['customer']['id'] ?? null,
-                "created_at" => $request['created_at'],
-                "line_items" => $this->getLineItemsPayload($request),
-                "total_discounts" => $request['total_discounts'],
-                "discount_codes" => $this->getDiscountCodes($request)
-            ];
-        } catch (Exception $e) {
-            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
-            return null;
-        }
-    }
-
-    private function getDiscountCodes($request) {
-        try {
-            $arrKey = 'discount_codes';
-            $returnVal = null;
-            if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
-                $returnVal = [];
-                foreach($request[$arrKey] as $data) {
-                    $returnVal[] = [
-                        'code' => $data['code'] ?? '',
-                        'amount' => $data['amount']
-                    ];
-                } 
-            }   
-            return $returnVal;         
-        } catch(Exception $e) {
-            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
-            return null;
-        }
-    }
-
-    private function getLineItemsPayload($request) {
-        $arrKey = 'line_items';
-        $returnVal = null;
-        if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
-            $returnVal = [];
-            foreach($request[$arrKey] as $lineItem) {
-                $returnVal[] = [
-                    "product_id" => $lineItem['product_id'],
-                    "title" => $lineItem['title'],
-                    "price" => $lineItem['price'],
-                    "quantity" => $lineItem['quantity']
-                ];
-            }
-        }
-        return $returnVal;
-    }
-
-    private function verifyRequestDuplication($cacheKey) {
-        return !Cache::has($cacheKey);
     }
 }

@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:check-cron-status')->everyThreeHours();
 
         //Syncs orders from all stores. Frequency increased given that we're working with webhooks now.
-        $schedule->command('app:sync-orders')->everyThirtyMinutes();
+        $schedule->command('app:sync-orders')->everyMinute();
 
         //Calls Alme's purchase event api for the orders that haven't been informed to Alme backend yet.
         $schedule->command('app:purchase-event-alme')->everyMinute();

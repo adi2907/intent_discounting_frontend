@@ -8,6 +8,8 @@ use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseEventAlme extends Command
 {
@@ -67,7 +69,20 @@ class PurchaseEventAlme extends Command
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                     $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
                 } else {
-                    $order->update(['purchase_event_status' => 'Alme frontend data not found']);
+                    $payload = $this->getOrderRequestPayloadForAlmeEvent($order);
+                    if($payload != null) {
+                        $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
+                        $headers = getAlmeHeaders();
+                        $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                        $shopDetails = $shops[$order->shop_id];
+                        $shopDetails->getAlmeWebhookEvents()->create([
+                            'payload' => json_encode($payload),
+                            'api_response' => json_encode($response)
+                        ]);
+                    } else {
+                        Log::info('Payload came null for order create event!');
+                    }
+                    $order->update(['purchase_event_status' => 'Called order create webhook endpoint']);
                 }
             }
         }

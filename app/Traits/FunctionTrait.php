@@ -649,6 +649,64 @@ trait FunctionTrait {
         return null;
     } 
 
+    public function getDiscountCodes($request) {
+        try {
+            $arrKey = 'discount_codes';
+            $returnVal = null;
+            if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
+                $returnVal = [];
+                foreach($request[$arrKey] as $data) {
+                    $returnVal[] = [
+                        'code' => $data['code'] ?? '',
+                        'amount' => $data['amount']
+                    ];
+                } 
+            }   
+            return $returnVal;         
+        } catch(Exception $e) {
+            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
+            return null;
+        }
+    }
+
+    public function getLineItemsPayload($request) {
+        $arrKey = 'line_items';
+        $returnVal = null;
+        if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
+            $returnVal = [];
+            foreach($request[$arrKey] as $lineItem) {
+                $returnVal[] = [
+                    "product_id" => $lineItem['product_id'],
+                    "title" => $lineItem['title'],
+                    "price" => $lineItem['price'],
+                    "quantity" => $lineItem['quantity']
+                ];
+            }
+        }
+        return $returnVal;
+    }
+
+    public function verifyRequestDuplication($cacheKey) {
+        return !Cache::has($cacheKey);
+    }
+
+    public function getOrderRequestPayloadForAlmeEvent($obj) {
+        try {
+            return [
+                "cart_token" => $obj['cart_token'],
+                "email" => $obj['email'] ?? null,
+                "user_id" => $obj['customer']['id'] ?? null,
+                "created_at" => $obj['created_at'],
+                "line_items" => $this->getLineItemsPayload($obj),
+                "total_discounts" => $obj['total_discounts'],
+                "discount_codes" => $this->getDiscountCodes($obj)
+            ];
+        } catch (Exception $e) {
+            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
+            return null;
+        }
+    }
+
     //TODO: Do this logic later
     public function validateWebhookRequest($request, $headers) {
         return true;
