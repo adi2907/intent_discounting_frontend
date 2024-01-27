@@ -649,13 +649,14 @@ trait FunctionTrait {
         return null;
     } 
 
-    public function getDiscountCodes($request) {
+    public function getDiscountCodes($obj) {
         try {
             $arrKey = 'discount_codes';
             $returnVal = null;
-            if(array_key_exists($arrKey, $request) && is_array($request[$arrKey]) && count($request[$arrKey]) > 0) {
+            if(!is_array($obj)) $obj = $obj->toArray();
+            if(array_key_exists($arrKey, $obj) && is_array($obj[$arrKey]) && count($obj[$arrKey]) > 0) {
                 $returnVal = [];
-                foreach($request[$arrKey] as $data) {
+                foreach($obj[$arrKey] as $data) {
                     $returnVal[] = [
                         'code' => $data['code'] ?? '',
                         'amount' => $data['amount']
