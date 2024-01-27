@@ -74,7 +74,7 @@ class PurchaseEventAlme extends Command
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
                         $headers = getAlmeHeaders();
                         $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                        $shopDetails = $shops[$order->shop_id];
+                        $shopDetails = Shop::where('id', $order->shop_id)->first();
                         $shopDetails->getAlmeWebhookEvents()->create([
                             'payload' => json_encode($payload),
                             'api_response' => json_encode($response)
