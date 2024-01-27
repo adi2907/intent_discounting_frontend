@@ -22,6 +22,8 @@ class VerifyCsrfToken extends Middleware
         'webhooks/cartUpdate',
         'webhooks/cartCreate',
         'webhooks/checkoutUpdate',
+        'webhooks/orderCreate',
+        'webhooks/orderUpdate',
         'webhooks/checkoutCreate',
         'sendCartContents',
         'gdpr/webhooks/customer_data_request',
