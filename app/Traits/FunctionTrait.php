@@ -692,10 +692,11 @@ trait FunctionTrait {
         return !Cache::has($cacheKey);
     }
 
-    public function getOrderRequestPayloadForAlmeEvent($obj) {
+    public function getOrderRequestPayloadForAlmeEvent($obj, $shopDetails) {
         try {
             return [
                 "cart_token" => $obj['cart_token'],
+                "app_name" => $shopDetails->shop_url,
                 "email" => $obj['email'] ?? null,
                 "user_id" => $obj['customer']['id'] ?? null,
                 "created_at" => $obj['created_at'],

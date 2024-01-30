@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlmeShopifyOrders;
+use App\Models\IpMap;
 use App\Models\Shop;
 use App\Models\ShopDetail;
 use App\Models\ShopifyOrder;
@@ -26,9 +27,13 @@ class AppController extends Controller {
     public function mapIp(Request $request) {
         try{
             $ip = $request->ipAddr;
-            $cacheKey = 'ipmap.'.$ip;
-            Cache::put($cacheKey, $request->token);
-            return response()->json(['status' => true, 'message' => 'OK', 'cacheKey' => $cacheKey]);
+            //$cacheKey = 'ipmap.'.$ip;
+            //Cache::put($cacheKey, $request->token);
+            $token = $request->token;
+            $updateArr = ['ip_address' => $ip];
+            $createArr = array_merge($updateArr, ['alme_token' => $token]);
+            IpMap::updateOrCreate($updateArr, $createArr);
+            return response()->json(['status' => true, 'message' => 'OK']);
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
         }

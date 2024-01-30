@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AlmeShopifyOrders;
+use App\Models\IpMap;
 use App\Models\Shop;
 use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
@@ -70,9 +71,10 @@ class PurchaseEventAlme extends Command
                     $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
                 } else {
                     if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
-                        $cacheKey = 'ipmap.'.$order['browser_ip'];
-                        $hasCache = Cache::has($cacheKey);
-                        if($hasCache) {
+                        //$cacheKey = 'ipmap.'.$order['browser_ip'];
+                        //$hasCache = Cache::has($cacheKey);
+                        $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->first();
+                        if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
                             $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
                             $productsArr = [];
                             foreach($line_items as $item) {
@@ -83,20 +85,22 @@ class PurchaseEventAlme extends Command
                                     "product_qty" => $item['quantity']
                                 ];
                             }
+
                             $payload = [
                                 "cart_token" => $order->cart_token,
-                                "alme_user_token" => Cache::get($cacheKey),
+                                "alme_user_token" => $dbRowForIP->alme_token,
                                 "timestamp" => $order->created_at,
                                 "app_name" => $shops[$order->shop_id]['shop_url'],
                                 "session_id" => $almeInfo->session_id,
                                 "products" => $productsArr
                             ];
+
                             $endpoint = getAlmeAppURLForStore('events/purchase/');
                             $headers = getAlmeHeaders();
                             $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                             $order->update(['purchase_event_status' => 'Buy it now event called']);
                         } else {
-                            $order->update(['purchase_event_status' => 'Cache IP map not found']);
+                            $order->update(['purchase_event_status' => 'Database IP map not found']);
                         }
                     } else {
                         $order->update(['purchase_event_status' => 'Browser IP found null']);

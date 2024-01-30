@@ -39,7 +39,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                 $cacheKey = "Webhook:Order:{$this->request['id']}";
                 $verify = $this->verifyRequestDuplication($cacheKey);
                 if($verify) {
-                    $payload = $this->getOrderRequestPayloadForAlmeEvent($this->request);
+                    $payload = $this->getOrderRequestPayloadForAlmeEvent($this->request, $shopDetails);
                     if($payload != null) {
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
                         $headers = getAlmeHeaders();
