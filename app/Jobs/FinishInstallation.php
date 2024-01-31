@@ -30,9 +30,9 @@ class FinishInstallation implements ShouldQueue {
     {
         try {
             $this->store->notificationSettings()->firstOrCreate([
-                'status' => 1,
+                'status' => 0,
                 'discount_value' => 15,
-                'sale_status' => true,
+                'sale_status' => 0,
                 'sale_discount_value' => 15,
                 'discount_expiry' => 8,
                 'title' => 'Become an Insider',

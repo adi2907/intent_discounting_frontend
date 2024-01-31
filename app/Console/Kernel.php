@@ -10,11 +10,22 @@ class Kernel extends ConsoleKernel {
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void {
+        //Create discount codes for all stores depending on what expiry they provided in their dashboards.
         $schedule->command('app:discount')->everyThirtyMinutes();
-        $schedule->command('app:check-cron-status')->everyFiveSeconds();
+
+        //This command helps us check if crons are running at all on the server. Nothing is done in this.
+        $schedule->command('app:check-cron-status')->everyThreeHours();
+
+        //Syncs orders from all stores. Frequency increased given that we're working with webhooks now.
         $schedule->command('app:sync-orders')->everyMinute();
+
+        //Calls Alme's purchase event api for the orders that haven't been informed to Alme backend yet.
         $schedule->command('app:purchase-event-alme')->everyMinute();
+
+        //Syncs products data from all stores. 
         $schedule->command('app:sync-products')->everyOddHour();
+
+        //Syncs Alme's Identified Users data into the database. So we can do custom querying on it on our end.
         $schedule->command('app:sync-identified-users')->everyOddHour();
     }
 

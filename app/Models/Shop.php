@@ -43,4 +43,8 @@ class Shop extends Model {
     public function getIdentifiedUsers() {
         return $this->hasMany(IdentifiedUsers::class, 'shop_id', 'id');
     }
+
+    public function getAlmeWebhookEvents() {
+        return $this->hasMany(AlmeWebhookEvent::class, 'shop_id', 'id');
+    }
 }

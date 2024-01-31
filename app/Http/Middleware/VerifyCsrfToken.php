@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
+        'sendEvent',
         'appExt/*',
         'appExt/mostViewed',
         'appExt/mostCarted',
@@ -22,6 +23,8 @@ class VerifyCsrfToken extends Middleware
         'webhooks/cartUpdate',
         'webhooks/cartCreate',
         'webhooks/checkoutUpdate',
+        'webhooks/orderCreate',
+        'webhooks/orderUpdate',
         'webhooks/checkoutCreate',
         'sendCartContents',
         'gdpr/webhooks/customer_data_request',

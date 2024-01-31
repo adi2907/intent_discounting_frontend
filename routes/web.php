@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
         Route::get('orderTopCarted', [AppController::class, 'orderTopCarted'])->name('order.top.carted');
     });
 
+    Route::get('logmeout', [AppController::class, 'logMeOut']);
+
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::prefix('identified_users')->group(function () {
@@ -51,6 +53,7 @@ Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
 Route::prefix('debug')->group(function () {
     Route::get('cron', [AppController::class, 'checkCronStatus']);
     Route::get('checkAlmeScripts', [AppController::class, 'checkAlmeScripts']);
+    Route::get('checkAlmeAPIs', [AppController::class, 'checkAlmeAPIs']);
 });
 
 Route::middleware('cors')->group(function () {
@@ -59,6 +62,9 @@ Route::middleware('cors')->group(function () {
     Route::get('get_code', [AppController::class, 'getDiscountCodeForStore']);
     Route::get('checkSubmitContact', [AppController::class, 'checkSubmitContact']);
     Route::any('sendCartContents', [AppController::class, 'mapCartContents']);
+    Route::get('mapIp', [AppController::class, 'mapIp']);
+
+    Route::post('sendEvent', [AppController::class, 'sendEventToAlme']);
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {

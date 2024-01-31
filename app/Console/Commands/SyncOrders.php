@@ -51,6 +51,7 @@ class SyncOrders extends Command
                         $createArr = array_merge($updateArr, [
                             'name' => $order['name'],
                             'checkout_id' => $order['checkout_id'],
+                            'browser_ip' => $order['browser_ip'],
                             'cart_token' => $order['cart_token'],
                             'total_price' => $order['total_price'],
                             'line_items' => json_encode($order['line_items'])
@@ -62,7 +63,6 @@ class SyncOrders extends Command
                 } else {
                     $orders = null;
                 }
-
             } while($orders !== null);
         }
     }

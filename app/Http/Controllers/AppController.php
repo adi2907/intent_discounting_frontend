@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlmeShopifyOrders;
+use App\Models\IpMap;
 use App\Models\Shop;
 use App\Models\ShopDetail;
 use App\Models\ShopifyOrder;
@@ -21,6 +22,21 @@ class AppController extends Controller {
     use FunctionTrait, RequestTrait;
     public function __construct() {
         
+    }
+
+    public function mapIp(Request $request) {
+        try{
+            $ip = $request->ipAddr;
+            //$cacheKey = 'ipmap.'.$ip;
+            //Cache::put($cacheKey, $request->token);
+            $token = $request->token;
+            $updateArr = ['ip_address' => $ip];
+            $createArr = array_merge($updateArr, ['alme_token' => $token]);
+            IpMap::updateOrCreate($updateArr, $createArr);
+            return response()->json(['status' => true, 'message' => 'OK']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+        }
     }
     
     public function getPurchaseEvents() {
@@ -56,67 +72,6 @@ class AppController extends Controller {
         $headers = getShopifyAPIHeadersForStore($shop);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint,$headers);
         return $response;
-
-        /**
-         * // Use `client.get` to request a list of themes on the shop
-        const {body:{themes}} = await client.get({
-        path: 'themes',
-        });
-        // Find the published theme
-        const publishedTheme = themes.find((theme) => theme.role === 'main');
-        // Retrieve a list of assets in the published theme
-        const {body:{assets}} = await client.get({
-        path: `themes/${publishedTheme.id}/assets`
-        });
-        // Check if JSON template files exist for the template specified in APP_BLOCK_TEMPLATES
-        const templateJSONFiles = assets.filter((file) => {
-        return APP_BLOCK_TEMPLATES.some(template => file.key === `templates/${template}.json`);
-        })
-        if (templateJSONFiles.length > 0 && (templateJSONFiles.length === APP_BLOCK_TEMPLATES.length)) {
-            console.log('All desired templates support sections everywhere!')
-        } else if (templateJSONFiles.length) {
-            console.log('Only some of the desired templates support sections everywhere.')
-        }
-        // Retrieve the body of JSON templates and find what section is set as `main`
-        const templateMainSections = (await Promise.all(templateJSONFiles.map(async (file, index) => {
-        const {body:{asset}} = await client.get({
-            path: `themes/${publishedTheme.id}/assets`,
-            query: { "asset[key]": file.key }
-        })
-
-        const json = JSON.parse(asset.value)
-        const main = Object.entries(json.sections).find(([id, section]) => id === 'main' || section.type.startsWith("main-"))
-        if (main) {
-            return assets.find((file) => file.key === `sections/${main[1].type}.liquid`);
-        }
-        }))).filter((value) => value)
-
-        // Request the content of each section and check if it has a schema that contains a
-        // block of type '@app'
-        const sectionsWithAppBlock = (await Promise.all(templateMainSections.map(async (file, index) => {
-        let acceptsAppBlock = false;
-        const {body:{asset}} = await client.get({
-            path: `themes/${publishedTheme.id}/assets`,
-            query: { "asset[key]": file.key }
-        })
-
-        const match = asset.value.match(/\{\%\s+schema\s+\%\}([\s\S]*?)\{\%\s+endschema\s+\%\}/m)
-        const schema = JSON.parse(match[1]);
-
-        if (schema && schema.blocks) {
-            acceptsAppBlock = schema.blocks.some((b => b.type === '@app'));
-        }
-
-        return acceptsAppBlock ? file : null
-        }))).filter((value) => value)
-        if (templateJSONFiles.length > 0 && (templateJSONFiles.length === sectionsWithAppBlock.length)) {
-            console.log('All desired templates have main sections that support app blocks!');
-        } else if (sectionsWithAppBlock.length) {
-            console.log('Only some of the desired templates support app blocks.');
-        } else {
-            console.log("None of the desired templates support app blocks");
-        }
-         */
     }
 
     /*
@@ -390,6 +345,18 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'message' => 'Recorded!']);
     }
 
+    public function checkAlmeAPIs(Request $request) {
+        try {
+            $shop = Shop::where('shop_url', $request->shop ?? 'almestore1.myshopify.com')->first();
+            if($shop !== null) {
+                return response()->json(['status' => true, 'data' => $this->getAlmeAnalytics($shop->shop_url)]);
+            }
+            return response()->json(['status' => false, 'message' => 'Null shop']);
+        } catch (Exception $e) {
+            dd($e->getMessage().' '.$e->getLine());
+        }
+    }
+
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');
@@ -623,5 +590,28 @@ class AppController extends Controller {
         }
     }
 
-  
+    public function logMeOut(Request $request) {
+        if(Auth::check()) Auth::logout();
+        return redirect()->to('login');
+    }
+
+    public function sendEventToAlme(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            try {
+                $endpoint = getAlmeAppURLForStore('events/');
+                $headers = getAlmeHeaders();
+                $payload = [
+                    "events" => $request->events,
+                    "session_id" => $request->session_id,
+                    "alme_user_token" => $request->alme_user_token,
+                    "lastEventTimestamp" => $request->lastEventTimestamp
+                ];
+
+                $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                return response()->json($response['body']);
+            } catch (Throwable $th) {
+                return response()->json(['status' => false, 'message' => $th->getMessage().' '.$th->getLine()]);
+            }
+        }
+    }
 }

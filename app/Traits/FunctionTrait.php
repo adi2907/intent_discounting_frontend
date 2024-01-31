@@ -649,4 +649,81 @@ trait FunctionTrait {
         return null;
     } 
 
+    public function getDiscountCodes($obj) {
+        try {
+            $arrKey = 'discount_codes';
+            $returnVal = null;
+            if(!is_array($obj)) $obj = $obj->toArray();
+            if(array_key_exists($arrKey, $obj) && is_array($obj[$arrKey]) && count($obj[$arrKey]) > 0) {
+                $returnVal = [];
+                foreach($obj[$arrKey] as $data) {
+                    $returnVal[] = [
+                        'code' => $data['code'] ?? '',
+                        'amount' => $data['amount']
+                    ];
+                } 
+            }   
+            return $returnVal;         
+        } catch(Exception $e) {
+            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
+            return null;
+        }
+    }
+
+    public function getLineItemsPayload($obj) {
+        $arrKey = 'line_items';
+        $returnVal = null;
+        if(!is_array($obj)) $obj = $obj->toArray();
+        if(array_key_exists($arrKey, $obj) && is_array($obj[$arrKey]) && count($obj[$arrKey]) > 0) {
+            $returnVal = [];
+            foreach($obj[$arrKey] as $lineItem) {
+                $returnVal[] = [
+                    "product_id" => $lineItem['product_id'],
+                    "title" => $lineItem['title'],
+                    "price" => $lineItem['price'],
+                    "quantity" => $lineItem['quantity']
+                ];
+            }
+        }
+        return $returnVal;
+    }
+
+    public function verifyRequestDuplication($cacheKey) {
+        return !Cache::has($cacheKey);
+    }
+
+    public function getOrderRequestPayloadForAlmeEvent($obj, $shopDetails) {
+        try {
+            return [
+                "cart_token" => $obj['cart_token'],
+                "app_name" => $shopDetails->shop_url,
+                "email" => $obj['email'] ?? null,
+                "user_id" => $obj['customer']['id'] ?? null,
+                "created_at" => $obj['created_at'],
+                "line_items" => $this->getLineItemsPayload($obj),
+                "total_discounts" => $obj['total_discounts'],
+                "discount_codes" => $this->getDiscountCodes($obj)
+            ];
+        } catch (Exception $e) {
+            Log::info('Error in getPayload function '.$e->getMessage().' '.$e->getLine());
+            return null;
+        }
+    }
+
+    //TODO: Do this logic later
+    public function validateWebhookRequest($request, $headers) {
+        return true;
+        // $hmac_header = $headers['HTTP_X_SHOPIFY_HMAC_SHA256'] ?? null;
+        // foreach($request as $key => $value){
+        //     $key=str_replace("%","%25",$key);
+        //     $key=str_replace("&","%26",$key);
+        //     $key=str_replace("=","%3D",$key);
+        //     $value=str_replace("%","%25",$value);
+        //     $value=str_replace("&","%26",$value);
+        //     $arr[] = $key."=".$value;
+        // }
+        // $str = implode('&', $arr);
+        // $calculated_hmac = base64_encode(hash_hmac('sha256', $str, config('shopify.SECRET_KEY'), true));
+        // return $hmac_header == $calculated_hmac;
+    }
 }
