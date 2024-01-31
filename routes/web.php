@@ -63,6 +63,8 @@ Route::middleware('cors')->group(function () {
     Route::get('checkSubmitContact', [AppController::class, 'checkSubmitContact']);
     Route::any('sendCartContents', [AppController::class, 'mapCartContents']);
     Route::get('mapIp', [AppController::class, 'mapIp']);
+
+    Route::post('sendEvent', [AppController::class, 'sendEventToAlme']);
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
