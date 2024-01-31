@@ -598,17 +598,21 @@ class AppController extends Controller {
     public function sendEventToAlme(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             try {
-                $endpoint = getAlmeAppURLForStore('events/');
-                $headers = getAlmeHeaders();
-                $payload = [
-                    "events" => $request->events,
-                    "session_id" => $request->session_id,
-                    "alme_user_token" => $request->alme_user_token,
-                    "lastEventTimestamp" => $request->lastEventTimestamp
-                ];
+                $shop = Shop::where('shop_url', $request->shop)->exists();
+                if($shop) {
+                    $endpoint = getAlmeAppURLForStore('events/');
+                    $headers = getAlmeHeaders();
+                    $payload = [
+                        "events" => $request->events,
+                        "session_id" => $request->session_id,
+                        "alme_user_token" => $request->alme_user_token,
+                        "lastEventTimestamp" => $request->lastEventTimestamp
+                    ];
 
-                $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                return response()->json($response['body']);
+                    $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                    return response()->json($response['body']);
+                }
+                return response()->json(['status' => 'ok']);
             } catch (Throwable $th) {
                 return response()->json(['status' => false, 'message' => $th->getMessage().' '.$th->getLine()]);
             }
