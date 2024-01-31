@@ -26,13 +26,14 @@ class AppController extends Controller {
 
     public function mapIp(Request $request) {
         try{
-            $ip = $request->ipAddr;
-            //$cacheKey = 'ipmap.'.$ip;
-            //Cache::put($cacheKey, $request->token);
-            $token = $request->token;
-            $updateArr = ['ip_address' => $ip];
-            $createArr = array_merge($updateArr, ['alme_token' => $token]);
-            IpMap::updateOrCreate($updateArr, $createArr);
+            if($request->has('shop') && $request->filled('shop')) {
+                $shop = Shop::where('shop_url', $request->shop)->first();
+                $ip = $request->ipAddr;
+                $token = $request->token;
+                $updateArr = ['ip_address' => $ip, 'shop_id' => $shop->id];
+                $createArr = array_merge($updateArr, ['alme_token' => $token]);
+                IpMap::updateOrCreate($updateArr, $createArr);
+            }
             return response()->json(['status' => true, 'message' => 'OK']);
         } catch(Exception $e) {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);

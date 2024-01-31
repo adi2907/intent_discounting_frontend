@@ -73,7 +73,7 @@ class PurchaseEventAlme extends Command
                     if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
                         //$cacheKey = 'ipmap.'.$order['browser_ip'];
                         //$hasCache = Cache::has($cacheKey);
-                        $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->first();
+                        $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->where('shop_id', $order->shop_id)->first();
                         if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
                             $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
                             $productsArr = [];
