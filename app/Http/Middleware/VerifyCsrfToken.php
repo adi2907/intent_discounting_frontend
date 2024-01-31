@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'sendEvent',
+        'submitContact',
         'appExt/*',
         'appExt/mostViewed',
         'appExt/mostCarted',

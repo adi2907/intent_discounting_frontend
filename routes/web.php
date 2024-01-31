@@ -65,6 +65,7 @@ Route::middleware('cors')->group(function () {
     Route::get('mapIp', [AppController::class, 'mapIp']);
 
     Route::post('sendEvent', [AppController::class, 'sendEventToAlme']);
+    Route::post('submitContact', [AppController::class, 'submitContact']);
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {

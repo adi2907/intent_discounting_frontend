@@ -39,6 +39,34 @@ class AppController extends Controller {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+    public function submitContact(Request $request) {
+        try {
+            if($request->has('app_name') && $request->filled('app_name')) {
+                $exists = Shop::where('shop_url', $request->app_name)->exists();
+                if($exists) {
+                    $payload = [
+                        "name" => $request->name,
+                        "phone" => $request->phone,
+                        "alme_user_token" => $request->alme_user_token,
+                        "app_name" => $request->app_name,
+                    ];
+                    $endpoint = getAlmeAppURLForStore('notification/submit_contact/');
+                    $headers = getAlmeHeaders();
+                    $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                    if($response['statusCode'] !== 200) {
+                        Log::info('Error in submit contact');
+                        Log::info('Payload '.json_encode($payload));
+                        Log::info('Response '.json_encode($response));
+                    }
+                    return response()->json($response['body']);
+                }
+            }
+            return response()->json(['status' => true, 'message' => 'OK']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
     
     public function getPurchaseEvents() {
         $user = Auth::user();
