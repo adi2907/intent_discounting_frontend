@@ -64,6 +64,7 @@ trait RequestTrait {
             ];
         } catch(Exception $e) {
             Log::info('Error calling in Alme API RequestTrait');
+            Log::info('Payload sent '.json_encode($requestBody));
             Log::info($e->getMessage().' '.$e->getLine());
             return [
                 'statusCode' => $e->getCode(),
