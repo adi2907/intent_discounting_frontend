@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
         Route::get('orderTopCarted', [AppController::class, 'orderTopCarted'])->name('order.top.carted');
     });
 
+    Route::get('logmeout', [AppController::class, 'logMeOut']);
+
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::prefix('identified_users')->group(function () {

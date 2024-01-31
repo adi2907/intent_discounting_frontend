@@ -225,7 +225,9 @@
                 $(tableIds[i]).DataTable({
                     info: false,
                     dom: 'rtip',
-                    pageLength: 20,
+                    order: false,
+                    ordering: false,
+                    pageLength: 10,
                     searching: false,
                     drawCallback: function( settings ) {
                         $(tableIds[i]+" thead").remove(); 
@@ -239,13 +241,19 @@
     $(document).ready(function () {
         setDateTimePicker();
 
-        drawDataTables(['#topCartTable', '#topVisitedTable']);
+        var tableIds = ['#topCartTable', '#topVisitedTable']
+
+        drawDataTables(tableIds);
+        for(var i in tableIds) {
+            $(tableIds[i]+' thead').remove();
+        }
 
         $('.sort-top-carted').click(function (e) {
             e.preventDefault();
             var el = $(this);
             var dir = el.data('order');
             var sortClass = '.sort-top-carted';
+            var tableId = '#topCartTable';
             var productCardClass = '.product-cart-converted';
             var parentsProductClass = '.parent-top-converted';
             $(sortClass).css({"color":"black"});
@@ -258,7 +266,8 @@
                 success: function (response) {
                     if(response.status) {
                         $(parentsProductClass).html(response.html);
-                        drawDataTables(['#topCartTable', '#topVisitedTable']);
+                        //$(tableId+' thead').remove();
+                        drawDataTables([tableId]);
                     }
                 }
             })
@@ -269,6 +278,7 @@
             e.preventDefault();
             var el = $(this);
             var dir = el.data('order');
+            var tableId = "#topVisitedTable";
             var sortClass = '.sort-top-visited';
             var productCardClass = '.top-visited-product';
             var parentsProductClass = '.parent-top-visited';
@@ -282,6 +292,8 @@
                 success: function (response) {
                     if(response.status) {
                         $(parentsProductClass).html(response.html);
+                        //$(tableId+" thead").remove();
+                        drawDataTables([tableId]);
                     }
                 }
             })

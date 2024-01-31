@@ -590,5 +590,10 @@ class AppController extends Controller {
         }
     }
 
+    public function logMeOut(Request $request) {
+        if(Auth::check()) Auth::logout();
+        return redirect()->to('login');
+    }
+
   
 }
