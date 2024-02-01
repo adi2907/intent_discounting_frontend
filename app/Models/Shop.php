@@ -16,6 +16,10 @@ class Shop extends Model {
         return $this->hasOne(PriceRule::class, 'store_id', 'id');
     }
 
+    public function getPriceRules() {
+        return $this->hasMany(PriceRule::class, 'store_id', 'id');
+    }
+
     public function getLatestPriceRule() {
         return $this->hasOne(PriceRule::class, 'store_id', 'id')->orderBy('created_at', 'desc');
     }
@@ -26,6 +30,10 @@ class Shop extends Model {
 
     public function getDiscountCode() {
         return $this->hasOne(DiscountCode::class, 'store_id', 'id');
+    }
+
+    public function getDiscountCodes() {
+        return $this->hasMany(DiscountCode::class, 'store_id', 'id');
     }
 
     public function notificationSettings() {

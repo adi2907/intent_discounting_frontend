@@ -29,6 +29,33 @@ class HomeController extends Controller {
         return redirect()->route('login');
     }
 
+    public function deleteCoupons() {
+        $shop = Shop::where('shop_url', 'millet-amma-store.myshopify.com')->first();
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $endpoint = getShopifyAPIURLForStore('price_rules.json', $shop);
+        $priceRules = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        $responses = [];
+        foreach($priceRules['body']['price_rules'] as $priceRule) {
+            $dbRecord = $shop->getPriceRules()->where('price_id', (string) $priceRule['id'])->first();
+            if($dbRecord !== null && $dbRecord->count() > 0) {
+                $obj = json_decode($dbRecord->full_response, true);
+                $newEndpoint = getShopifyAPIURLForStore('price_rules/'.$obj['id'].'/discount_codes.json', $shop);
+                $responses[] = $this->makeAnAPICallToShopify('GET', $newEndpoint, $headers);
+            } 
+        }
+
+        $deleteResponses = [];
+
+        foreach($responses as $response) {
+            foreach($response['body']['discount_codes'] as $code) {
+                $deleteEndpoint = getShopifyAPIURLForStore('price_rules/'.$code['price_rule_id'].'/discount_codes/'.$code['id'].'.json', $shop);
+                $deleteResponses[] = $this->makeAnAPICallToShopify('DELETE', $deleteEndpoint, $headers);
+            }
+        }
+
+        dd($deleteResponses);
+    }
+
     /**
      * Show the application dashboard.
      *
