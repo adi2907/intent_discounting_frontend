@@ -40,6 +40,20 @@ class AppController extends Controller {
         }
     }
 
+    public function saleNotification(Request $request) {
+        try {
+            if($request->has('app_name') && $request->filled('app_name')) {
+                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
+                $headers = getAlmeHeaders();
+                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+                return response()->json($response['body']);
+            }
+            return response()->json(['status' => true, 'message' => 'OK']);
+        } catch(Exception $e) {
+            return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+        }
+    }
+
     public function submitContact(Request $request) {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {

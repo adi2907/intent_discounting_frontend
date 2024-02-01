@@ -66,6 +66,7 @@ Route::middleware('cors')->group(function () {
 
     Route::post('sendEvent', [AppController::class, 'sendEventToAlme']);
     Route::post('submitContact', [AppController::class, 'submitContact']);
+    Route::get('saleNotification', [AppController::class, 'saleNotification']);
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
