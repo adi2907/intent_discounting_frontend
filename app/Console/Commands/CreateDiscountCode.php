@@ -42,7 +42,7 @@ class CreateDiscountCode extends Command {
 
         $shops = Shop::with(['notificationSettings', 'getLatestPriceRule', 'getLatestDiscountCode'])->get();
         foreach($shops as $shop) {
-            if($this->verifyInstallation($shop)) {
+            if($this->verifyInstallation($shop) && $this->shopHasEnabledDiscountSettings($shop)) {
                 $priceRule = $shop->getLatestPriceRule;
                 if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
                     if($this->isPriceRuleValid($priceRule, $shop)) {
@@ -82,6 +82,17 @@ class CreateDiscountCode extends Command {
         $this->info('=========================================');
         $this->info('FINISHED');
         $this->info('=========================================');
+    }
+
+    private function shopHasEnabledDiscountSettings($shop) {
+        try {
+            if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
+                return $shop->notificationSettings->sale_status == 1;
+            }
+            return false; 
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 
     private function deletePriceRule($priceRule, $shop) {
