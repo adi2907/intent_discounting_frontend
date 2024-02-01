@@ -42,13 +42,13 @@ class CreateDiscountCode extends Command {
 
         $shops = Shop::with(['notificationSettings', 'getLatestPriceRule', 'getLatestDiscountCode'])->get();
         foreach($shops as $shop) {
-            if($this->verifyInstallation($shop) && $this->shopHasEnabledDiscountSettings($shop)) {
+            $hasEnabledDiscounts = $this->shopHasEnabledDiscountSettings($shop);
+            if($this->verifyInstallation($shop) && $hasEnabledDiscounts) {
                 $priceRule = $shop->getLatestPriceRule;
                 if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
                     if($this->isPriceRuleValid($priceRule, $shop)) {
                         if($shop->notificationSettings !== null) {
                             $frequency = (int) $shop->notificationSettings->discount_expiry;
-                            
                             $lastDiscountCode = $shop->getLatestDiscountCode;
                             if($lastDiscountCode !== null && $lastDiscountCode->count() > 0) {
                                 $hourdiff = round((strtotime('today UTC') - strtotime($lastDiscountCode->created_at))/3600, 1);
