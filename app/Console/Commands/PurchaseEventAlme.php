@@ -91,7 +91,7 @@ class PurchaseEventAlme extends Command
                                 "alme_user_token" => $dbRowForIP->alme_token,
                                 "timestamp" => $order->created_at,
                                 "app_name" => $shops[$order->shop_id]['shop_url'],
-                                "session_id" => $almeInfo->session_id,
+                                "session_id" => isset($almeInfo) && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
                                 "products" => $productsArr
                             ];
 
