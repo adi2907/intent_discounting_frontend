@@ -98,7 +98,7 @@ class PurchaseEventAlme extends Command
                             $endpoint = getAlmeAppURLForStore('events/purchase/');
                             $headers = getAlmeHeaders();
                             $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                            $order->update(['purchase_event_status' => 'Buy it now event called']);
+                            $order->update(['purchase_event_status' => 'Buy it now event called', 'purchase_event_response' => json_encode($response)]);
                         } else {
                             $order->update(['purchase_event_status' => 'Database IP map not found']);
                         }
