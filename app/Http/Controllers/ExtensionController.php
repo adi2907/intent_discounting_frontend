@@ -169,21 +169,28 @@ class ExtensionController extends Controller {
                 $viewFilePrefix = 'appExt.';
                 $viewFile = null;
                 $title = null;
-                switch($prop) {
-                    case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
-                    case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
-                    case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
-                    case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
-                    
-                    /*
-                    case 'most_added_prods': $viewFile = 'most_viewed'; break;
-                    case 'user_liked': $viewFile = 'most_carted'; break;
-                    case 'pop_picks': $viewFile = 'user_liked'; break;
-                    case 'feat_collect': $viewFile = 'carts';break;
-                    case 'high_convert_prods': $viewFile = 'recommended'; break;
-                    
-                    default: $viewFile = 'most_viewed';  
-                    */
+
+                if($shop == 'almestore1.myshopify.com') {
+                    switch($prop) {
+                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                    }
+                } else if($shop == 'millet-amma.myshopify.com') {
+                    switch($prop) {
+                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                    }
+                } else {
+                    switch($prop) {
+                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                    }
                 }
 
                 return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title])->render();
