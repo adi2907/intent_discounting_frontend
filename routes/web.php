@@ -70,13 +70,6 @@ Route::middleware('cors')->group(function () {
     
     //Routes for theme app extensions
     Route::prefix('appExt')->group(function () {
-        /*
-        Route::post('mostViewed', [ExtensionController::class, 'getMostViewedData']);
-        Route::post('mostCarted', [ExtensionController::class, 'getMostCartedData']);
-        Route::post('carts', [ExtensionController::class, 'carts']);
-        Route::post('recommendedForYou', [ExtensionController::class, 'recommendedForYou']);
-        Route::post('userLiked', [ExtensionController::class, 'userLiked']);
-        */
         //New Routes
         Route::post('pickUpWhereYouLeftOff', [ExtensionController::class, 'pickUpWhereYouLeftOff']);
         Route::post('crowdFavorites', [ExtensionController::class, 'crowdFavorites']);
@@ -86,6 +79,7 @@ Route::middleware('cors')->group(function () {
     });
 });
 
+//Shopify Installation Routes
 Route::prefix('shopify/auth')->group(function () {
     Route::get('/', [InstallationController::class, 'startInstallation']);
     Route::get('redirect', [InstallationController::class, 'handleRedirect'])->name('shopify.auth.redirect');
@@ -98,6 +92,7 @@ Route::prefix('gdpr/webhooks')->group(function () {
     Route::any('shop_data_erasure', [WebhookController::class, 'handleShopDataErasure']);
 });
 
+//Shopify Webhooks Routes
 Route::prefix('webhooks')->group(function () {
     Route::get('register', [WebhookController::class, 'registerWebhooks'])->name('register.webhooks');
     Route::any('cartUpdate', [WebhookController::class, 'cartUpdateWebhook'])->name('carts.update.webhook');

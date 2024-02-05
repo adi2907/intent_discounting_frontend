@@ -55,4 +55,8 @@ class Shop extends Model {
     public function getAlmeWebhookEvents() {
         return $this->hasMany(AlmeWebhookEvent::class, 'shop_id', 'id');
     }
+
+    public function isActivated() {
+        return (bool) $this->isActivated;
+    }
 }
