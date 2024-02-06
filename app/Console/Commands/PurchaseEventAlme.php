@@ -34,7 +34,12 @@ class PurchaseEventAlme extends Command
      */
     public function handle()
     {
-        $orders = ShopifyOrder::where('purchase_event_status', null)->get();
+        $orders = ShopifyOrder::where(function ($q) {
+            return $q->where('purchase_event_status', null)
+                     ->orWhere(function ($innerQuery) {
+                        return $innerQuery->where('retry_count', '<>', null)->where('retry_count', '<', 3);
+                     });
+        })->get();
         if($orders !== null && $orders->count() > 0) {
             $shopIds = $orders->pluck('shop_id')->toArray();
             $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
@@ -68,6 +73,7 @@ class PurchaseEventAlme extends Command
                     $endpoint = getAlmeAppURLForStore('events/purchase/');
                     $headers = getAlmeHeaders();
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                    $this->processRetryResponse($order, $payload, $response);
                     $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
                 } else {
                     if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
@@ -98,6 +104,7 @@ class PurchaseEventAlme extends Command
                             $endpoint = getAlmeAppURLForStore('events/purchase/');
                             $headers = getAlmeHeaders();
                             $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+                            $this->processRetryResponse($order, $payload, $response);
                             $order->update(['purchase_event_status' => 'Buy it now event called', 'purchase_event_response' => json_encode($response)]);
                         } else {
                             $order->update(['purchase_event_status' => 'Database IP map not found']);
