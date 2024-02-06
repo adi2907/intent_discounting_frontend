@@ -34,11 +34,12 @@ class PurchaseEventAlme extends Command
      */
     public function handle()
     {
-        $orders = ShopifyOrder::where('purchase_event_status', null)
-                                ->orWhere(function ($innerQuery) {
-                                return $innerQuery->where('retry_count', '<>', null)->where('retry_count', '<', 3);
-                                })
-                                ->get();
+        $query = ShopifyOrder::where('purchase_event_status', null)
+        ->orWhere(function ($innerQuery) {
+        return $innerQuery->where('retry_count', '<>', null)->where('retry_count', '<', 3);
+        });
+        $this->info('Query '.$query->toSql());
+        $orders = $query->get();
         if($orders !== null && $orders->count() > 0) {
             $this->info('Processing '.$orders->count().' orders');
             $shopIds = $orders->pluck('shop_id')->toArray();
