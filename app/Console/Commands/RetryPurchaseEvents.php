@@ -3,45 +3,41 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ProcessPurchaseEvent;
-use App\Models\AlmeShopifyOrders;
-use App\Models\IpMap;
 use App\Models\Shop;
 use App\Models\ShopifyOrder;
-use App\Traits\FunctionTrait;
-use App\Traits\RequestTrait;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
-class PurchaseEventAlme extends Command
+class RetryPurchaseEvents extends Command
 {
-    use FunctionTrait, RequestTrait;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:purchase-event-alme';
+    protected $signature = 'app:retry-purchase-events';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fires purchase event API on alme side';
+    protected $description = 'Retries failed purchase events a maximum of 3 times';
 
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
-        $query = ShopifyOrder::where('purchase_event_status', null);
-        $orders = $query->get();
+    public function handle() {
+        $limit = 1;
+        $query = ShopifyOrder::where('purchase_event_response', 'like', '%success":false%')->where(function ($query) {
+            return $query->where('retry_count', null)->orWhere('retry_count', '<', 3);
+        });
+        $orders = $query->limit($limit)->get();
         if($orders !== null && $orders->count() > 0) {
-            $this->info('Processing '.$orders->count().' orders');
             $shopIds = $orders->pluck('shop_id')->toArray();
             $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
+            $this->info('Processing '.$orders->count().' orders');
             foreach($orders as $order) {
+                $this->info('Processing order name '.$order->name);
                 ProcessPurchaseEvent::dispatch($order, $shops)->onConnection('sync');
             }
         }

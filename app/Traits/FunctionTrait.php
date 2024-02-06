@@ -61,8 +61,8 @@ trait FunctionTrait {
 
     public function processRetryResponse($order, $payload, $response) {
         try {
-            if(isset($response['statusCode']) && isset($response['body']['status'])) {
-                if($response['body']['status'] == false) {
+            if(isset($response['statusCode']) && isset($response['body']['success'])) {
+                if($response['body']['success'] == false) {
                     //Now we need to save this info in the database
                     RetryPurchaseEvent::insert([
                         'order_id' => $order->table_id,
