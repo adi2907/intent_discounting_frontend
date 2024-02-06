@@ -5,7 +5,7 @@
         </thead>
         <tbody>
             @foreach($assoc_data as $productId => $data)   
-                @if((int) $data['conversion_rate'] > 0) 
+                @if((int) $data['conversion_rate'] > 0 && array_key_exists($productId, $products) && $products[$productId] !== null) 
                 <tr>
                     <td class="p-0">
                         <div class="card conversion-card product-cart-converted">

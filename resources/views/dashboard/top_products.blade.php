@@ -4,7 +4,8 @@
             <th>Data</th>
         </thead>
         <tbody>
-        @foreach($assoc_data as $productId => $countVisit)  
+        @foreach($assoc_data as $productId => $countVisit) 
+            @if(array_key_exists($productId, $products) && $products[$productId] !== null) 
             <tr>
                 <td class="p-0">
                     <div class="card visited-card top-visited-product">
@@ -30,6 +31,7 @@
                     </div>
                 </td>
             </tr>
+            @endif
         @endforeach
         </tbody>
     </table>
