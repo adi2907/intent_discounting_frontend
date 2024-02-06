@@ -41,6 +41,7 @@ class PurchaseEventAlme extends Command
                      });
         })->get();
         if($orders !== null && $orders->count() > 0) {
+            $this->info('Processing '.$orders->count().' orders');
             $shopIds = $orders->pluck('shop_id')->toArray();
             $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
             foreach($orders as $order) {
