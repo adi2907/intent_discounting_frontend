@@ -108,7 +108,7 @@ class InstallationController extends Controller {
                         'email' => $shopifyShopData['email']
                     ];
                     $createArr = array_merge($updateArr, [
-                        'password' => Hash::make(123456),
+                        'password' => Hash::make('Alme@2024'),
                         'name' => $shopifyShopData['name']
                     ]);
                     $user = User::updateOrCreate($updateArr, $createArr);
