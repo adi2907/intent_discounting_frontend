@@ -60,7 +60,7 @@ class AppController extends Controller {
                             }
 
                             if($almeToken !== null) {
-                                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
+                                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
                                 $headers = getAlmeHeaders();
                                 $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
                                 return response()->json($response['body']);
