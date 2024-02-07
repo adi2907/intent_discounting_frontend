@@ -520,8 +520,11 @@ class AppController extends Controller {
         try{
             if($request->has('shop') && $request->filled('shop')) {
                 $shop = Shop::with(['getLatestDiscountCode'])->where('shop_url', $request->shop)->first();
-                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-                return ['status' => true, 'code' => $code]; 
+                if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
+                    $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                    return ['status' => true, 'code' => $code]; 
+                }
+                return response()->json(['status' => false, 'message' => 'No Data found']);
             } 
             return response()->json(['status' => false, 'message' => 'Invalid Request/No Shop param present in request']);
         } catch(Exception $e) {
@@ -534,11 +537,14 @@ class AppController extends Controller {
     public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
-            $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-            $notificationSettings = $shop->notificationSettings;
-            $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-            $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
-            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+            $code = null;
+            if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
+                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                $notificationSettings = $shop->notificationSettings;
+                $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
+                $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+            }    
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
