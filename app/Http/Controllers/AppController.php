@@ -43,10 +43,10 @@ class AppController extends Controller {
     public function saleNotification(Request $request) {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {
-                $shop = Shop::with('getNotificationSettings')->where('shop_url', $request->app_name)->first();
+                $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
                 if($shop !== null && $shop->count() > 0) {
-                    if(isset($shop->getNotificationSettings) && isset($shop->getNotificationSettings->sale_status)) {
-                        if($shop->getNotificationSettings->sale_status == 1 || $shop->getNotificationSettings->sale_status === true) {
+                    if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
+                        if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
                             $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
                             $headers = getAlmeHeaders();
                             $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
