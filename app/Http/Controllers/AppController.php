@@ -47,10 +47,25 @@ class AppController extends Controller {
                 if($shop !== null && $shop->count() > 0) {
                     if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
                         if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
-                            $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
-                            $headers = getAlmeHeaders();
-                            $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-                            return response()->json($response['body']);
+                            
+                            $almeToken = null;
+                            if($request->has('token') && filled($request->token)) {
+                                $almeToken = $request->token;
+                            }
+
+                            if($almeToken === null) {
+                                if($request->has('alme_user_token') && filled($request->alme_user_token)) {
+                                    $almeToken = $request->alme_user_token;
+                                }
+                            }
+
+                            if($almeToken !== null) {
+                                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
+                                $headers = getAlmeHeaders();
+                                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+                                return response()->json($response['body']);
+                            }
+                            return response()->json(['status' => true, 'message' => 'Alme Token found null']);
                         } else {
                             return response()->json(['status' => true, 'message' => 'Turned off']);
                         } 
