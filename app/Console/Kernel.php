@@ -29,7 +29,8 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:sync-identified-users')->everyOddHour();
 
         //Retries failed purchase events and saves information in the table
-        $schedule->command('app:retry-purchase-events')->everyMinute();
+        //Turned off for now
+        //$schedule->command('app:retry-purchase-events')->everyMinute();
     }
 
     /**
