@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('turnOnScript', [AppController::class, 'turnAlmeScriptOn'])->name('alme.turn.script.on');  
     Route::get('getPurchaseEvents', [AppController::class, 'getPurchaseEvents']);  
     Route::get('getStores', [AppController::class, 'getListOfStores']);
+
+    Route::get('createNotificationAsset', [AppController::class, 'createNotificationAsset']);
 });
 
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);

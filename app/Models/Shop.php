@@ -40,6 +40,10 @@ class Shop extends Model {
         return $this->hasOne(NotificationSettings::class, 'store_id', 'id')->orderBy('id', 'desc');
     }
 
+    public function notificationAsset() {
+        return $this->hasOne(NotificationAsset::class, 'store_id', 'id')->orderBy('id', 'desc');
+    }
+
     public function productRackInfo() {
         return $this->hasOne(ProductRackSettings::class, 'store_id', 'id')->orderBy('id', 'desc');
     }
