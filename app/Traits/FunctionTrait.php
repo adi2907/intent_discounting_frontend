@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\RetryPurchaseEvent;
 use App\Models\Shop;
 use App\Models\ShopifyProducts;
 use Exception;
@@ -56,6 +57,27 @@ trait FunctionTrait {
             }
         }
         return $count > 1;
+    }
+
+    public function processRetryResponse($order, $payload, $response) {
+        try {
+            if(isset($response['statusCode']) && isset($response['body']['success'])) {
+                if($response['body']['success'] == false) {
+                    //Now we need to save this info in the database
+                    RetryPurchaseEvent::insert([
+                        'order_id' => $order->table_id,
+                        'payload' => json_encode($payload),
+                        'api_response' => json_encode($response)
+                    ]);
+                    $currentVal = $order->retry_count == null ? 0 : $order->retry_count;
+                    $order->update(['retry_count' => $currentVal + 1]);
+                }
+            }
+        } catch (Throwable $th) {
+            Log::info("error in processRetryResponse ".$th->getMessage().' '.$th->getLine());
+        } catch (Exception $th) {
+            Log::info("error in processRetryResponse ".$th->getMessage().' '.$th->getLine());
+        }
     }
 
     public function validateRequestFromShopify($request) {

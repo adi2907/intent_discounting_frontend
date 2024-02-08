@@ -43,10 +43,38 @@ class AppController extends Controller {
     public function saleNotification(Request $request) {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {
-                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$request->alme_user_token.'&app_name='.$request->app_name);
-                $headers = getAlmeHeaders();
-                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-                return response()->json($response['body']);
+                $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
+                if($shop !== null && $shop->count() > 0) {
+                    if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
+                        if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
+                            
+                            $almeToken = null;
+                            if($request->has('token') && filled($request->token)) {
+                                $almeToken = $request->token;
+                            }
+
+                            if($almeToken === null) {
+                                if($request->has('alme_user_token') && filled($request->alme_user_token)) {
+                                    $almeToken = $request->alme_user_token;
+                                }
+                            }
+
+                            if($almeToken !== null) {
+                                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
+                                $headers = getAlmeHeaders();
+                                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+                                return response()->json($response['body']);
+                            }
+                            return response()->json(['status' => true, 'message' => 'Alme Token found null']);
+                        } else {
+                            return response()->json(['status' => true, 'message' => 'Turned off']);
+                        } 
+                    } else {
+                        return response()->json(['status' => true, 'message' => 'Data not found']);
+                    }
+                } else {
+                    return response()->json(['status' => true, 'message' => 'Shop Not Found']);
+                }
             }
             return response()->json(['status' => true, 'message' => 'OK']);
         } catch(Exception $e) {
@@ -507,8 +535,11 @@ class AppController extends Controller {
         try{
             if($request->has('shop') && $request->filled('shop')) {
                 $shop = Shop::with(['getLatestDiscountCode'])->where('shop_url', $request->shop)->first();
-                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-                return ['status' => true, 'code' => $code]; 
+                if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
+                    $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                    return ['status' => true, 'code' => $code]; 
+                }
+                return response()->json(['status' => false, 'message' => 'No Data found']);
             } 
             return response()->json(['status' => false, 'message' => 'Invalid Request/No Shop param present in request']);
         } catch(Exception $e) {
@@ -521,11 +552,14 @@ class AppController extends Controller {
     public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
-            $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-            $notificationSettings = $shop->notificationSettings;
-            $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-            $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
-            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+            $code = null;
+            if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
+                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
+                $notificationSettings = $shop->notificationSettings;
+                $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
+                $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+            }    
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
