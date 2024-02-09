@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CreateNotificationAsset;
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
 use App\Models\Shop;
@@ -551,13 +552,32 @@ class AppController extends Controller {
 
     public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
-            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])->where('shop_url', $request->shop)->first();
+            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings', 'notificationAsset'])->where('shop_url', $request->shop)->first();
             $code = null;
             if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
                 $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
                 $notificationSettings = $shop->notificationSettings;
                 $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-                $html = $contactStatus ? view('contact_capture_popup', ['settings' => $notificationSettings])->render() : null;
+                $html = null;
+                if($contactStatus) {
+                    $asset = $shop->notificationAsset;
+                    if(isset($asset) && $asset != null && filled($asset->contact_capture_html) && strlen($asset->contact_capture_html)) {
+                        $html = $asset->contact_capture_html;
+                        $arrayValidate = [
+                            '{{TITLE}}' => $notificationSettings->title,
+                            '{{DESCRIPTION}}' => $notificationSettings->description
+                        ];
+                        
+                        foreach($arrayValidate as $strToLookFor => $value) {
+                            $checkIfHasStr = str_contains($html, $strToLookFor);
+                            if($checkIfHasStr) {
+                                $html = str_replace($strToLookFor, $value, $html);
+                            }
+                        }
+                    } else {
+                        $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
+                    }
+                }
                 return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
             }    
         }
@@ -567,11 +587,10 @@ class AppController extends Controller {
     public function saleNotificationPopup(Request $request) {
         try {
             if ($request->has('shop')) {
-                $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings'])
+                $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings', 'notificationAsset'])
                             ->where('shop_url', $request->shop)
                             ->first();
-        
-                $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
+                $code = null;
                 $notificationSettings = $shop->notificationSettings;
                 $saleStatus = isset($notificationSettings) && $notificationSettings !== null && 
                               isset($notificationSettings->sale_status) && 
@@ -579,17 +598,40 @@ class AppController extends Controller {
                 
                 $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                 $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
-    
-                $html=null;
+                            
+                $html = null;
                 if ($saleStatus) {
+                    $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
-                    $html = view('sale_notification_popup', [
-                        'discountCode' => $code, 
-                        'discountValue' => $discountValue, 
-                        'discountExpiry' => $discountExpiry
-                    ])->render();
-                } else {
+
+                    if(isset($shop->notificationAsset) && $shop->notificationAsset != null && filled($shop->notificationAsset)) {
+                    
+                        $html = $shop->notificationAsset->sale_notif_html;
+                        $arrayValidate = [
+                            '{{DISCOUNT_CODE}}' => $code,
+                            '{{DISCOUNT_VALUE}}' => $discountValue,
+                            '{{DISCOUNT_EXPIRY}}' => $discountExpiry
+                        ];
+
+                        if(strlen($html) > 0) {
+                            foreach($arrayValidate as $strToLookFor => $replacementValue) {
+                                $hasReplacement = str_contains($html, $strToLookFor);
+                                if($hasReplacement) {
+                                    $html = str_replace($strToLookFor, $replacementValue, $html);
+                                }
+                            }
+                        } else {
+                            $html = null;
+                        }
+                    } else {
+                        $html = view('sale_notification_popup', [
+                            'discountCode' => $code, 
+                            'discountValue' => $discountValue, 
+                            'discountExpiry' => $discountExpiry
+                        ])->render();
+                    }
+                } else {    
                     $html = null;
                 }
                 
@@ -694,5 +736,12 @@ class AppController extends Controller {
                 return response()->json(['status' => false, 'message' => $th->getMessage().' '.$th->getLine()]);
             }
         }
+    }
+
+    public function createNotificationAsset(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        CreateNotificationAsset::dispatch($user, $shop)->onConnection('sync');
+        dd('Done'); 
     }
 }
