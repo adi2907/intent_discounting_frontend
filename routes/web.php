@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('logmeout', [AppController::class, 'logMeOut']);
+    Route::get('syncOrders', [AppController::class, 'syncOrders']);
 
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');

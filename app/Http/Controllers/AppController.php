@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\CreateNotificationAsset;
+use App\Jobs\SyncShopifyOrders;
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
 use App\Models\Shop;
@@ -23,6 +24,14 @@ class AppController extends Controller {
     use FunctionTrait, RequestTrait;
     public function __construct() {
         
+    }
+
+    public function syncOrders() {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        SyncShopifyOrders::dispatch($shop)->onConnection('sync');
+        return back();
+
     }
 
     public function mapIp(Request $request) {

@@ -17,11 +17,15 @@ trait RequestTrait {
         try {
             $client = new Client();
             $response = null;
-            if($method == 'GET' || $method == 'DELETE') {
-                $response = $client->request($method, $endpoint, [ 'headers' => $headers ]);
-            } else {
-                $response = $client->request($method, $endpoint, [ 'headers' => $headers, 'json' => $requestBody ]);
-            } 
+            
+            $thirdParam = [
+                'verify' => false,
+                'headers' => $headers
+            ];
+
+            $thirdParam = $method == 'GET' || $method == 'DELETE' ? $thirdParam : array_merge($thirdParam, ['json' => $requestBody]);
+            
+            $response = $client->request($method, $endpoint, $thirdParam); 
             return [
                 'statusCode' => $response->getStatusCode(),
                 'body' => json_decode($response->getBody(), true)

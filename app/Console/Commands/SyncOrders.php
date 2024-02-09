@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SyncShopifyOrders;
 use App\Models\Shop;
 use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
@@ -33,37 +34,7 @@ class SyncOrders extends Command
     {
         $shops = Shop::get();
         foreach($shops as $shop) {
-            $orders = null;
-            $sinceId = null;
-            $headers = getShopifyAPIHeadersForStore($shop);
-            do {
-                $this->info('Since ID '.$sinceId);
-                $endpoint = getShopifyAPIURLForStore('orders.json?since_id='.$sinceId, $shop);
-                $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
-                $this->info('Status code '.$response['statusCode']);
-                if($response['statusCode'] == 200) {
-                    foreach($response['body']['orders'] as $order) {
-                        $updateArr = [
-                            'shop_id' => $shop->id,
-                            'id' => $order['id']
-                        ];
-
-                        $createArr = array_merge($updateArr, [
-                            'name' => $order['name'],
-                            'checkout_id' => $order['checkout_id'],
-                            'browser_ip' => $order['browser_ip'],
-                            'cart_token' => $order['cart_token'],
-                            'total_price' => $order['total_price'],
-                            'line_items' => json_encode($order['line_items'])
-                        ]);
-
-                        ShopifyOrder::updateOrCreate($updateArr, $createArr);
-                        $sinceId = $order['id'];
-                    }
-                } else {
-                    $orders = null;
-                }
-            } while($orders !== null);
+            SyncShopifyOrders::dispatch($shop)->onConnection('sync');
         }
     }
 }
