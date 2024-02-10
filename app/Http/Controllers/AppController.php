@@ -92,6 +92,26 @@ class AppController extends Controller {
         }
     }
 
+    public function acceptCharge(Request $request) {
+        try {
+            $user = Auth::user();
+            $shop = $user->shopifyStore;
+            $charge_id = $request->charge_id;
+            $endpoint = getShopifyAPIURLForStore('recurring_application_charges/'.$charge_id.'.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            if($response['statusCode'] === 200) {
+                $body = $response['body']['application_charge'];
+                if($body['status'] === 'active') {
+                    $shop->subscriptionsInfo()->where('shopify_id', $charge_id)->update(['status' => true]); //It's paid
+                }   
+            }
+        } catch (Throwable $th) {
+            Log::info('Problem in acceptcharge '.$th->getMessage().' '.$th->getLine());
+        }
+        return redirect()->route('dashboard');
+    }
+
     public function submitContact(Request $request) {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {
@@ -559,15 +579,25 @@ class AppController extends Controller {
         }
     }
 
+    public function getCacheKeyForContactCapture($shop) {
+        return config('custom.cacheKeys.contactCaptureHTML').':'.$shop;
+    } 
+
     public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
+            //Check first if cache has the response already. If yes send it, otherwise set the response in cache with expiry of 2 hours.
+            $cacheKey = $this->getCacheKeyForContactCapture($request->shop);
+            if(Cache::has($cacheKey)) {
+                return response()->json(Cache::get($cacheKey)); 
+            }
+
             $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings', 'notificationAsset'])->where('shop_url', $request->shop)->first();
             $code = null;
-            if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
+            $html = null;    
+            if($shop!== null && isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
                 $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
                 $notificationSettings = $shop->notificationSettings;
                 $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-                $html = null;
                 if($contactStatus) {
                     $asset = $shop->notificationAsset;
                     if(isset($asset) && $asset != null && filled($asset->contact_capture_html) && strlen($asset->contact_capture_html)) {
@@ -587,8 +617,11 @@ class AppController extends Controller {
                         $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
                     }
                 }
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
-            }    
+            }   
+            
+            $response = ['code' => $code, 'status' => true, 'html' => $html];
+            Cache::put($cacheKey, $response, 7200); //2 hours
+            return response()->json($response);
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
