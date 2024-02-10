@@ -61,7 +61,7 @@ class ProcessPurchaseEvent implements ShouldQueue {
             $endpoint = getAlmeAppURLForStore('events/purchase/');
             $headers = getAlmeHeaders();
             $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-            $this->processRetryResponse($order, $payload, $response);
+            //$this->processRetryResponse($order, $payload, $response);
             $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
         } else {
             if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
@@ -90,7 +90,7 @@ class ProcessPurchaseEvent implements ShouldQueue {
                     $endpoint = getAlmeAppURLForStore('events/purchase/');
                     $headers = getAlmeHeaders();
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                    $this->processRetryResponse($order, $payload, $response);
+                    //$this->processRetryResponse($order, $payload, $response);
                     $order->update(['purchase_event_status' => 'Buy it now event called', 'purchase_event_response' => json_encode($response)]);
                 } else {
                     $order->update(['purchase_event_status' => 'Database IP map not found']);
