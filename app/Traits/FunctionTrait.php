@@ -748,4 +748,36 @@ trait FunctionTrait {
         // $calculated_hmac = base64_encode(hash_hmac('sha256', $str, config('shopify.SECRET_KEY'), true));
         // return $hmac_header == $calculated_hmac;
     }
+
+    public function redirectShopToPaymentScreen($shop) {
+        try {
+            $endpoint = getShopifyAPIURLForStore('recurring_application_charges.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $payload = [
+                "recurring_application_charge" => [
+                    "name" => "Alme Plan",
+                    "price" => 15.0,
+                    "return_url" => route('shopify.accept.charge'),
+                    "trial_days" => 0
+                ]
+            ];
+
+            $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
+            if($response['statusCode'] === 201) {
+                $body = $response['body']['recurring_application_charge'];
+                $shop->subscriptionsInfo()->create([
+                    'shopify_id' => $body['id'],
+                    'status' => false,
+                    'payment_type' => 'SUBSCRIPTION',
+                    'api_payload' => json_encode($payload),
+                    'api_response' => json_encode($body)
+                ]);
+                return redirect($body['confirmation_url']);
+            }
+            throw new Exception('Some problem occurred. Please try again in some time. Response '.json_encode($response));
+        } catch (Exception $e) {
+            Log::info($e->getMessage().' '.$e->getLine());
+            throw $e;
+        }
+    }
 }

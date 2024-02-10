@@ -8,18 +8,18 @@ if (!function_exists('getShopifyAPIURLForStore')) {
      * @param
      * @return
      */
-    function getShopifyAPIURLForStore($path, $store, $apiVersion = null)
+    function getShopifyAPIURLForStore($path, $shop, $apiVersion = null)
     {
-        $shop_url = $store['myshopify_domain'] ?? $store['shop_url'];
+        $shop_url = $shop['myshopify_domain'] ?? $shop['shop_url'];
         $apiVersion = $apiVersion !== null ? $apiVersion : config('shopify.API_VERSION');
         return 'https://'.$shop_url.'/admin/api/'.$apiVersion.'/'.$path;
     }
 
-    function getShopifyAPIHeadersForStore($store) {
+    function getShopifyAPIHeadersForStore($shop) {
         return [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'X-Shopify-Access-Token' => $store['accessToken'] ?? $store['access_token']
+            'X-Shopify-Access-Token' => $shop['accessToken'] ?? $shop['access_token']
         ];
     }
 

@@ -22,7 +22,7 @@ Auth::routes(['register' => false]);
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'ensureShopIsPaid'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [AppController::class, 'showDashboard'])->name('dashboard');
         Route::get('reloadAnalytics', [AppController::class, 'reloadDashboard'])->name('reload.dashboard');
@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('getStores', [AppController::class, 'getListOfStores']);
 
     Route::get('createNotificationAsset', [AppController::class, 'createNotificationAsset']);
+
+    Route::get('acceptCharge', [AppController::class, 'acceptCharge'])->name('shopify.accept.charge');
 });
 
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
