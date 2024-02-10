@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProcessPurchaseEvent implements ShouldQueue {
 
@@ -65,6 +66,7 @@ class ProcessPurchaseEvent implements ShouldQueue {
             $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
         } else {
             if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
+                Log::info('Logging order '.json_encode($order));
                 $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->where('shop_id', $order->shop_id)->first();
                 if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
                     $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
