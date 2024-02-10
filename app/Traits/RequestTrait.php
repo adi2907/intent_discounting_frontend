@@ -31,8 +31,8 @@ trait RequestTrait {
                 'body' => json_decode($response->getBody(), true)
             ];
         } catch(Exception $e) {
-            Log::info('Error calling in RequestTrait');
-            Log::info($e->getMessage().' '.$e->getLine());
+            // Log::info('Error calling in RequestTrait');
+            // Log::info($e->getMessage().' '.$e->getLine());
             return [
                 'statusCode' => $e->getCode(),
                 'message' => $e->getMessage(),
