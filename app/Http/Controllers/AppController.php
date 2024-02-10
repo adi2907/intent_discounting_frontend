@@ -77,13 +77,13 @@ class AppController extends Controller {
                             }
                             return response()->json(['status' => true, 'message' => 'Alme Token found null']);
                         } else {
-                            return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true]);
+                            return response()->json(['status' => true, 'message' => 'Turned off', 'blockSaleRequests' => true]);
                         } 
                     } else {
-                        return response()->json(['status' => true, 'message' => 'Data not found', 'blockRequests' => true]);
+                        return response()->json(['status' => true, 'message' => 'Data not found', 'blockSaleRequests' => true]);
                     }
                 } else {
-                    return response()->json(['status' => true, 'message' => 'Shop Not Found', 'blockRequests' => true]);
+                    return response()->json(['status' => true, 'message' => 'Shop Not Found', 'blockSaleRequests' => true]);
                 }
             }
             return response()->json(['status' => true, 'message' => 'OK']);
