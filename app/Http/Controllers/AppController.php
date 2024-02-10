@@ -41,8 +41,13 @@ class AppController extends Controller {
                 $shop = Shop::where('shop_url', $request->shop)->first();
                 $ip = $request->ipAddr;
                 $token = $request->token;
-                $updateArr = ['ip_address' => $ip, 'shop_id' => $shop->id];
-                $createArr = array_merge($updateArr, ['alme_token' => $token, 'session_id' => $request->session_id]);
+                $updateArr = ['token' => $token];
+                $createArr = array_merge($updateArr, [
+                    'shop_id' => $shop->id, 
+                    'ip_address' => $ip, 
+                    'alme_token' => $token, 
+                    'session_id' => $request->session_id
+                ]);
                 IpMap::updateOrCreate($updateArr, $createArr);
             }
             return response()->json(['status' => true, 'message' => 'OK']);
