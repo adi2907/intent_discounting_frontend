@@ -38,7 +38,9 @@ class AppController extends Controller {
             $arr[] = [
                 'email' => $order['email'],
                 'created_at' => $order['created_at'],
-                'phone' => $order['phone']
+                'phone' => $order['phone'],
+                'name' => $order['name'],
+                'id' => $order['id']
             ];
         }
 
