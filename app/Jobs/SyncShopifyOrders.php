@@ -34,7 +34,7 @@ class SyncShopifyOrders implements ShouldQueue
         $sinceId = 0;
         $headers = getShopifyAPIHeadersForStore($shop);
         do {
-            $endpoint = getShopifyAPIURLForStore('orders.json?since_id='.$sinceId, $shop);
+            $endpoint = getShopifyAPIURLForStore('orders.json?status=any&since_id='.$sinceId, $shop);
             $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
             if($response['statusCode'] == 200) {
                 foreach($response['body']['orders'] as $order) {
