@@ -26,6 +26,26 @@ class AppController extends Controller {
         
     }
 
+    public function checkShopifyAPIs(Request $request) {
+        $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('shop_url', $request->shop)->first();
+        $shopEndpoint = getShopifyAPIURLForStore('shop.json', $shop);
+        $ordersEndpoint = getShopifyAPIURLForStore('orders.json?status=any', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        //$firstResponse = $this->makeAnAPICallToShopify('GET', $shopEndpoint, $headers);
+        $secondResponse = $this->makeAnAPICallToShopify('GET', $ordersEndpoint, $headers);
+        $arr = [];
+        foreach($secondResponse['body']['orders'] as $order) {
+            $arr[] = [
+                'email' => $order['email'],
+                'created_at' => $order['created_at'],
+                'phone' => $order['phone']
+            ];
+        }
+
+
+        return response()->json($arr);
+    }
+
     public function syncOrders() {
         $user = Auth::user();
         $shop = $user->shopifyStore;

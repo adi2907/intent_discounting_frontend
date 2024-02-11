@@ -57,6 +57,7 @@ Route::prefix('debug')->group(function () {
     Route::get('cron', [AppController::class, 'checkCronStatus']);
     Route::get('checkAlmeScripts', [AppController::class, 'checkAlmeScripts']);
     Route::get('checkAlmeAPIs', [AppController::class, 'checkAlmeAPIs']);
+    Route::get('checkShopfyAPIs', [AppController::class, 'checkShopifyAPIs']);
 });
 
 Route::middleware('cors')->group(function () {
