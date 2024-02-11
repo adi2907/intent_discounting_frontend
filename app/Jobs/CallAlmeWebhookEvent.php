@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Shop;
+use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Exception;
@@ -14,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CallAlmeWebhookEvent implements ShouldQueue {
     use FunctionTrait, RequestTrait;
@@ -39,6 +41,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                 $cacheKey = "Webhook:Order:{$this->request['id']}";
                 $verify = $this->verifyRequestDuplication($cacheKey);
                 if($verify) {
+                    $this->saveOrUpdateOrder($this->request, $shopDetails);
                     $payload = $this->getOrderRequestPayloadForAlmeEvent($this->request, $shopDetails);
                     if($payload != null) {
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
@@ -49,7 +52,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                             'payload' => json_encode($payload),
                             'api_response' => json_encode($response)
                         ]);
-                        Cache::put($cacheKey, $response);
+                        Cache::put($cacheKey, $response, 30);
                     } else {
                         Log::info('Cache already has the key '.$cacheKey.' so rejecting the process');
                     }
@@ -62,6 +65,33 @@ class CallAlmeWebhookEvent implements ShouldQueue {
         } catch (Exception $th) {
             Log::info('Error in call alme webhook event');
             Log::info($th->getMessage().' '.$th->getLine());
+        }
+    }
+
+    public function saveOrUpdateOrder($request, $shopDetails) {
+        try {
+            $updateArr = [
+                'shop_id' => $shopDetails->id,
+                'name' => $request['name'],
+                'id' => $request['id']
+            ];
+
+            $createArr = array_merge($updateArr, [
+                'checkout_id' => $request['checkout_id'],
+                'browser_ip' => $request['browser_ip'],
+                'cart_token' => $request['cart_token'],
+                'source_name' => $request['source_name'] ?? null,
+                'total_price' => $request['total_price'],
+                'line_items' => json_encode($request['line_items'])
+            ]);
+            
+            ShopifyOrder::updateOrCreate($updateArr, $createArr);
+        } catch (Throwable $th) {
+            Log::info('Error in webhook create order job');
+            Log::info($th->getMessage().' ',$th->getLine());
+        } catch (Exception $th) {
+            Log::info('Error in webhook create order job');
+            Log::info($th->getMessage().' ',$th->getLine());
         }
     }
 }
