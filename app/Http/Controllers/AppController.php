@@ -56,7 +56,7 @@ class AppController extends Controller {
 
     public function mapIp(Request $request) {
         try{
-            Log::info('Request received for ip map '.json_encode($request->all()));
+            //Log::info('Request received for ip map '.json_encode($request->all()));
             if($request->has('shop') && $request->filled('shop')) {
                 $shop = Shop::where('shop_url', $request->shop)->first();
                 $ip = $request->ipAddr;

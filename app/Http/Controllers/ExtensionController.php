@@ -126,7 +126,7 @@ class ExtensionController extends Controller {
                     $response = ['status' => true, 'message' => 'Flag not set true', 'debug' => $productRackSettings, 'html' => null];
                 } 
             } else {
-                $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request->all(), 'html' => null];
+                $response = ['status' => true, 'message' => 'Store not found', 'debug' => $request, 'html' => null];
             }
         } catch (Throwable $th) {
             Log::info($th->getMessage().' '.$th->getLine());
