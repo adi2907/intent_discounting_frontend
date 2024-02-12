@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\FinishInstallation;
+use App\Jobs\RegisterWebhooks;
 use App\Jobs\SyncShopifyProducts;
 use App\Models\Shop;
 use App\Models\ShopDetail;
@@ -122,6 +123,7 @@ class InstallationController extends Controller {
                         'shop_id' => $dbShop->id,
                         'active' => true
                     ]);
+                    RegisterWebhooks::dispatch($dbShop->id)->onConnection('database');
                     FinishInstallation::dispatch($dbShop, $user)->onConnection('database');
                 }
                 return redirect()->to("https://$shop/admin/apps/".$this->apiKey);
