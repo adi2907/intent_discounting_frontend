@@ -57,31 +57,26 @@ class CreateDiscountCode extends Command {
                                     $this->createPriceRuleForShop($shop);
                                     $shop->refresh('getLatestPriceRule');
                                     $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop);
-                                } else {
-                                    Log::info('Creating discount code not carried out');
-                                }
+                                } 
                             } else {
                                 //No Discount exist so create one.
                                 $this->createAndSaveDiscountCode($priceRule, $shop);
                             }
-
                         }
                     } else {
                         PriceRule::where('id', $shop->getLatestPriceRule->id)->delete();
                         $this->createPriceRuleForShop($shop);
-                        Log::info('Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
+                        //Log::info('Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
                     }  
                 } else {
                     $this->createPriceRuleForShop($shop);
                     //$this->createAndSaveDiscountCode($priceRule, $shop);
                 }
-            } else {
-                Log::info('Store Installation not valid for shop '.$shop->id.' '.$shop->shop_url);
             }
         }
-        $this->info('=========================================');
-        $this->info('FINISHED');
-        $this->info('=========================================');
+        // $this->info('=========================================');
+        // $this->info('FINISHED');
+        // $this->info('=========================================');
     }
 
     private function shopHasEnabledDiscountSettings($shop) {
@@ -90,7 +85,7 @@ class CreateDiscountCode extends Command {
                 return $shop->notificationSettings->sale_status == 1;
             }
             return false; 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
     }
@@ -112,8 +107,8 @@ class CreateDiscountCode extends Command {
             ]);
             $this->info('Created and saved discount code for '.$shop->shop_url);
         } else {
-            Log::info('here Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
-            Log::info($data);
+            // Log::info('here Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
+            // Log::info($data);
         }
     }
 
@@ -130,8 +125,8 @@ class CreateDiscountCode extends Command {
         } 
         $saleDiscountValue = '-'.$saleDiscountValue;
         $startsAt = date('c');
-        $this->info('Discount '.$saleDiscountValue);
-        $this->info('Setting start as '.$startsAt);
+        //$this->info('Discount '.$saleDiscountValue);
+        //$this->info('Setting start as '.$startsAt);
 
 
         $payload = [
