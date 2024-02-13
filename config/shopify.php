@@ -7,6 +7,7 @@ return [
     "ENC_SECRET_KEY" => "dipak_almee",
     "APP_SCOPES" => env('SHOPIFY_APP_SCOPES', ''),
     "APP_BLOCK_ID" => env('ALME_BLOCK_ID'),
+    "TEST_PAYMENTS" => env('TEST_PAYMENTS', "false"),
     "webhooks" => [
         'carts/update' => 'carts.update.webhook',
         'carts/create' => 'carts.create.webhook',

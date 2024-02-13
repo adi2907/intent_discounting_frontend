@@ -101,7 +101,7 @@ class AppController extends Controller {
             $headers = getShopifyAPIHeadersForStore($shop);
             $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
             if($response['statusCode'] === 200) {
-                $body = $response['body']['application_charge'];
+                $body = $response['body']['recurring_application_charge'];
                 if($body['status'] === 'active') {
                     $shop->subscriptionsInfo()->where('shopify_id', $charge_id)->update(['status' => true]); //It's paid
                 }   

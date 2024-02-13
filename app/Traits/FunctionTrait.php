@@ -749,6 +749,10 @@ trait FunctionTrait {
         // return $hmac_header == $calculated_hmac;
     }
 
+    public function checkIfTestPaymentsAreEnabled() {
+        return config('shopify.TEST_PAYMENTS');
+    }
+
     public function redirectShopToPaymentScreen($shop) {
         try {
             $endpoint = getShopifyAPIURLForStore('recurring_application_charges.json', $shop);
@@ -757,6 +761,7 @@ trait FunctionTrait {
                 "recurring_application_charge" => [
                     "name" => "Alme Plan",
                     "price" => 15.0,
+                    "test" => $this->checkIfTestPaymentsAreEnabled(),
                     "return_url" => route('shopify.accept.charge'),
                     "trial_days" => 0
                 ]

@@ -49,10 +49,8 @@ Route::middleware(['auth', 'ensureShopIsPaid'])->group(function () {
     Route::get('getStores', [AppController::class, 'getListOfStores']);
 
     Route::get('createNotificationAsset', [AppController::class, 'createNotificationAsset']);
-
-    Route::get('acceptCharge', [AppController::class, 'acceptCharge'])->name('shopify.accept.charge');
 });
-
+Route::middleware('auth')->get('acceptCharge', [AppController::class, 'acceptCharge'])->name('shopify.accept.charge');
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
 
 Route::prefix('debug')->group(function () {
