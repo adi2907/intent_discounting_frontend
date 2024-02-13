@@ -50,7 +50,9 @@ class SyncShopifyOrders implements ShouldQueue
                         'cart_token' => $order['cart_token'],
                         'source_name' => $order['source_name'] ?? null,
                         'total_price' => $order['total_price'],
-                        'line_items' => json_encode($order['line_items'])
+                        'line_items' => json_encode($order['line_items']),
+                        'customer' => isset($order['customer']) && is_array($order['customer']) ? json_encode($order['customer']) : null,
+                        'shipping_address' => isset($order['shipping_address']) && is_array($order['shipping_address']) ? json_encode($order['shipping_address']) : null
                     ]);
 
                     ShopifyOrder::updateOrCreate($updateArr, $createArr);

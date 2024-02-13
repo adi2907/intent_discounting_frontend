@@ -59,7 +59,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                         ]);
                         Cache::put($cacheKey, $response, 30);
                     } else {
-                        Log::info('Cache already has the key '.$cacheKey.' so rejecting the process');
+                        Log::info('Got payload null for order '.$cacheKey);
                     }
                 } else {
                     Log::info('Request duplicated! Cache key '.$cacheKey);
@@ -87,7 +87,9 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                 'cart_token' => $request['cart_token'],
                 'source_name' => $request['source_name'] ?? null,
                 'total_price' => $request['total_price'],
-                'line_items' => json_encode($request['line_items'])
+                'line_items' => json_encode($request['line_items']),
+                'customer' => isset($request['customer']) && is_array($request['customer']) ? json_encode($request['customer']) : null,
+                'shipping_address' => isset($request['shipping_address']) && is_array($request['shipping_address']) ? json_encode($request['shipping_address']) : null
             ]);
             
             ShopifyOrder::updateOrCreate($updateArr, $createArr);
