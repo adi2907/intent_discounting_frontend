@@ -36,18 +36,25 @@ class CallAlmeWebhookEvent implements ShouldQueue {
         try {
             $validRequest = $this->validateWebhookRequest($this->request, $this->headers);
             if($validRequest) {
-                Log::info('In Purchase shopify webhook handler');
+                //Log::info('In Purchase shopify webhook handler');
                 //Webhook call is valid. We can proceed.
                 $shopDetails = Shop::where('shop_url', $this->headers['x-shopify-shop-domain'][0])->first();
-                Log::info('Shop details: '.json_encode($shopDetails));
+                //Log::info('Shop details: '.json_encode($shopDetails));
                 $cacheKey = "Webhook:Order:{$this->request['id']}";
-                Log::info('Cache key: '.$cacheKey);
+                //Log::info('Cache key: '.$cacheKey);
                 $verify = $this->verifyRequestDuplication($cacheKey);
-                Log::info('Verify: '.$verify);
+                //Log::info('Verify: '.$verify);
                 if($verify) {
-                    $this->saveOrUpdateOrder($this->request, $shopDetails);
+                    try{
+                        $order = $this->saveOrUpdateOrder($this->request, $shopDetails);
+                        $shops = Shop::whereIn('id', [$shopDetails->id])->get()->keyBy('id')->toArray();
+                        ProcessPurchaseEvent::dispatch($order, $shops)->onConnection('database');
+                    } catch(Exception $e) {
+                        Log::info('Error here in line 52 '.$e->getMessage().' '.$e->getLine());
+                    }
+
                     $payload = $this->getOrderRequestPayloadForAlmeEvent($this->request, $shopDetails);
-                    Log::info('Payload: '.json_encode($payload));
+                    //Log::info('Payload: '.json_encode($payload));
                     if($payload != null) {
                         $endpoint = getAlmeAppURLForStore('events/shopify_webhook_purchase');
                         $headers = getAlmeHeaders();
@@ -92,7 +99,7 @@ class CallAlmeWebhookEvent implements ShouldQueue {
                 'shipping_address' => isset($request['shipping_address']) && is_array($request['shipping_address']) ? json_encode($request['shipping_address']) : null
             ]);
             
-            ShopifyOrder::updateOrCreate($updateArr, $createArr);
+            return ShopifyOrder::updateOrCreate($updateArr, $createArr);
         } catch (Throwable $th) {
             Log::info('Error in webhook create order job');
             Log::info($th->getMessage().' ',$th->getLine());

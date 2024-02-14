@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel {
         //$schedule->command('app:sync-orders')->everyMinute();
 
         //Calls Alme's purchase event api for the orders that haven't been informed to Alme backend yet.
-        $schedule->command('app:purchase-event-alme')->everyMinute();
+        //$schedule->command('app:purchase-event-alme')->everyMinute();
 
         //Syncs products data from all stores. 
         $schedule->command('app:sync-products')->everyOddHour();
