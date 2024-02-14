@@ -63,7 +63,7 @@ class AppController extends Controller {
                 $shop = Shop::where('shop_url', $request->shop)->first();
                 $ip = $request->ipAddr;
                 $token = $request->token;
-                $updateArr = ['token' => $token];
+                $updateArr = ['alme_token' => $token];
                 $createArr = array_merge($updateArr, [
                     'shop_id' => $shop->id, 
                     'ip_address' => $ip, 
