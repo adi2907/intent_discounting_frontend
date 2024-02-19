@@ -24,6 +24,7 @@
                     <thead class="thead-light">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">User ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Last Visited</th>
                         <th scope="col">Phone</th>
@@ -65,7 +66,6 @@
         processing: true,
         serverSide: true,
         searching: false,
-        //ordering: false,
         order: [[0, 'desc']],
         columnDefs: [{ 
             targets: [0,1,2,3], 
@@ -82,6 +82,7 @@
         },
         columns: [
             {data: 'serial_number', name: 'serial_number'},
+            {data: 'regd_user_id', name: 'regd_user_id'},
             {data: 'name', name: 'name'},
             {data: 'last_visited', name: 'last_visited'},
             {data: 'phone', name: 'phone'},

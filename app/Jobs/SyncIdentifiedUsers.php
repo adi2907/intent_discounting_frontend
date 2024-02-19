@@ -12,8 +12,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SyncIdentifiedUsers implements ShouldQueue
-{
+class SyncIdentifiedUsers implements ShouldQueue {
+
     use FunctionTrait, RequestTrait;
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $shop;
@@ -35,7 +35,8 @@ class SyncIdentifiedUsers implements ShouldQueue
             foreach($data['body'] as $info) {
                 IdentifiedUsers::insert([
                     'shop_id' => $this->shop->id,
-                    'name' => $info['name'],
+                    'regd_user_id' => $info['regd_user_id'] ?? null,
+                    'name' => $info['name'] ?? '',
                     'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
                     'email' => $info['email'] ?? 'N/A',
                     'serial_number' => $info['serial_number'] ?? 'N/A',
