@@ -16,4 +16,12 @@ class ShopifyOrder extends Model
     public function getPurchaseEventRetries() {
         return $this->hasMany(RetryPurchaseEvent::class, 'order_id', 'table_id');
     }
+
+    public function getCustomerDetails() {
+        if($this->customer !== null) {
+            $customer = is_array($this->customer) ? $this->customer : json_decode($this->customer, true);
+            return $customer;
+        }
+        return null;
+    }
 }
