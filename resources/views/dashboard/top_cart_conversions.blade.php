@@ -13,7 +13,7 @@
                                 <img src="{{$products[$productId]['imageSrc']}}" alt="" class="product-image">    
                                 <h3 class="product-title">
                                     <a style="color:black;font-family:'Montserrat'" target="_blank" href="https://admin.shopify.com/store/{{explode('.', $baseShop['shop_url'])[0]}}/products/{{$productId}}">
-                                        {{$products[$productId]['title']}}
+                                        {{shorten($products[$productId]['title'], 35)}}
                                     </a>
                                 </h3>
                                 <div class="ml-auto conversion-rates">

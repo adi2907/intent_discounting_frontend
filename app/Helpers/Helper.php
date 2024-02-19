@@ -34,4 +34,12 @@ if (!function_exists('getShopifyAPIURLForStore')) {
             'Origin'=> 'https://www.almeapp.co.in'
         ];
     }
+
+    function shorten($string, $maxLength) {
+        if(strlen($string) > $maxLength) {
+            return substr($string, 0, $maxLength).'...';
+        }
+        
+        return $string;
+    } 
 }
