@@ -105,6 +105,9 @@ Route::prefix('webhooks')->group(function () {
     Route::any('checkoutCreate', [WebhookController::class, 'checkoutCreateWebhook'])->name('checkouts.create.webhook');
     Route::any('orderCreate', [WebhookController::class, 'orderCreateWebhook'])->name('orders.create.webhook');
     Route::any('orderUpdate', [WebhookController::class, 'orderUpdateWebhook'])->name('orders.update.webhook');
+
+    //For deleting webhooks
+    Route::get('deleteWebhooks', [WebhookController::class, 'deleteWebhooks']);
 }); 
 
 //Testing scripts

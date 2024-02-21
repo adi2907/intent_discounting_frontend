@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Jobs\CallAlmeWebhookEvent;
 use App\Jobs\RegisterWebhooks;
+use App\Models\Shop;
 use App\Traits\FunctionTrait;
+use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller {
-    use FunctionTrait;
+    use FunctionTrait, RequestTrait;
 
     public function handleCustomerDataRequest(Request $request) {
         $request = $request->all();
@@ -107,5 +109,23 @@ class WebhookController extends Controller {
         //Log::info('Request for order update');
         //Log::info($request->all());
         return response()->json(['status' => true]);
+    }
+
+    public function deleteWebhooks(Request $request) {
+        $shop = Shop::where('id', $request->shop_id)->first();
+        $endpoint = getShopifyAPIURLForStore('webhooks.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+
+        $responses = [];
+
+        foreach($response['body']['webhooks'] as $webhook) {
+            if($webhook['topic'] !== 'orders/create') {
+                $newEndpoint = getShopifyAPIURLForStore('webhooks/'.$webhook['id'].'.json', $shop);
+                $responses[] = $this->makeAnAPICallToShopify('DELETE', $newEndpoint, $headers);
+            }
+        }
+
+        dd($responses);
     }
 }

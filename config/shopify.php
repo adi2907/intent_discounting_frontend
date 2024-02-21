@@ -8,11 +8,11 @@ return [
     "APP_SCOPES" => env('SHOPIFY_APP_SCOPES', ''),
     "APP_BLOCK_ID" => env('ALME_BLOCK_ID'),
     "webhooks" => [
-        'carts/update' => 'carts.update.webhook',
-        'carts/create' => 'carts.create.webhook',
-        'checkouts/create' => 'checkouts.create.webhook',
-        'checkouts/update' => 'checkouts.update.webhook',
+        //'carts/update' => 'carts.update.webhook',
+        //'carts/create' => 'carts.create.webhook',
+        //'checkouts/create' => 'checkouts.create.webhook',
+        //'checkouts/update' => 'checkouts.update.webhook',
         'orders/create' => 'orders.create.webhook',
-        'orders/updated' => 'orders.update.webhook'
+        //'orders/updated' => 'orders.update.webhook'
     ]
 ];
