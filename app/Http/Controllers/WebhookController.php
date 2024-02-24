@@ -100,7 +100,7 @@ class WebhookController extends Controller {
     }
     
     public function orderCreateWebhook(Request $request) {
-        Log::info('Request for order create');
+        //Log::info('Request for order create');
         CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
         return response()->json(['status' => true]);
     }
