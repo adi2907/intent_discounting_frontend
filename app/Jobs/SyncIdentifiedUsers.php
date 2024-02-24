@@ -35,7 +35,7 @@ class SyncIdentifiedUsers implements ShouldQueue {
             foreach($data['body'] as $info) {
                 IdentifiedUsers::insert([
                     'shop_id' => $this->shop->id,
-                    'regd_user_id' => $info['regd_user_id'] ?? null,
+                    'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
                     'name' => $info['name'] ?? '',
                     'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
                     'email' => $info['email'] ?? 'N/A',

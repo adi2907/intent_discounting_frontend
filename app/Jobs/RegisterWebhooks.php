@@ -46,8 +46,8 @@ class RegisterWebhooks implements ShouldQueue
                     ]
                 ];
                 $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $body);
-                Log::info('Response for topic '.$topic);
-                Log::info($response['body']);
+                //Log::info('Response for topic '.$topic);
+                //Log::info($response['body']);
                 //You can write a logic to save this in the database table.
             }
         } catch(Exception $e) {

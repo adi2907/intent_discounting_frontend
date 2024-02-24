@@ -12,22 +12,20 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SyncShopifyOrders implements ShouldQueue
-{
+class SyncShopifyOrders implements ShouldQueue {
     use FunctionTrait, RequestTrait;
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $shop;
     /**
      * Create a new job instance.
-     */
-    public function __construct($shop)
-    {
+    */
+    public function __construct($shop) {
         $this->shop = $shop;
     }
 
     /**
      * Execute the job.
-     */
+    */
     public function handle(): void {
         $orders = null;
         $shop = $this->shop;

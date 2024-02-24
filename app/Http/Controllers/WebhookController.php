@@ -9,6 +9,7 @@ use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class WebhookController extends Controller {
     use FunctionTrait, RequestTrait;
@@ -101,7 +102,11 @@ class WebhookController extends Controller {
     
     public function orderCreateWebhook(Request $request) {
         //Log::info('Request for order create');
-        CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
+        try {
+            CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
+        } catch (Throwable $th) {
+            Log::info('Error in order create function '.$th->getMessage().' '.$th->getLine());
+        }
         return response()->json(['status' => true]);
     }
 

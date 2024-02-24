@@ -21,14 +21,14 @@ class SyncShopifyProducts implements ShouldQueue {
     public $shop;
     /**
      * Create a new job instance.
-     */
+    */
     public function __construct($shop) {
         $this->shop = $shop;
     }
 
     /**
      * Execute the job.
-     */
+    */
     public function handle(): void {    
         try {
             $since_id = 0;
