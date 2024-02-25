@@ -119,20 +119,21 @@ class WebhookController extends Controller {
     public function deleteWebhooks(Request $request) {
         $shops = Shop::get();
         foreach($shops as $shop) {
-            $endpoint = getShopifyAPIURLForStore('webhooks.json', $shop);
-            $headers = getShopifyAPIHeadersForStore($shop);
-            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
-    
-            $responses = [];
-    
-            foreach($response['body']['webhooks'] as $webhook) {
-                if($webhook['topic'] !== 'orders/create') {
-                    $newEndpoint = getShopifyAPIURLForStore('webhooks/'.$webhook['id'].'.json', $shop);
-                    $responses[] = $this->makeAnAPICallToShopify('DELETE', $newEndpoint, $headers);
+            if($this->verifyInstallation($shop)) {
+                $endpoint = getShopifyAPIURLForStore('webhooks.json', $shop);
+                $headers = getShopifyAPIHeadersForStore($shop);
+                $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        
+                $responses = [];
+        
+                foreach($response['body']['webhooks'] as $webhook) {
+                    if($webhook['topic'] !== 'orders/create') {
+                        $newEndpoint = getShopifyAPIURLForStore('webhooks/'.$webhook['id'].'.json', $shop);
+                        $responses[] = $this->makeAnAPICallToShopify('DELETE', $newEndpoint, $headers);
+                    }
                 }
             }
         }
-
-        dd($responses);
+        dd('Done');
     }
 }
