@@ -437,22 +437,25 @@ class AppController extends Controller {
     }
 
     public function mapCartContents(Request $request) {
-        // Log::info('Cart contents request received');
-        // Log::info(json_encode($request->all()));
-        $shop = Shop::where('shop_url', $request->shop)->first();
+        if($request->has('shop')) {
+            $shop = Shop::where('shop_url', $request->shop)->first();
 
-        $updateArr = [
-            'shop_id' => $shop->id,
-            'shopify_cart_token' => $request->cartId
-        ];
-
-        $createArr = array_merge($updateArr, [
-            'session_id' => $request->session_id,
-            'alme_token' => $request->almeToken
-        ]);
-
-        AlmeShopifyOrders::updateOrCreate($updateArr, $createArr);
-        return response()->json(['status' => true, 'message' => 'Recorded!']);
+            if($shop !== null && $shop->count() > 0) {
+                $updateArr = [
+                    'shop_id' => $shop->id,
+                    'shopify_cart_token' => $request->cartId
+                ];
+        
+                $createArr = array_merge($updateArr, [
+                    'session_id' => $request->session_id,
+                    'alme_token' => $request->almeToken
+                ]);
+        
+                AlmeShopifyOrders::updateOrCreate($updateArr, $createArr);
+                return response()->json(['status' => true, 'message' => 'Recorded!']);
+            }
+        }
+        return response()->json(['status' => false, 'message' => 'Invalid request']);
     }
 
     public function checkAlmeAPIs(Request $request) {
