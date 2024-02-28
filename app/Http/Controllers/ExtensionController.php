@@ -57,52 +57,23 @@ class ExtensionController extends Controller {
         return response()->json($response);
     }
 
-    /*
-    public function getMostViewedData(Request $request) {
-        if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'most_added_prods');
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
-        }
+    public function cartSuggestions(Request $request) {
+        $response = $request->has('shop') && $request->filled('shop') ?
+            $this->handleCartSuggestionsHTML($request->all()) :
+            ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
+
         return response()->json($response);
     }
 
-    public function getMostCartedData(Request $request) {
-        if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'prev_browsing');
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
-        }
-        return response()->json($response);
+    private function handleCartSuggestionsHTML($request) {
+        $shop = Shop::where('shop_url', $request['shop'])->first();
+        $products = $shop->getProducts()->limit(4)->get();
+        $viewFilePrefix = 'appExt.';
+        $viewFile = 'productList'; 
+        $title = 'Suggested products';
+        $html = view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title])->render(); 
+        return ['status' => true, 'html' => $html];
     }
-
-    public function carts(Request $request) {
-        if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
-        }
-        return response()->json($response);
-    }
-
-    public function recommendedForYou(Request $request) {
-        if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'feat_collect');
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
-        }
-        return response()->json($response);
-    }
-
-    public function userLiked(Request $request) {
-        if($request->has('shop') && $request->filled('shop')) {
-            $response = $this->handleHTMLBasedOnType($request->all(), 'user_liked');
-        } else {
-            $response = ['status' => true, 'message' => 'Store not in request', 'debug' => $request->all(), 'html' => null];
-        }
-        return response()->json($response);
-    }
-    */
 
     private function handleHTMLBasedOnType($request, $prop) {
         try {

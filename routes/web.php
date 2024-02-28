@@ -79,7 +79,7 @@ Route::middleware('cors')->group(function () {
         Route::post('crowdFavorites', [ExtensionController::class, 'crowdFavorites']);
         Route::post('usersAlsoLiked', [ExtensionController::class, 'usersAlsoLiked']);
         Route::post('featuredCollection', [ExtensionController::class, 'featuredCollection']);
-        
+        Route::post('cartSuggestions', [ExtensionController::class, 'cartSuggestions']);
     });
 });
 
