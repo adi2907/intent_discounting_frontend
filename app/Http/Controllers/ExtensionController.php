@@ -66,6 +66,8 @@ class ExtensionController extends Controller {
     }
 
     private function handleCartSuggestionsHTML($request) {
+        Log::info('Request received for cart suggestions');
+        Log::info($request);
         $shop = Shop::where('shop_url', $request['shop'])->first();
         $products = $shop->getProducts()->limit(4)->get();
         $viewFilePrefix = 'appExt.';
