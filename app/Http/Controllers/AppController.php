@@ -48,6 +48,18 @@ class AppController extends Controller {
         return response()->json($arr);
     }
 
+    public function updateProductRacks(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $shop->productRackInfo()->update([
+            'usersAlsoLiked' => $request->usersAlsoLiked == 'on',
+            'featuredCollection' => $request->featuredCollection == 'on',
+            'pickUpWhereYouLeftOff' => $request->pickUpWhereYouLeftOff == 'on',
+            'crowdFavorites' => $request->crowdFavorites == 'on'
+        ]);
+        return response()->json(['status' => true, 'message' => 'Updated!']);
+    }
+
     public function syncOrders() {
         $user = Auth::user();
         $shop = $user->shopifyStore;
