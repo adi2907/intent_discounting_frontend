@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');
 
     Route::post('updateProductRacks', [AppController::class, 'updateProductRacks'])->name('update.product.racks');
+    Route::post('updateStoreNotifications', [AppController::class, 'updateStoreNotifications'])->name('update.store.notifications');
 
     Route::get('setup', [AppController::class, 'showSetupPage'])->name('show.setup.page');
     Route::get('turnOnScript', [AppController::class, 'turnAlmeScriptOn'])->name('alme.turn.script.on');  

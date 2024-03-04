@@ -191,7 +191,7 @@
 
                         setTimeout(function() {
                             window.location.reload();  // You used `el`, not `element`?
-                        }, 3000);
+                        }, 2000);
                     }   
                 }
             });

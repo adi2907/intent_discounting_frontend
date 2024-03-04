@@ -48,6 +48,20 @@ class AppController extends Controller {
         return response()->json($arr);
     }
 
+    public function updateStoreNotifications(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $shop->notificationSettings()->update([
+            'status' => $request->status == 'on',
+            'title' => $request->notification_title,
+            'description' => $request->notification_desc,
+            'sale_status' => $request->sale_status == 'on',
+            'sale_discount_value' => $request->sale_discount_value,
+            'discount_expiry' => $request->discount_expiry
+        ]);
+        return response()->json(['status' => true, 'message' => 'Updated!']);
+    }
+
     public function updateProductRacks(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
