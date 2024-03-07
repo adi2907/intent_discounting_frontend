@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:sync-products')->everyOddHour();
 
         //Syncs Alme's Identified Users data into the database. So we can do custom querying on it on our end.
-        $schedule->command('app:sync-identified-users')->everyOddHour();
+        //$schedule->command('app:sync-identified-users')->everyOddHour();
 
         //Retries failed purchase events and saves information in the table
         //Turned off for now
