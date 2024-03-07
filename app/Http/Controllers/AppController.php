@@ -525,17 +525,40 @@ class AppController extends Controller {
         try {
             if($request->ajax()) {
                 $request = $request->all();
-                $store = Auth::user()->shopifyStore; //Take the auth user's shopify store
-                $builder = $store->getIdentifiedUsers(); //Load the relationship (Query builder)
+                $shop = Auth::user()->shopifyStore; //Take the auth user's shopify shop
+                $data = $this->callAlmeAppIdentifiedUsers($shop);
+                $returnData = [];
+        
+                if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
+                    foreach($data['body'] as $info) {
+                        $returnData[] = [
+                            'shop_id' => $shop->id,
+                            'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
+                            'name' => $info['name'] ?? '',
+                            'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
+                            'email' => $info['email'] ?? 'N/A',
+                            'serial_number' => $info['serial_number'] ?? 'N/A',
+                            'phone' => $info['phone'] ?? 'N/A',
+                            'visited' => $info['visited'] ?? 'N/A',
+                            'added_to_cart' => $info['added_to_cart'] ?? 'N/A',
+                            'purchased' => $info['purchased'] ?? 'N/A'
+                        ];
+                    }
+                }
+
                 /*
                     $customers = $customers->select(['first_name', 'last_name', 'email', 'phone', 'created_at']); //Select columns
                     if(isset($request['search']) && isset($request['search']['value'])) 
                         $customers = $this->filterCustomers($customers, $request); //Filter customers based on the search term
                 */
+                
+                /*
+                $builder = $store->getIdentifiedUsers(); //Load the relationship (Query builder)
                 $count = $builder->count(); //Take the total count returned so far
                 $limit = $request['length'];
                 $offset = $request['start'];
                 $builder = $builder->offset($offset)->limit($limit); //LIMIT and OFFSET logic for MySQL
+                
 
                 if(isset($request['start_date']) && isset($request['end_date'])) {
                     if(strlen($request['start_date']) && strlen($request['end_date'])) {
@@ -543,6 +566,7 @@ class AppController extends Controller {
                                 ->where('last_visited', '<', date('Y-m-d 23:59:59', $request['end_date']));
                     }
                 }
+                
                 
                 if(isset($request['order']) && isset($request['order'][0]))
                     $builder = $this->orderIdentifiedUsers($builder, $request); //Order customers based on the column
@@ -556,16 +580,16 @@ class AppController extends Controller {
                         $data[] = $item;
                     }
                 }
-                    
-                        //$data[] = $item->toArray();
+                */    
+                //$data[] = $item->toArray();
                 return response()->json([
                     "draw" => intval(request()->query('draw')),
-                    "recordsTotal"    => intval($count),
-                    "recordsFiltered" => intval($count),
-                    "data" => $data,
+                    "recordsTotal"    => intval(count($returnData)),
+                    "recordsFiltered" => intval(count($returnData)),
+                    "data" => $returnData,
                     "debug" => [
                         "request" => $request,
-                        "sqlQuery" => $query
+                        "sqlQuery" => null
                     ]
                 ], 200);
             }

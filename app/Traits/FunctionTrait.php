@@ -492,7 +492,7 @@ trait FunctionTrait {
     }
 
     public function callAlmeAppIdentifiedUsers($shop) {
-        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?days=7&app_name='.$shop->shop_url);
+        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?days=15&app_name='.$shop->shop_url);
         $headers = getAlmeHeaders();
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
