@@ -29,6 +29,14 @@ class HomeController extends Controller {
         return redirect()->route('login');
     }
 
+    public function testOrders() {
+        $store = Shop::where('id', 31)->first();
+        $endpoint = getShopifyAPIURLForStore('orders/5543423672562.json', $store);
+        $headers = getShopifyAPIHeadersForStore($store);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        dd($response['body']);
+    }
+
     public function deleteCoupons() {
         $shop = Shop::where('shop_url', 'millet-amma-store.myshopify.com')->first();
         $headers = getShopifyAPIHeadersForStore($shop);

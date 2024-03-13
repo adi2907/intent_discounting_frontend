@@ -656,6 +656,17 @@ class AppController extends Controller {
                             '{{TITLE}}' => $notificationSettings->title,
                             '{{DESCRIPTION}}' => $notificationSettings->description
                         ];
+
+                        try {
+                            if($shop->id == 17) {
+                                $arrayValidate = array_merge($arrayValidate, [
+                                    'https://almeeapp.co.in/images/TextALME.png' => 'https://cdn.shopify.com/s/files/1/0601/1505/8873/files/newlogo-withought-tag_0741e721-73f2-452f-bcbb-0dcc1ee29ead.png?2500'
+                                ]);
+                            }
+                        } catch (\Throwable $th) {
+                            Log::info($th->getMessage().' '.$th->getLine());
+                        }
+                        
                         
                         foreach($arrayValidate as $strToLookFor => $value) {
                             $checkIfHasStr = str_contains($html, $strToLookFor);
