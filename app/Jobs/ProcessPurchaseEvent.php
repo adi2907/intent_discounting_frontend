@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
+use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Bus\Queueable;
@@ -114,6 +115,7 @@ class ProcessPurchaseEvent implements ShouldQueue {
                                 if(isset($noteAttribute['name']) && strlen($noteAttribute['name']) && $noteAttribute['name'] == 'cart_token') {
                                     $flag = true;
                                     $order->update(['cart_token' => $noteAttribute['value'], 'purchase_event_status' => null]);
+                                    $this->tryAgain($noteAttribute['value'], $shop, $orderResponse);
                                 }
                             }
                         }
@@ -125,6 +127,44 @@ class ProcessPurchaseEvent implements ShouldQueue {
                 if(!$flag)
                     $order->update(['purchase_event_status' => 'Browser IP found null even after retrying']);
             }
+        }
+    }
+
+    public function tryAgain($cartToken, $shop, $order) {
+        $tableRow = ShopifyOrder::where('shop_id', $shop['id'])->where('id', $order['id'])->first();
+        $almeInfo = AlmeShopifyOrders::where('shopify_cart_token', $cartToken)
+                                             ->where('session_id', '<>', null)
+                                             ->where('alme_token', '<>', null)
+                                             ->orderBy('created_at', 'desc')
+                                             ->first();
+        if($almeInfo !== null && $almeInfo->count() > 0) {
+            $line_items = $order['line_items'];
+            $productsArr = [];
+            foreach($line_items as $item) {
+                $productsArr[] = [
+                    "product_id" => $item['product_id'],
+                    "product_name" => $item['title'],
+                    "product_price" => $item['price'],
+                    "product_qty" => $item['quantity']
+                ];
+            }
+
+            $payload = [
+                "cart_token" => $cartToken,
+                "alme_user_token" => $almeInfo->alme_token,
+                "timestamp" => $order['created_at'],
+                "app_name" => $shop['shop_url'],
+                "session_id" => $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
+                "products" => $productsArr
+            ];
+
+            $endpoint = getAlmeAppURLForStore('events/purchase/');
+            $headers = getAlmeHeaders();
+            $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
+            //$this->processRetryResponse($order, $payload, $response);
+            $tableRow->update(['purchase_event_status' => 'Alme purchase event api called on second try', 'purchase_event_response' => json_encode($response)]);
+        } else {
+            $tableRow->update(['purchase_event_status' => 'Purchase event failed even on second try']);
         }
     }
 }
