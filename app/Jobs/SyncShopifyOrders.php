@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SyncShopifyOrders implements ShouldQueue {
     use FunctionTrait, RequestTrait;
@@ -32,10 +33,12 @@ class SyncShopifyOrders implements ShouldQueue {
         $sinceId = 0;
         $headers = getShopifyAPIHeadersForStore($shop);
         do {
-            $endpoint = getShopifyAPIURLForStore('orders.json?status=any&since_id='.$sinceId, $shop);
-            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            $endpoint = getShopifyAPIURLForStore('orders.json?status=any&limit=250&since_id='.$sinceId, $shop);
+            Log::info('Endpoint '.$endpoint);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);        
             if($response['statusCode'] == 200) {
-                foreach($response['body']['orders'] as $order) {
+                $orders = $response['body']['orders'];
+                foreach($orders as $order) {
                     $updateArr = [
                         'shop_id' => $shop->id,
                         'id' => $order['id']
@@ -47,6 +50,7 @@ class SyncShopifyOrders implements ShouldQueue {
                         'browser_ip' => $order['browser_ip'],
                         'cart_token' => $order['cart_token'],
                         'source_name' => $order['source_name'] ?? null,
+                        'financial_status' => $order['financial_status'] ?? null,
                         'total_price' => $order['total_price'],
                         'line_items' => json_encode($order['line_items']),
                         'customer' => isset($order['customer']) && is_array($order['customer']) ? json_encode($order['customer']) : null,

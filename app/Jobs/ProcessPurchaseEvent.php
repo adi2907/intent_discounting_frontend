@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProcessPurchaseEvent implements ShouldQueue {
 
@@ -98,7 +99,31 @@ class ProcessPurchaseEvent implements ShouldQueue {
                     $order->update(['purchase_event_status' => 'Database IP map not found']);
                 }
             } else {
-                $order->update(['purchase_event_status' => 'Browser IP found null']);
+                //Here browser IP is found null so maybe try fetching the order from Shopify
+                //and check the note_attributes attribute to see if a cart_token is present in it.
+                $flag = false;
+                try {
+                    $shop = $shops[$order->shop_id];
+                    $endpoint = getShopifyAPIURLForStore('orders/'.$order['id'].'.json', $shop);
+                    $headers = getShopifyAPIHeadersForStore($shop);
+                    $orderResponse = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+                    if($orderResponse['statusCode'] && $orderResponse['statusCode'] == 200) {
+                        $orderResponse = $orderResponse['body']['order'];
+                        if(isset($orderResponse['note_attributes']) && is_array($orderResponse['note_attributes'])) {
+                            foreach($orderResponse['note_attributes'] as $noteAttribute) {
+                                if(isset($noteAttribute['name']) && strlen($noteAttribute['name']) && $noteAttribute['name'] == 'cart_token') {
+                                    $flag = true;
+                                    $order->update(['cart_token' => $noteAttribute['value'], 'purchase_event_status' => null]);
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable $th) {
+                    Log::info('Error in ProcessPurchaseEvent '.$th->getMessage().' '.$th->getLine());
+                }
+    
+                if(!$flag)
+                    $order->update(['purchase_event_status' => 'Browser IP found null even after retrying']);
             }
         }
     }

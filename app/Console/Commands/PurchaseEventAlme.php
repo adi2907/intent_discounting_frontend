@@ -35,8 +35,7 @@ class PurchaseEventAlme extends Command
      */
     public function handle()
     {
-        $query = ShopifyOrder::where('purchase_event_status', null);
-        $orders = $query->get();
+        $orders = ShopifyOrder::where('purchase_event_status', null)->get();
         if($orders !== null && $orders->count() > 0) {
             $this->info('Processing '.$orders->count().' orders');
             $shopIds = $orders->pluck('shop_id')->toArray();

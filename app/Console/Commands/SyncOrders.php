@@ -32,7 +32,7 @@ class SyncOrders extends Command
      */
     public function handle()
     {
-        $shops = Shop::get();
+        $shops = Shop::where('id', 31)->get();
         foreach($shops as $shop) {
             SyncShopifyOrders::dispatch($shop)->onConnection('sync');
         }

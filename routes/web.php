@@ -121,3 +121,5 @@ Route::get('checkStoreThemeInstall', [AppController::class, 'checkStoreThemeInst
 Route::get('checkPurchaseEvent', [HomeController::class, 'checkPurchaseEvent']);
 Route::get('deleteCoupons', [HomeController::class, 'deleteCoupons']);
 Route::get('testOrders', [HomeController::class, 'testOrders']);
+Route::get('testCustomers', [HomeController::class, 'testCustomers']);
+Route::get('testPurchaseEvent', [HomeController::class, 'testPurchaseEvent']);

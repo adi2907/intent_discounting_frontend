@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPurchaseEvent;
 use App\Models\AlmeShopifyOrders;
 use App\Models\Shop;
 use App\Models\ShopDetail;
@@ -35,6 +36,26 @@ class HomeController extends Controller {
         $headers = getShopifyAPIHeadersForStore($store);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
         dd($response['body']);
+    }
+
+    public function testCustomers() {
+        $store = Shop::where('id', 31)->first();
+        $endpoint = getShopifyAPIURLForStore('customers.json', $store);
+        $headers = getShopifyAPIHeadersForStore($store);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        dd($response['body']);
+    }
+
+    public function testPurchaseEvent() {
+        $orders = ShopifyOrder::where('shop_id', 31)->where('id', 5543423672562)->get();
+        if($orders !== null && $orders->count() > 0) {
+            $shopIds = $orders->pluck('shop_id')->toArray();
+            $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
+            foreach($orders as $order) {
+                ProcessPurchaseEvent::dispatch($order, $shops)->onConnection('sync');
+            }
+        }
+        dd('Done');
     }
 
     public function deleteCoupons() {
