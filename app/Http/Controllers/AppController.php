@@ -26,6 +26,13 @@ class AppController extends Controller {
         
     }
 
+    public function mapCheckout(Request $request) {
+        Log::info('Request came for mapping checkout');
+        Log::info(json_encode($request->all()));
+
+        return response()->json(['status' => true, 'request' => $request->all()]);
+    }
+
     public function checkShopifyAPIs(Request $request) {
         $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('shop_url', $request->shop)->first();
         //$shopEndpoint = getShopifyAPIURLForStore('shop.json', $shop);
