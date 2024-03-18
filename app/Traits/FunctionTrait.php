@@ -497,6 +497,39 @@ trait FunctionTrait {
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }
 
+    public function getShopCustomers($shop) {
+        $returnArr = [];
+        $since_id = 0;
+        $headers = getShopifyAPIHeadersForStore($shop);
+        do {
+
+            $countEndpoint = getShopifyAPIURLForStore('customers/count.json', $shop);
+            $countResponse = $this->makeAnAPICallToShopify('GET', $countEndpoint, $headers);
+            $endpoint = getShopifyAPIURLForStore('customers.json?limit=250&since_id='.$since_id, $shop);
+            Log::info($endpoint);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            if($response['statusCode'] == 200) {
+                $customers = $response['body']['customers'];
+                if($customers !== null && count($customers) > 0) {
+                    Log::info('Count got '.count($customers));
+                    foreach($customers as $customer) {
+                        $returnArr[$customer['id']] = [
+                            'name' => $customer['first_name'].' '.$customer['last_name'],
+                            'email' => $customer['email']
+                        ];
+
+                        $since_id = $customer['id'];
+                    }
+                } else {
+                    $customers = null;
+                }
+            } else {
+                $customers = null;
+            }
+        } while($customers !== null && count($customers) > 0);
+        return $returnArr;
+    }
+
     public function getTopCarted($shopURL, $request = null) {
         try {
             $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';

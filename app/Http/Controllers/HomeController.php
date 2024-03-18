@@ -32,7 +32,7 @@ class HomeController extends Controller {
 
     public function testOrders() {
         $store = Shop::where('id', 31)->first();
-        $endpoint = getShopifyAPIURLForStore('orders/5543423672562.json', $store);
+        $endpoint = getShopifyAPIURLForStore('orders/5549434962162.json', $store);
         $headers = getShopifyAPIHeadersForStore($store);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
         dd($response['body']);

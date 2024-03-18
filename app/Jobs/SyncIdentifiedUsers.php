@@ -20,8 +20,7 @@ class SyncIdentifiedUsers implements ShouldQueue {
     /**
      * Create a new job instance.
      */
-    public function __construct($shop)
-    {
+    public function __construct($shop) {
         $this->shop = $shop;
     }
 
@@ -33,19 +32,37 @@ class SyncIdentifiedUsers implements ShouldQueue {
         if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
             IdentifiedUsers::where('shop_id', $this->shop->id)->delete();
             foreach($data['body'] as $info) {
-                IdentifiedUsers::insert([
+                $customerResp = $this->getShopCustomer($this->shop, $info['regd_user_id']);
+                $customerFullName = null;
+                try {
+                    $customerFullName = $customerResp['body']['customer']['first_name'].' '.$customerResp['body']['customer']['last_name'];
+                } catch (\Throwable $th) {
+                    $customerFullName = null;
+                }
+
+                $createArr = [
                     'shop_id' => $this->shop->id,
                     'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
-                    'name' => $info['name'] ?? '',
+                    'name' => $customerFullName !== null ? $customerFullName : $info['name'] ?? 'N/A',
                     'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
-                    'email' => $info['email'] ?? 'N/A',
+                    'email' => isset($customerResp['body']['customer']) ? $customerResp['body']['customer']['email'] : $info['name'],
                     'serial_number' => $info['serial_number'] ?? 'N/A',
                     'phone' => $info['phone'] ?? 'N/A',
                     'visited' => $info['visited'] ?? 'N/A',
                     'added_to_cart' => $info['added_to_cart'] ?? 'N/A',
                     'purchased' => $info['purchased'] ?? 'N/A'
-                ]);
+                ];
+
+                $updateArr = ['shop_id' => $this->shop->id, 'regd_user_id' => $info['regd_user_id']];
+            
+                IdentifiedUsers::updateOrCreate($updateArr, $createArr);
             }
         }
+    }
+
+    public function getShopCustomer($shop, $id) {
+        $endpoint = getShopifyAPIURLForStore('customers/'.$id.'.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        return $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
     }
 }

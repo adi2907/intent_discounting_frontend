@@ -533,7 +533,9 @@ class AppController extends Controller {
             if($request->ajax()) {
                 $request = $request->all();
                 $shop = Auth::user()->shopifyStore; //Take the auth user's shopify shop
+                /*
                 $data = $this->callAlmeAppIdentifiedUsers($shop);
+                $customers = $this->getShopCustomers($shop);
                 $returnData = [];
         
                 if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
@@ -541,9 +543,9 @@ class AppController extends Controller {
                         $returnData[] = [
                             'shop_id' => $shop->id,
                             'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
-                            'name' => $info['name'] ?? '',
+                            'name' => isset($customers[$info['regd_user_id']]) ? $customers[$info['regd_user_id']]['name'].' '.$customers[$info['regd_user_id']]['email'] : $info['name'],
                             'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
-                            'email' => $info['email'] ?? 'N/A',
+                            'email' => isset($customers[$info['regd_user_id']]) ? $customers[$info['regd_user_id']]['email'] : $info['name'],
                             'serial_number' => $info['serial_number'] ?? 'N/A',
                             'phone' => $info['phone'] ?? 'N/A',
                             'visited' => $info['visited'] ?? 'N/A',
@@ -552,19 +554,17 @@ class AppController extends Controller {
                         ];
                     }
                 }
-
-                /*
-                    $customers = $customers->select(['first_name', 'last_name', 'email', 'phone', 'created_at']); //Select columns
-                    if(isset($request['search']) && isset($request['search']['value'])) 
-                        $customers = $this->filterCustomers($customers, $request); //Filter customers based on the search term
+                
+                
+                $customers = $customers->select(['first_name', 'last_name', 'email', 'phone', 'created_at']); //Select columns
+                if(isset($request['search']) && isset($request['search']['value'])) 
+                    $customers = $this->filterCustomers($customers, $request); //Filter customers based on the search term
                 */
                 
-                /*
-                $builder = $store->getIdentifiedUsers(); //Load the relationship (Query builder)
-                $count = $builder->count(); //Take the total count returned so far
+                
+                $builder = $shop->getIdentifiedUsers(); //Load the relationship (Query builder)
                 $limit = $request['length'];
                 $offset = $request['start'];
-                $builder = $builder->offset($offset)->limit($limit); //LIMIT and OFFSET logic for MySQL
                 
 
                 if(isset($request['start_date']) && isset($request['end_date'])) {
@@ -578,25 +578,28 @@ class AppController extends Controller {
                 if(isset($request['order']) && isset($request['order'][0]))
                     $builder = $this->orderIdentifiedUsers($builder, $request); //Order customers based on the column
                 
+                $count = $builder->count(); //Take the total count returned so far
+                $builder = $builder->offset($offset)->limit($limit); //LIMIT and OFFSET logic for MySQL
+                
                 $data = [];
                 $query = $builder->toSql(); //For debugging the SQL query generated so far
                 $rows = $builder->get(); //Fetch from DB by using get() function
                 if($rows !== null){
                     foreach ($rows as $item) {
                         $item['last_visited'] = date('M d, Y', strtotime($item['last_visited']));
-                        $data[] = $item;
+                        $data[] = $item->toArray();
                     }
                 }
-                */    
+                   
                 //$data[] = $item->toArray();
                 return response()->json([
                     "draw" => intval(request()->query('draw')),
-                    "recordsTotal"    => intval(count($returnData)),
-                    "recordsFiltered" => intval(count($returnData)),
-                    "data" => $returnData,
+                    "recordsTotal"    => $count,
+                    "recordsFiltered" => $count,
+                    "data" => $data,
                     "debug" => [
                         "request" => $request,
-                        "sqlQuery" => null
+                        "sqlQuery" => $query
                     ]
                 ], 200);
             }
@@ -618,13 +621,17 @@ class AppController extends Controller {
         switch($column) {
             case 0: $db_column = 'id'; break;
             case 1: $db_column = 'name'; break;
+            case 2: $db_column = 'email'; break;
             case 2: $db_column = 'last_visited'; break;
             case 3: $db_column = 'phone'; break; 
-            case 4: $db_column = 'visited'; break;
-            case 5: $db_column = 'added_to_cart'; break;
-            case 6: $db_column = 'purchased'; break;
+            case 4: $db_column = 'last_visited'; break;
+            case 5: $db_column = 'phone'; break;
+            case 6: $db_column = 'visited'; break;
+            case 7: $db_column = 'added_to_cart'; break;
+            case 8: $db_column = 'purchased'; break;
             default: $db_column = 'id';
         }
+        Log::info('Order by '.$db_column.' '.$dir);
         return $builder->orderBy($db_column, $dir);   
     }
 
