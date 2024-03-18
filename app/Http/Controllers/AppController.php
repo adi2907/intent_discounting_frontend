@@ -622,13 +622,11 @@ class AppController extends Controller {
             case 0: $db_column = 'id'; break;
             case 1: $db_column = 'name'; break;
             case 2: $db_column = 'email'; break;
-            case 2: $db_column = 'last_visited'; break;
-            case 3: $db_column = 'phone'; break; 
-            case 4: $db_column = 'last_visited'; break;
-            case 5: $db_column = 'phone'; break;
-            case 6: $db_column = 'visited'; break;
-            case 7: $db_column = 'added_to_cart'; break;
-            case 8: $db_column = 'purchased'; break;
+            case 3: $db_column = 'last_visited'; break;
+            case 4: $db_column = 'phone'; break; 
+            case 5: $db_column = 'visited'; break;
+            case 6: $db_column = 'added_to_cart'; break;
+            case 7: $db_column = 'purchased'; break;
             default: $db_column = 'id';
         }
         //Log::info('Order by '.$db_column.' '.$dir);

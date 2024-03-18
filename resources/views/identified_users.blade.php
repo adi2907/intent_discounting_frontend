@@ -17,14 +17,14 @@
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
-                <a id="downloadExcel" class="btn btn-success mt-2" href="{{route('downloadIdentifiedUsersExcel')}}">Download as Excel</a>
+                <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px" href="{{route('downloadIdentifiedUsersExcel')}}">Download as Excel</a>
             </div> 
             <div class="table-responsive mr-4">
                 <table class="table table-bordered mr-4 ml-4" id="idUsersTable">
                     <thead class="thead-light">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">User ID</th>
+                        <!-- <th scope="col">User ID</th> -->
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Last Visited</th>
@@ -70,7 +70,7 @@
         pageLength: 50,
         order: [[0, 'desc']],
         columnDefs: [{ 
-            targets: [0,1,2,3], 
+            //targets: [0,1,2,3], 
             orderable: false 
         }],
         dom: 'rtip',
@@ -84,7 +84,7 @@
         },
         columns: [
             {data: 'serial_number', name: 'serial_number'},
-            {data: 'regd_user_id', name: 'regd_user_id'},
+            //{data: 'regd_user_id', name: 'regd_user_id'},
             {data: 'name', name: 'name'},
             {data: 'email', name: 'email'},
             {data: 'last_visited', name: 'last_visited'},
