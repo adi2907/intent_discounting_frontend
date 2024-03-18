@@ -34,10 +34,16 @@ class SyncIdentifiedUsers implements ShouldQueue {
             foreach($data['body'] as $info) {
                 $customerResp = $this->getShopCustomer($this->shop, $info['regd_user_id']);
                 $customerFullName = null;
+                $customerEmail = null;
+                $customerPhone = null;
                 try {
                     $customerFullName = $customerResp['body']['customer']['first_name'].' '.$customerResp['body']['customer']['last_name'];
+                    $customerEmail = $customerResp['body']['customer']['email'];
+                    $customerPhone = $customerResp['body']['customer']['phone'];
                 } catch (\Throwable $th) {
                     $customerFullName = null;
+                    $customerEmail = null;
+                    $customerPhone = null;
                 }
 
                 $createArr = [
@@ -45,9 +51,9 @@ class SyncIdentifiedUsers implements ShouldQueue {
                     'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
                     'name' => $customerFullName !== null ? $customerFullName : $info['name'] ?? 'N/A',
                     'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
-                    'email' => isset($customerResp['body']['customer']) ? $customerResp['body']['customer']['email'] : $info['name'],
+                    'email' => $customerEmail ?? 'N/A',
                     'serial_number' => $info['serial_number'] ?? 'N/A',
-                    'phone' => $info['phone'] ?? 'N/A',
+                    'phone' => $customerPhone !== null ? $customerPhone : $info['phone'] ?? 'N/A',
                     'visited' => $info['visited'] ?? 'N/A',
                     'added_to_cart' => $info['added_to_cart'] ?? 'N/A',
                     'purchased' => $info['purchased'] ?? 'N/A'
