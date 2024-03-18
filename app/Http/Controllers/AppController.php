@@ -316,8 +316,8 @@ class AppController extends Controller {
     public function downloadIdentifiedUsersAsExcel() {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        $data = $this->callAlmeAppIdentifiedUsers($shop);
-        if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
+        $data = $shop->getIdentifiedUsers;
+        if($data !== null && $data->count() > 0) {
             $headers = [
                 'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                 'Content-type' => 'text/csv',
@@ -326,26 +326,22 @@ class AppController extends Controller {
                 'Pragma' => 'public'
             ];
         
-            $list = $data['body'];
-        
-            # add headers for each column in the CSV download
-            //array_unshift($list, array_keys($list[0]));
-        
-            $callback = function() use ($list) 
-            {
+            $callback = function() use ($data) {
                 $FH = fopen('php://output', 'w');
                 fputcsv($FH, [
                     'Serial No',
                     'Name',
+                    'Email',
                     'Phone',
                     'Visit Count',
                     'Cart Adds',
                     'Purchases Count'
                 ]);
-                foreach ($list as $info) { 
+                foreach ($data as $info) { 
                     fputcsv($FH, [
                         $info['serial_number'] ?? 'N/A',
                         $info['name'] ?? 'N/A',
+                        $info['email'] ?? '',
                         $info['phone'] ?? 'N/A',
                         $info['visited'] ?? 'N/A',
                         $info['added_to_cart'] ?? 'N/A',
