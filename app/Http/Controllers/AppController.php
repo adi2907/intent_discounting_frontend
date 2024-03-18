@@ -631,7 +631,7 @@ class AppController extends Controller {
             case 8: $db_column = 'purchased'; break;
             default: $db_column = 'id';
         }
-        Log::info('Order by '.$db_column.' '.$dir);
+        //Log::info('Order by '.$db_column.' '.$dir);
         return $builder->orderBy($db_column, $dir);   
     }
 
