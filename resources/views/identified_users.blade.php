@@ -17,7 +17,7 @@
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
-                <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px" href="{{route('downloadIdentifiedUsersExcel')}}">Download as Excel</a>
+                <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px" href="#">Download as Excel</a>
             </div> 
             <div class="table-responsive mr-4">
                 <table class="table table-bordered mr-4 ml-4" id="idUsersTable">
@@ -54,12 +54,24 @@
     $(document).ready(function () {
         setDateTimePicker();
         setDataTable();
+
+        $('#downloadExcel').click(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var route = "{{route('downloadIdentifiedUsersExcel')}}";
+            route += '?start_date='+el.data('startDate')+'&end_date='+el.data('endDate');
+            window.open(route, '_blank').focus();
+        })
     });
 
     function reloadDataTable(start, end) {
+        var start_date = $('#date-start').val();
+        var end_date = $('#date-end').val();
         dTable.fnDestroy();
-        dTOptions.ajax.data.start_date = $('#date-start').val();
-        dTOptions.ajax.data.end_date = $('#date-end').val();
+        dTOptions.ajax.data.start_date = start_date;
+        dTOptions.ajax.data.end_date = end_date;
+
+        $('#downloadExcel').data('startDate', start_date).data('endDate', end_date);
         setDataTable();
     } 
 
@@ -96,7 +108,9 @@
     }
 
     function setDataTable() {
-        console.log(dTOptions.ajax.data);
+        var start_date = $('#date-start').val();
+        var end_date = $('#date-end').val();
+        $('#downloadExcel').data('startDate', start_date).data('endDate', end_date);
         dTable = $('#idUsersTable').dataTable(dTOptions);
     }
 

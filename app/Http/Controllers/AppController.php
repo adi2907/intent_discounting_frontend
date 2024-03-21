@@ -314,10 +314,15 @@ class AppController extends Controller {
         }
     }
 
-    public function downloadIdentifiedUsersAsExcel() {
+    public function downloadIdentifiedUsersAsExcel(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        $data = $shop->getIdentifiedUsers;
+        $data = $shop->getIdentifiedUsers()->where(function ($q) use ($request){
+            if(filled($request->start_date) && filled($request->end_date)) {
+                return $q->where('last_visited', '>', date('Y-m-d 00:00:00', $request['start_date']))
+                         ->where('last_visited', '<', date('Y-m-d 23:59:59', $request['end_date']));
+            }
+        })->get();
         if($data !== null && $data->count() > 0) {
             $headers = [
                 'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
