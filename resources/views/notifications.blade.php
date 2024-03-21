@@ -33,6 +33,13 @@
                 </div>
                 <div class="settings-option">
                     <div class="settings-text">
+                        <span class="settings-card-title">Brand Logo</span>
+                        <p class="settings-card-description">Give the url (CDN link) for your brand logo to display on the notification</p>
+                    </div>
+                    <input class="contact-input blurInputChange" type="text" id="cdn_logo" data-fieldtype="text" data-fieldName="logo" value="{{$notifSettings['cdn_logo']}}" placeholder="Enter CDN logo here...">
+                </div>
+                <div class="settings-option">
+                    <div class="settings-text">
                         <span class="settings-card-title">Notification Title</span>
                         <p class="settings-card-description">Give a catchy title to display on top of the notification</p>
                     </div>
@@ -137,7 +144,8 @@
                 "notification_desc": $('#notification_desc').val(),
                 "sale_status": $('#saleStatus').is(':checked') ? 'on':'off',
                 "sale_discount_value": $('#sale_discount_value').val(),
-                "discount_expiry": $('#discount_expiry').val()
+                "discount_expiry": $('#discount_expiry').val(),
+                "cdn_logo": $('#cdn_logo').val()
             };
             $.ajax({
                 url: "{{route('update.store.notifications')}}", 

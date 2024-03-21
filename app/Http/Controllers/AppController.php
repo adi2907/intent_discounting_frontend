@@ -60,6 +60,7 @@ class AppController extends Controller {
             'status' => $request->status == 'on',
             'title' => $request->notification_title,
             'description' => $request->notification_desc,
+            'cdn_logo' => $request->cdn_logo,
             'sale_status' => $request->sale_status == 'on',
             'sale_discount_value' => $request->sale_discount_value,
             'discount_expiry' => $request->discount_expiry
@@ -666,9 +667,9 @@ class AppController extends Controller {
                         ];
 
                         try {
-                            if($shop->id == 17) {
+                            if(isset($notificationSettings->cdn_logo) && strlen($notificationSettings->cdn_logo) > 0) {
                                 $arrayValidate = array_merge($arrayValidate, [
-                                    'https://almeeapp.co.in/images/TextALME.png' => 'https://cdn.shopify.com/s/files/1/0601/1505/8873/files/newlogo-withought-tag_0741e721-73f2-452f-bcbb-0dcc1ee29ead.png?2500'
+                                    asset('images/TextALME.png') => $notificationSettings->cdn_logo
                                 ]);
                             }
                         } catch (\Throwable $th) {

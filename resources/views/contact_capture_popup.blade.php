@@ -70,15 +70,19 @@
     </head>
     <body>
 
-
-
         <a class="button" id="popupModal" style="visibility:hidden" href="#newUserPopup">Let me Pop up</a>
         <div style="font-family: Arial, sans-serif; height: 100vh;" id="newUserPopup" class="overlay">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="header-box mx-auto text-center">
-                            <img src="{{asset('images/TextALME.png')}}" alt="Brand Logo" class="brand-logo">
+                            <img 
+                                @if(isset($settings['cdn_logo']) && strlen($settings['cdn_logo']) > 0) 
+                                    src="{{$settings['cdn_logo']}}" 
+                                @else 
+                                    src="{{asset('images/TextALME.png')}}" 
+                                @endif    
+                                alt="Brand Logo" class="brand-logo">
                             <h5 class="modal-title">
                                 @if(isset($settings['title']) && strlen($settings['title']) > 0)
                                     {{$settings['title']}}
