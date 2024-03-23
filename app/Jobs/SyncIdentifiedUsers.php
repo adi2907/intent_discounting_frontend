@@ -30,7 +30,7 @@ class SyncIdentifiedUsers implements ShouldQueue {
     public function handle(): void {
         $data = $this->callAlmeAppIdentifiedUsers($this->shop);
         if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
-            IdentifiedUsers::where('shop_id', $this->shop->id)->delete();
+            //IdentifiedUsers::where('shop_id', $this->shop->id)->delete();
             foreach($data['body'] as $info) {
                 $customerResp = $this->getShopCustomer($this->shop, $info['regd_user_id']);
                 $customerFullName = null;
