@@ -132,11 +132,9 @@
                 // cancelLabel: 'Clear'
             },
             ranges: {
-                'Last 15 Days': [moment().subtract(14, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'Last 60 Days': [moment().subtract(59, 'days'), moment()],
-                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                'Today': [moment().subtract(1, 'day'), moment()],
+                'Last 7 Days': [moment().subtract(7, 'days'), moment()],
+                'Last 15 Days': [moment().subtract(14, 'days'), moment()]
             }
         }, function(start, end, label) {
             $("#date-start").val(Math.round(start/1000) + 86400);
