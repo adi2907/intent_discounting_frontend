@@ -132,7 +132,7 @@
                 // cancelLabel: 'Clear'
             },
             ranges: {
-                'Today': [moment().subtract(1, 'day'), moment()],
+                'Today': [moment().startOf('day'), moment().endOf('day')],
                 'Last 7 Days': [moment().subtract(7, 'days'), moment()],
                 'Last 15 Days': [moment().subtract(14, 'days'), moment()]
             }
