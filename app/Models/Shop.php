@@ -53,7 +53,9 @@ class Shop extends Model {
     }
 
     public function getIdentifiedUsers() {
-        return $this->hasMany(IdentifiedUsers::class, 'shop_id', 'id');
+        return $this->hasMany(IdentifiedUsers::class, 'shop_id', 'id')->where(function ($query) {
+            return $query->orWhere('email', '<>', 'N/A')->orWhere('phone', '<>', 'N/A');
+        });
     }
 
     public function getAlmeWebhookEvents() {

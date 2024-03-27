@@ -568,14 +568,12 @@ class AppController extends Controller {
                 $limit = $request['length'];
                 $offset = $request['start'];
                 
-
                 if(isset($request['start_date']) && isset($request['end_date'])) {
                     if(strlen($request['start_date']) && strlen($request['end_date'])) {
                         $builder = $builder->where('last_visited', '>', date('Y-m-d 00:00:00', $request['start_date']))
                                 ->where('last_visited', '<', date('Y-m-d 23:59:59', $request['end_date']));
                     }
                 }
-                
                 
                 if(isset($request['order']) && isset($request['order'][0]))
                     $builder = $this->orderIdentifiedUsers($builder, $request); //Order customers based on the column
