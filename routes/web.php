@@ -88,6 +88,7 @@ Route::middleware('cors')->group(function () {
 });
 
 Route::post('mapCheckout', [AppController::class, 'mapCheckout']);
+Route::get('mapCustomer', [AppController::class, 'mapCustomer']);
 
 //Shopify Installation Routes
 Route::prefix('shopify/auth')->group(function () {

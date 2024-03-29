@@ -856,4 +856,18 @@ class AppController extends Controller {
         CreateNotificationAsset::dispatch($user, $shop)->onConnection('sync');
         dd('Done'); 
     }
+
+    public function mapCustomer(Request $request) {
+        if($request->filled('shop_name') && $request->filled('customer_id')) {
+            $shop = Shop::where('shop_url', $request->shop_name)->first();
+            if($shop) {
+                $endpoint = getShopifyAPIURLForStore('customers/'.$request->customer_id.'.json', $shop);
+                $headers = getShopifyAPIHeadersForStore($shop);
+                $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+                return response()->json(['status' => true, 'response' => $response['body']]);
+            }
+            return response()->json(['status' => false, 'message' => 'Shop not found!']);
+        }
+        return response()->json(['status' => false, 'message' => 'Please pass shop_name and customer_id in the params.']);
+    }
 }
