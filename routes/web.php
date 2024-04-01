@@ -40,6 +40,11 @@ Route::middleware('auth')->group(function () {
         Route::get('downloadExcel', [AppController::class, 'downloadIdentifiedUsersAsExcel'])->name('downloadIdentifiedUsersExcel');
         Route::get('list', [AppController::class, 'listIdentifiedUsers'])->name('list.identified.users');
     });
+    Route::prefix('show/identified_users')->group(function () {
+        Route::get('/', [AppController::class, 'showAltIdentifiedUsers'])->name('show.identifiedUsers');
+        Route::get('downloadExcel', [AppController::class, 'downloadIdentifiedUsersAsExcel'])->name('show.downloadIdentifiedUsersExcel');
+        Route::get('list', [AppController::class, 'listIdentifiedUsers'])->name('show.list.identified.users');
+    });
     
     Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');
     Route::post('updateProductRackSettings', [AppController::class, 'updateProductRackSettings'])->name('update.product.rack.settings');

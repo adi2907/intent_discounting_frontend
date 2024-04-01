@@ -34,7 +34,30 @@
                         <th scope="col">Purchases</th>
                     </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        @if($data !== null && $data['statusCode'] == 200) 
+                            @if(count($data['body']) > 0)
+                                @foreach($data['body'] as $row) 
+                                    <tr>
+                                        <td>{{$row['serial_number']}}</td>
+                                        <td>{{$row['name'] ?? 'N/A'}}</td>
+                                        <td>
+                                            @if(isset($customersArr[$row['regd_user_id']]))
+                                                {{$customersArr[$row['regd_user_id']]['email']}}
+                                            @else 
+                                            N/A
+                                            @endif
+                                        </td>
+                                        <td>{{date('Y-m-d h:i:s', strtotime($row['last_visited']))}}</td>
+                                        <td>{{$row['phone']}}</td>
+                                        <td>{{$row['visited']}}</td>
+                                        <td>{{$row['added_to_cart']}}</td>
+                                        <td>{{$row['purchased']}}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        @endif
+                    </tbody>
                 </table>
             </div>
         </section>
@@ -77,6 +100,7 @@
         setDataTable();
     } 
 
+    /*
     var dTOptions = {
         processing: true,
         serverSide: true,
@@ -109,6 +133,15 @@
             {data: 'purchased', name: 'purchased'}
         ]
     }
+    */
+
+    var dTOptions = {
+        pageLength: 50,
+        order: [[5, 'desc']],
+        dom: 'rtip',
+        //info: false,
+        searching: false,
+    }
 
     function setDataTable() {
         var start_date = $('#date-start').val();
@@ -118,8 +151,8 @@
     }
 
     function setDateTimePicker() {
-        var startDate = moment().subtract(14, 'days');
-        var endDate = moment();
+        var startDate = @if(isset($request['start_date'])) moment().unix({{$request['start_date']}}) @else moment().startOf('day') @endif;
+        var endDate = @if(isset($request['end_date'])) moment().unix({{$request['end_date']}}) @else moment().endOf('day') @endif;
         // $("#date-start").val(startDate.unix());
         // $("#date-end").val(endDate.unix());
         $('#date-range').daterangepicker({
@@ -141,9 +174,9 @@
                 'Last 15 Days': [moment().subtract(14, 'days'), moment()]
             }
         }, function(start, end, label) {
-            $("#date-start").val(Math.round(start/1000) + 86400);
-            $("#date-end").val(Math.round(end/1000));
-            reloadDataTable();
+            var start = start/1000;
+            var end = end/1000;
+            window.location.href="{{route('show.identifiedUsers')}}?start_date="+start+'&end_date='+end
         });
     }
 </script>

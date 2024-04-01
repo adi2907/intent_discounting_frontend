@@ -24,7 +24,7 @@ $route = Route::currentRouteName()
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{route('identifiedUsers')}}" class="nav-link" @if($route == 'identifiedUsers') style="background-color: white; color:#1B4332;" @endif>
+            <a href="{{route('show.identifiedUsers')}}" class="nav-link" @if($route == 'identifiedUsers') style="background-color: white; color:#1B4332;" @endif>
                 <i class="fas fa-user"></i> Identified Users
             </a>
         </li>

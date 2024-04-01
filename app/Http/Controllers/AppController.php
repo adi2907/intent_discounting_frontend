@@ -33,6 +33,23 @@ class AppController extends Controller {
         return response()->json(['status' => true, 'request' => $request->all()]);
     }
 
+    public function showAltIdentifiedUsers(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $request = $request->all();
+        if(!array_key_exists('start_date', $request) && !array_key_exists('end_date', $request)) {
+            $request['start_date'] = strtotime('today');
+            $request['end_date'] = strtotime('today');
+        }
+        $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
+        $customers = $shop->getIdentifiedUsers()->where('regd_user_id', '>', 0)->select(['email', 'name', 'regd_user_id'])->get();
+        $customersArr = [];
+        if($customers !== null && $customers->count() > 0) {
+            $customersArr = $customers->keyBy('regd_user_id')->toArray();
+        }
+        return view('new_identified_users', compact('customersArr', 'data', 'request'));
+    }
+
     public function checkShopifyAPIs(Request $request) {
         $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('shop_url', $request->shop)->first();
         //$shopEndpoint = getShopifyAPIURLForStore('shop.json', $shop);
