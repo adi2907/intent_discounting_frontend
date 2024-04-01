@@ -491,8 +491,14 @@ trait FunctionTrait {
         }
     }
 
-    public function callAlmeAppIdentifiedUsers($shop) {
-        $endpoint = getAlmeAppURLForStore('analytics/identified_user_activity?days=15&app_name='.$shop->shop_url);
+    public function callAlmeAppIdentifiedUsers($shop, $request) {
+        $endpoint = 'analytics/identified_user_activity?app_name='.$shop->shop_url;
+        if(isset($request['start_date']) && isset($request['end_date'])) {
+            $endpoint .= '&start_date='.date('Y-m-d', $request['start_date']);
+            $endpoint .= '&end_date='.date('Y-m-d', $request['end_date']);
+        }
+        Log::info('Endpoint '.$endpoint);
+        $endpoint = getAlmeAppURLForStore($endpoint);
         $headers = getAlmeHeaders();
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
     }

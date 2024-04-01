@@ -535,19 +535,18 @@ class AppController extends Controller {
             if($request->ajax()) {
                 $request = $request->all();
                 $shop = Auth::user()->shopifyStore; //Take the auth user's shopify shop
-                /*
-                $data = $this->callAlmeAppIdentifiedUsers($shop);
-                $customers = $this->getShopCustomers($shop);
-                $returnData = [];
+                
+                $almeData = $this->callAlmeAppIdentifiedUsers($shop, $request);
+                $data = [];
         
-                if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
-                    foreach($data['body'] as $info) {
-                        $returnData[] = [
+                if($almeData['statusCode'] == 200 && is_array($almeData['body']) && count($almeData['body']) > 0) {
+                    foreach($almeData['body'] as $info) {
+                        $data[] = [
                             'shop_id' => $shop->id,
                             'regd_user_id' => isset($info['regd_user_id']) && $info['regd_user_id'] > 0 ? $info['regd_user_id'] : 0,
-                            'name' => isset($customers[$info['regd_user_id']]) ? $customers[$info['regd_user_id']]['name'].' '.$customers[$info['regd_user_id']]['email'] : $info['name'],
+                            'name' => $info['name'] ?? 'N/A',
                             'last_visited' => date('Y-m-d h:i:s', strtotime($info['last_visited'])) ?? 'N/A',
-                            'email' => isset($customers[$info['regd_user_id']]) ? $customers[$info['regd_user_id']]['email'] : $info['name'],
+                            'email' => $info['email'] ?? 'N/A',
                             'serial_number' => $info['serial_number'] ?? 'N/A',
                             'phone' => $info['phone'] ?? 'N/A',
                             'visited' => $info['visited'] ?? 'N/A',
@@ -556,13 +555,13 @@ class AppController extends Controller {
                         ];
                     }
                 }
+
+                $count = count($data);
                 
-                
+                /*
                 $customers = $customers->select(['first_name', 'last_name', 'email', 'phone', 'created_at']); //Select columns
                 if(isset($request['search']) && isset($request['search']['value'])) 
                     $customers = $this->filterCustomers($customers, $request); //Filter customers based on the search term
-                */
-                
                 
                 $builder = $shop->getIdentifiedUsers(); //Load the relationship (Query builder)
                 $limit = $request['length'];
@@ -592,6 +591,7 @@ class AppController extends Controller {
                 }
                    
                 //$data[] = $item->toArray();
+                */
                 return response()->json([
                     "draw" => intval(request()->query('draw')),
                     "recordsTotal"    => $count,
@@ -599,7 +599,7 @@ class AppController extends Controller {
                     "data" => $data,
                     "debug" => [
                         "request" => $request,
-                        "sqlQuery" => $query
+                        "sqlQuery" => ''
                     ]
                 ], 200);
             }

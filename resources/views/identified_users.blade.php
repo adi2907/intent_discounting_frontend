@@ -38,6 +38,8 @@
                 </table>
             </div>
         </section>
+        <br>
+        <br>
     </div>  
 @endsection
 
@@ -78,15 +80,16 @@
     var dTOptions = {
         processing: true,
         serverSide: true,
+        paging: false,
         searching: false,
-        pageLength: 50,
+        pageLength: 25,
         order: [[0, 'desc']],
         columnDefs: [{ 
             //targets: [0,1,2,3], 
             orderable: false 
         }],
         dom: 'rtip',
-        //info: false,
+        info: false,
         ajax: {
             url: getIdentifiedUsersDataURL(),
             data: {
@@ -133,6 +136,7 @@
             },
             ranges: {
                 'Today': [moment().startOf('day'), moment().endOf('day')],
+                'Yesterday': [moment().startOf('yesterday'), moment().startOf('day')],
                 'Last 7 Days': [moment().subtract(7, 'days'), moment()],
                 'Last 15 Days': [moment().subtract(14, 'days'), moment()]
             }
