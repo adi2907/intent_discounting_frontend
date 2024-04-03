@@ -37,17 +37,26 @@ class AppController extends Controller {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $request = $request->all();
+        $daysDiffFromStart = $daysDiffFromEnd = null;
+
         if(!array_key_exists('start_date', $request) && !array_key_exists('end_date', $request)) {
             $request['start_date'] = strtotime('today');
             $request['end_date'] = strtotime('today');
+        } else {
+            $daysDiffFromStart = floor(abs($request['start_date'] - time())/60/60/24);
+            $daysDiffFromEnd = floor(abs($request['end_date'] - time())/60/60/24);
         }
+
+        Log::info('Days diff start '.$daysDiffFromStart);
+        Log::info('Days diff end '.$daysDiffFromEnd);
+
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
         $customers = $shop->getIdentifiedUsers()->where('regd_user_id', '>', 0)->select(['email', 'name', 'regd_user_id'])->get();
         $customersArr = [];
         if($customers !== null && $customers->count() > 0) {
             $customersArr = $customers->keyBy('regd_user_id')->toArray();
         }
-        return view('new_identified_users', compact('customersArr', 'data', 'request'));
+        return view('new_identified_users', compact('customersArr', 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
     }
 
     public function checkShopifyAPIs(Request $request) {

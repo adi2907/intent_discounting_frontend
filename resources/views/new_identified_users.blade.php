@@ -151,8 +151,8 @@
     }
 
     function setDateTimePicker() {
-        var startDate = @if(isset($request['start_date'])) moment().unix({{$request['start_date']}}) @else moment().startOf('day') @endif;
-        var endDate = @if(isset($request['end_date'])) moment().unix({{$request['end_date']}}) @else moment().endOf('day') @endif;
+        var startDate = @if($daysDiffFromStart != null && $daysDiffFromStart > 0) moment().subtract({{$daysDiffFromStart}}, 'days') @else moment().startOf('day') @endif;
+        var endDate = @if($daysDiffFromEnd != null && $daysDiffFromEnd > 0) moment().subtract({{$daysDiffFromEnd}}, 'days') @else moment().endOf('day') @endif;
         // $("#date-start").val(startDate.unix());
         // $("#date-end").val(endDate.unix());
         $('#date-range').daterangepicker({
@@ -174,8 +174,8 @@
                 'Last 15 Days': [moment().subtract(14, 'days'), moment()]
             }
         }, function(start, end, label) {
-            var start = start/1000;
-            var end = end/1000;
+            var start = Math.round(start/1000);
+            var end = Math.round(end/1000);
             window.location.href="{{route('show.identifiedUsers')}}?start_date="+start+'&end_date='+end
         });
     }

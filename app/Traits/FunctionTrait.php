@@ -431,7 +431,7 @@ trait FunctionTrait {
             }
             
             $cacheKey = 'dashboard_analytics.'.$shopURL;
-            //if(Cache::has($cacheKey)) return Cache::get($cacheKey);
+            if(Cache::has($cacheKey)) return Cache::get($cacheKey);
             $endpointArr = [];
             $arr = [
                 'visits_count' => $hasStartAndEndDate ? trim('start_date='.urlencode($startDate).'&end_date='.urlencode($endDate)) : 'days='.$days,
@@ -457,11 +457,11 @@ trait FunctionTrait {
             }
 
             if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
-                $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
+                $responses['product_visits']['body'] = $this->getProductsVisits($shopURL, $responses['product_visits']['body']);
             }
 
             if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
-                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
+                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($shopURL, $responses['product_cart_conversion']['body']);
             }
 
             //Graph Data function for Visit conversion graph
@@ -568,7 +568,7 @@ trait FunctionTrait {
 
             //Graph Data function for Cart conversion graph
             if(isset($responses['product_cart_conversion']['statusCode']) && $responses['product_cart_conversion']['statusCode'] == 200) {
-                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($responses['product_cart_conversion']['body']);
+                $responses['product_cart_conversion']['body'] = $this->getProductsConvertedToCarts($shopURL, $responses['product_cart_conversion']['body']);
             }
             
             $responses['endpoints'] = $endpointArr;
@@ -616,7 +616,7 @@ trait FunctionTrait {
             }
 
             if(isset($responses['product_visits']['statusCode']) && $responses['product_visits']['statusCode'] == 200) {
-                $responses['product_visits']['body'] = $this->getProductsVisits($responses['product_visits']['body']);
+                $responses['product_visits']['body'] = $this->getProductsVisits($shopURL, $responses['product_visits']['body']);
             }
 
             $responses['endpoints'] = $endpointArr;
@@ -659,7 +659,7 @@ trait FunctionTrait {
         }
     }
 
-    public function getProductsVisits($body) {
+    public function getProductsVisits($shopURL, $body) {
         try {
             if(is_array($body) && count($body) > 0) {
                 $productIds = [];
@@ -668,7 +668,7 @@ trait FunctionTrait {
                     $productIds[] = $payload['item__product_id']; //That's the product ID.
                     $conversionArr[$payload['item__product_id']] = $payload['visit_count']; //That's the data associated to the product data
                 } 
-                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('id', 8)->first();
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('shop_url', $shopURL)->first();
                 $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
                 if($products !== null && $products->count() > 0) {
                     $products = $products->keyBy('product_id')->toArray();
@@ -684,7 +684,7 @@ trait FunctionTrait {
         return null;
     } 
 
-    public function getProductsConvertedToCarts($body) {
+    public function getProductsConvertedToCarts($shopURL, $body) {
         try {
             if(is_array($body) && count($body) > 0) {
                 $productIds = [];
@@ -693,7 +693,7 @@ trait FunctionTrait {
                     $productIds[] = $payload[0]; //That's the product ID.
                     $conversionArr[$payload[0]] = $payload[1]; //That's the data associated to the product data
                 } 
-                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('id', 8)->first();
+                $shop = Auth::check() ? Auth::user()->shopifyStore : Shop::where('shop_url', $shopURL)->first();
                 $products = $shop->getProducts()->whereIn('product_id', $productIds)->get();
                 if($products !== null && $products->count() > 0) {
                     $products = $products->keyBy('product_id')->toArray();
