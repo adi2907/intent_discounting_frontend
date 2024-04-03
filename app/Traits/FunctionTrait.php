@@ -189,6 +189,32 @@ trait FunctionTrait {
         } 
     }
 
+    public function updateOrCreateThisCustomerInDB($customer, $shop) {
+        try {
+            $updateArr = [
+                'regd_user_id' => $customer['id'],
+                'shop_id' => $shop['id']
+            ];
+
+            $createArr = array_merge($updateArr, [
+                'name' => $customer['first_name'].' '.$customer['last_name'],
+                'email' => $customer['email'],
+                'phone' => $customer['phone'] ?? 'N/A',
+                'serial_number' => 1,
+                'visited' => 0,
+                'added_to_cart' => 0,
+                'purchased' => 0
+            ]);
+    
+            $shop->getIdentifiedUsers()->updateOrCreate($updateArr, $createArr);
+    
+            return true;
+        } catch(Exception $e) {
+            Log::info('Error inserting products');
+            Log::info($e->getMessage().' '.$e->getLine());
+        } 
+    }
+
     public function checkAlmeScriptRunningOrNot($shop) {
         try {
             $liveTheme = $this->getLiveThemeForShop($shop);

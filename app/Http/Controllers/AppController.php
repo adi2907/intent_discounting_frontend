@@ -14,6 +14,7 @@ use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -47,16 +48,35 @@ class AppController extends Controller {
             $daysDiffFromEnd = floor(abs($request['end_date'] - time())/60/60/24);
         }
 
-        Log::info('Days diff start '.$daysDiffFromStart);
-        Log::info('Days diff end '.$daysDiffFromEnd);
-
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
-        $customers = $shop->getIdentifiedUsers()->where('regd_user_id', '>', 0)->select(['email', 'name', 'regd_user_id'])->get();
+        $regdUserIdArr = $this->getRegdUserIds($data);
+
+        $customers = $shop->getIdentifiedUsers()->where(function ($query) use ($regdUserIdArr) {
+            return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
+        })->select(['email', 'name', 'regd_user_id'])->get();
+        
         $customersArr = [];
         if($customers !== null && $customers->count() > 0) {
             $customersArr = $customers->keyBy('regd_user_id')->toArray();
         }
+
         return view('new_identified_users', compact('customersArr', 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
+    }
+
+    public function getRegdUserIds($data) {
+        if($data['statusCode'] == 200 && is_array($data['body']) && count($data['body']) > 0) {
+            $returnVal = [];
+            $collect = new Collection($data['body']);
+            $uniqueArr = array_unique($collect->pluck('regd_user_id')->toArray());
+            $uniqueArr = array_filter($uniqueArr, function ($val) { return $val !== null && $val > 0; });
+            if($uniqueArr != null && count($uniqueArr) > 0) {
+                foreach($uniqueArr as $val) {
+                    $returnVal[] = (int) $val;
+                }
+            }
+            return $returnVal;
+        }
+        return null;
     }
 
     public function checkShopifyAPIs(Request $request) {

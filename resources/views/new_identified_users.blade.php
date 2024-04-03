@@ -41,7 +41,7 @@
                                 @foreach($data['body'] as $row) 
                                     <tr>
                                         <td>{{$row['serial_number']}}</td>
-                                        <td>{{$row['name'] ?? 'N/A'}}</td>
+                                        <td>{{$row['name'] ?? $customersArr[$row['regd_user_id']]['name'] ?? 'N/A'}}</td>
                                         <td>
                                             @if(isset($customersArr[$row['regd_user_id']]))
                                                 {{$customersArr[$row['regd_user_id']]['email']}}
@@ -50,7 +50,7 @@
                                             @endif
                                         </td>
                                         <td>{{date('Y-m-d h:i:s', strtotime($row['last_visited']))}}</td>
-                                        <td>{{$row['phone']}}</td>
+                                        <td>{{$row['phone'] ?? $customersArr[$row['regd_user_id']]['phone'] ?? 'N/A'}}</td>
                                         <td>{{$row['visited']}}</td>
                                         <td>{{$row['added_to_cart']}}</td>
                                         <td>{{$row['purchased']}}</td>

@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel {
         //Sets dashboard
         $schedule->command('app:set-dashboard')->everyFifteenMinutes();
 
+        //Sync Customers
+        $schedule->command('app:sync-customers')->twiceDaily();
+
         //Syncs Alme's Identified Users data into the database. So we can do custom querying on it on our end.
         //$schedule->command('app:sync-identified-users')->everyThirtyMinutes();
 

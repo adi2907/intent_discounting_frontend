@@ -40,7 +40,7 @@ class HomeController extends Controller {
 
     public function testCustomers() {
         $store = Shop::where('id', 31)->first();
-        $endpoint = getShopifyAPIURLForStore('customers.json', $store);
+        $endpoint = getShopifyAPIURLForStore('customers/7545405767922.json', $store);
         $headers = getShopifyAPIHeadersForStore($store);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
         dd($response['body']);
