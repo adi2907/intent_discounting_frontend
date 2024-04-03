@@ -2,6 +2,7 @@
 @section('css')
     <link rel="stylesheet" href="{{asset('css/identified_users.css')}}">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css">
 @endsection
 @section('content')
     <div class="col-md-9 nopadding">
@@ -17,7 +18,7 @@
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
-                <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px" href="#">Download as Excel</a>
+                <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px;display:none" href="#">Download as Excel</a>
             </div> 
             <div class="table-responsive mr-4">
                 <table class="table table-bordered mr-4 ml-4" id="idUsersTable">
@@ -68,6 +69,10 @@
 
 @section('scripts')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script> 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 <script>
     var start_date = null;
     var end_date = null;
@@ -137,9 +142,19 @@
 
     var dTOptions = {
         pageLength: 50,
-        order: [[5, 'desc']],
-        dom: 'rtip',
-        //info: false,
+        order: [[0, 'asc']],
+        dom: 'Bfrtip',
+        buttons: [{
+            "extend": 'csv',
+            "text": 'Download Excel',
+            'className': 'btn btn-success mt-2 mr-2 mb-2'
+        }],
+        initComplete: function() {
+            var btns = $('.dt-button');
+            btns.removeClass('dt-button');
+            $('.dt-buttons').css({'float': 'right'});
+        },
+        info: true,
         searching: false,
     }
 
