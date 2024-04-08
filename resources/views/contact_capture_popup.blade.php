@@ -96,6 +96,7 @@
                         </button>
                     </div>
                 <div class="modal-body text-center">
+                    
                     <p class="modal-description"> 
                         @if(isset($settings['description']) && strlen($settings['description']) > 0)
                             {{$settings['description']}} 
@@ -105,12 +106,13 @@
                     </p>
 
                     <form id="newUserForm">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Full Name" name="fullname">
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" class="form-control" placeholder="Mobile" name="mobile">
-                    </div>
+                        <div id="form-error-message"></div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Full Name" name="fullname">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" class="form-control" placeholder="Mobile" name="mobile">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer justify-content-center">
