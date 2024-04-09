@@ -109,7 +109,9 @@ class AppController extends Controller {
             'cdn_logo' => $request->cdn_logo,
             'sale_status' => $request->sale_status == 'on',
             'sale_discount_value' => $request->sale_discount_value,
-            'discount_expiry' => $request->discount_expiry
+            'discount_expiry' => $request->discount_expiry,
+            're_engage_flag' => $request->re_engage_flag == 'on',
+            're_engage_timed_interval' => $request->timed_interval
         ]);
         return response()->json(['status' => true, 'message' => 'Updated!']);
     }
