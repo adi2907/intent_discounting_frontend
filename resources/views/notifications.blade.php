@@ -52,6 +52,23 @@
                     </div>
                     <input class="contact-input blurInputChange" id="notification_desc" data-fieldtype="text" data-fieldName="description" type="text" value="{{$notifSettings['description']}}" placeholder="Receive Whatsapp notifications on New Collections">
                 </div>
+                <div class="settings-option">
+                    <div class="settings-text">
+                        <span class="settings-card-title">Re-engage Users with Contact Notification</span>
+                        <p class="settings-card-description">Option to display notification again after user dismissal.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" class="inputChange" id="reengageCheckbox" data-fieldtype="checkbox" data-fieldName="status" @if(isset($notifSettings['re_engage_flag']) && $notifSettings['re_engage_flag'] == 1) checked @endif>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div class="settings-text">
+                        <span class="settings-card-title">Timed Notification Re-display</span>
+                        <p class="settings-card-description">Set interval for notification re-appearance post closure.</p>
+                    </div>
+                    <input class="discount-input blurInputChange" style="width:10%" id="timed_interval" data-fieldtype="text" data-fieldName="re_engage_timed_interval" type="number" min="1" max="50" value="{{$notifSettings['re_engage_timed_interval']}}">
+                </div>
                 <div class="settings-option" style="display: none;">
                     <div class="settings-text">
                         <span class="settings-card-title">Discount for submitting contact</span>
@@ -145,7 +162,9 @@
                 "sale_status": $('#saleStatus').is(':checked') ? 'on':'off',
                 "sale_discount_value": $('#sale_discount_value').val(),
                 "discount_expiry": $('#discount_expiry').val(),
-                "cdn_logo": $('#cdn_logo').val()
+                "cdn_logo": $('#cdn_logo').val(),
+                "re_engage_flag": $('#reengageCheckbox').is(':checked') ? 'on':'off',
+                "timed_interval": $('#timed_interval').val()
             };
             $.ajax({
                 url: "{{route('update.store.notifications')}}", 
