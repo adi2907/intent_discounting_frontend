@@ -712,6 +712,7 @@ class AppController extends Controller {
             if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
                 $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
                 $notificationSettings = $shop->notificationSettings;
+                $nextTimestamp = isset($notificationSettings) && $notificationSettings !== null && $notificationSettings->re_engage_flag ? (int) time() + ($notificationSettings->re_engage_time_interval * (24 * 60 * 60)) : null;
                 $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
                 $html = null;
                 if($contactStatus) {
@@ -744,7 +745,7 @@ class AppController extends Controller {
                         $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
                     }
                 }
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html, 'settings' => array_merge(['next_timestamp' => $nextTimestamp], $notificationSettings)]);
             }    
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
