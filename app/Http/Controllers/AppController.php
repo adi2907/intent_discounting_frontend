@@ -51,9 +51,18 @@ class AppController extends Controller {
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
         $regdUserIdArr = $this->getRegdUserIds($data);
 
-        $customers = $shop->getIdentifiedUsers()->where(function ($query) use ($regdUserIdArr) {
-            return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
-        })->select(['email', 'name', 'regd_user_id'])->get();
+        $customers = $shop->getIdentifiedUsers();
+        if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
+            $customers = $customers->where(function ($query) use ($regdUserIdArr) {
+                return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
+            });    
+        } else {
+            $customers = $customers->where(function ($query) {
+                return $query->where('regd_user_id', '>', 0);
+            });   
+        }
+
+        $customers = $customers->select(['email', 'name', 'regd_user_id'])->get();
         
         $customersArr = [];
         if($customers !== null && $customers->count() > 0) {
