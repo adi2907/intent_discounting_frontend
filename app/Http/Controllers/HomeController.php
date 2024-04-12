@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPurchaseEvent;
 use App\Models\AlmeShopifyOrders;
+use App\Models\IpMap;
 use App\Models\Shop;
 use App\Models\ShopDetail;
 use App\Models\ShopifyOrder;
@@ -28,6 +29,75 @@ class HomeController extends Controller {
 
     public function index() {
         return redirect()->route('login');
+    }
+
+    public function testAlmePayload($id) {
+        $order = ShopifyOrder::where('table_id', $id)->first();
+        $shop = Shop::where('id', $order->shop_id)->first();
+        
+        $returnVal = [];
+        
+        $almeInfo = AlmeShopifyOrders::where('shopify_cart_token', $order->cart_token)
+                                             ->where('session_id', '<>', null)
+                                             ->where('alme_token', '<>', null)
+                                             ->orderBy('created_at', 'desc')
+                                             ->first();
+        if($almeInfo !== null && $almeInfo->count() > 0) {
+            $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
+            $productsArr = [];
+            foreach($line_items as $item) {
+                $productsArr[] = [
+                    "product_id" => $item['product_id'],
+                    "product_name" => $item['title'],
+                    "product_price" => $item['price'],
+                    "product_qty" => $item['quantity']
+                ];
+            }
+
+            $payload = [
+                "cart_token" => $order->cart_token,
+                "alme_user_token" => $almeInfo->alme_token,
+                "timestamp" => $order->created_at,
+                "app_name" => $shop['shop_url'],
+                "session_id" => $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
+                "products" => $productsArr
+            ];
+            $returnVal['Result'] = 'Found from AlmeShopifyOrders';
+            $returnVal['API Payload'] = $payload;
+        } else {
+            if(isset($order->browser_ip) && filled($order->browser_ip)) {
+                $dbRowForIP = IpMap::where('ip_address', $order->browser_ip)->where('shop_id', $order->shop_id)->first();
+                if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
+                    $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
+                    $productsArr = [];
+                    foreach($line_items as $item) {
+                        $productsArr[] = [
+                            "product_id" => $item['product_id'],
+                            "product_name" => $item['title'],
+                            "product_price" => $item['price'],
+                            "product_qty" => $item['quantity']
+                        ];
+                    }
+
+                    $payload = [
+                        "cart_token" => $order->cart_token,
+                        "alme_user_token" => $dbRowForIP->alme_token,
+                        "timestamp" => $order->created_at,
+                        "app_name" => $shop['shop_url'],
+                        "session_id" => isset($dbRowForIP) && isset($dbRowForIP->session_id) ? $dbRowForIP->session_id : null,
+                        "products" => $productsArr
+                    ];
+                    $returnVal['Result'] = 'Found from IPMap';
+                    $returnVal['API Payload'] = $payload;  
+                } else {
+                    $returnVal['Result'] = 'Database IP map not found';
+                }
+            } else {
+                $returnVal['Result'] = 'No Data found';
+            }
+        }
+
+        return response()->json($returnVal);
     }
 
     public function testOrders() {
