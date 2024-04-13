@@ -62,6 +62,7 @@ class HomeController extends Controller {
                 "session_id" => $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
                 "products" => $productsArr
             ];
+            $returnVal['status'] = 200; 
             $returnVal['Result'] = 'Found from AlmeShopifyOrders';
             $returnVal['API Payload'] = $payload;
         } else {
@@ -87,12 +88,15 @@ class HomeController extends Controller {
                         "session_id" => isset($dbRowForIP) && isset($dbRowForIP->session_id) ? $dbRowForIP->session_id : null,
                         "products" => $productsArr
                     ];
+                    $returnVal['status'] = 200;
                     $returnVal['Result'] = 'Found from IPMap';
                     $returnVal['API Payload'] = $payload;  
                 } else {
+                    $returnVal['status'] = 404;
                     $returnVal['Result'] = 'Database IP map not found';
                 }
             } else {
+                $returnVal['status'] = 404;
                 $returnVal['Result'] = 'No Data found';
             }
         }
