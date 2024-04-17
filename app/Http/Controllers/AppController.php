@@ -714,45 +714,42 @@ class AppController extends Controller {
 
     public function contactCaptureSettings(Request $request) {
         if($request->has('shop')) {
-            $shop = Shop::with(['getLatestPriceRule', 'getLatestDiscountCode', 'notificationSettings', 'notificationAsset'])->where('shop_url', $request->shop)->first();
+            $shop = Shop::with(['getLatestPriceRule', 'notificationSettings', 'notificationAsset'])->where('shop_url', $request->shop)->first();
             $code = null;
-            if(isset($shop->getLatestDiscountCode) && $shop->getLatestDiscountCode !== null) {
-                $code = $shop !== null ? $shop->getLatestDiscountCode->code : null;
-                $notificationSettings = $shop->notificationSettings;
-                $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
-                $html = null;
-                if($contactStatus) {
-                    $asset = $shop->notificationAsset;
-                    if(isset($asset) && $asset != null && filled($asset->contact_capture_html) && strlen($asset->contact_capture_html)) {
-                        $html = $asset->contact_capture_html;
-                        $arrayValidate = [
-                            '{{TITLE}}' => $notificationSettings->title,
-                            '{{DESCRIPTION}}' => $notificationSettings->description
-                        ];
+            $notificationSettings = $shop->notificationSettings;
+            $contactStatus = isset($notificationSettings) && $notificationSettings !== null && isset($notificationSettings->status) && ($notificationSettings->status === true || $notificationSettings->status === 1);
+            $html = null;
+            if($contactStatus) {
+                $asset = $shop->notificationAsset;
+                if(isset($asset) && $asset != null && filled($asset->contact_capture_html) && strlen($asset->contact_capture_html)) {
+                    $html = $asset->contact_capture_html;
+                    $arrayValidate = [
+                        '{{TITLE}}' => $notificationSettings->title,
+                        '{{DESCRIPTION}}' => $notificationSettings->description
+                    ];
 
-                        try {
-                            if(isset($notificationSettings->cdn_logo) && strlen($notificationSettings->cdn_logo) > 0) {
-                                $arrayValidate = array_merge($arrayValidate, [
-                                    asset('images/TextALME.png') => $notificationSettings->cdn_logo
-                                ]);
-                            }
-                        } catch (\Throwable $th) {
-                            Log::info($th->getMessage().' '.$th->getLine());
+                    try {
+                        if(isset($notificationSettings->cdn_logo) && strlen($notificationSettings->cdn_logo) > 0) {
+                            $arrayValidate = array_merge($arrayValidate, [
+                                asset('images/TextALME.png') => $notificationSettings->cdn_logo
+                            ]);
                         }
-                        
-                        
-                        foreach($arrayValidate as $strToLookFor => $value) {
-                            $checkIfHasStr = str_contains($html, $strToLookFor);
-                            if($checkIfHasStr) {
-                                $html = str_replace($strToLookFor, $value, $html);
-                            }
-                        }
-                    } else {
-                        $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
+                    } catch (\Throwable $th) {
+                        Log::info($th->getMessage().' '.$th->getLine());
                     }
+                    
+                    
+                    foreach($arrayValidate as $strToLookFor => $value) {
+                        $checkIfHasStr = str_contains($html, $strToLookFor);
+                        if($checkIfHasStr) {
+                            $html = str_replace($strToLookFor, $value, $html);
+                        }
+                    }
+                } else {
+                    $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
                 }
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
-            }    
+            }
+            return response()->json(['code' => $code, 'status' => true, 'html' => $html]);    
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
     }
