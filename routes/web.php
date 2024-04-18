@@ -4,7 +4,9 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\ExtensionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallationController;
+use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\WebhookController;
+use App\Models\SegmentRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +46,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AppController::class, 'showAltIdentifiedUsers'])->name('show.identifiedUsers');
         Route::get('downloadExcel', [AppController::class, 'downloadIdentifiedUsersAsExcel'])->name('show.downloadIdentifiedUsersExcel');
         Route::get('list', [AppController::class, 'listIdentifiedUsers'])->name('show.list.identified.users');
+        
+        Route::prefix('segments')->group(function () {
+            Route::get('create', [SegmentController::class, 'createSegment'])->name('create.identified.user.segments');
+            Route::post('/', [SegmentController::class, 'storeSegment'])->name('store.identified.user.segments');
+            Route::get('/', [SegmentController::class, 'listSegments'])->name('list.identified.user.segments');
+            
+            Route::prefix('partials')->group(function () {
+                Route::get('get_did_do_events_html', [SegmentController::class, 'getDidDoEventsDefaultHTML'])->name('segments.did_do_events.defaultHTML');
+            });
+        });
     });
     
     Route::post('updateNotificationSettings', [AppController::class, 'updateNotificationSettings'])->name('update.notification.settings');

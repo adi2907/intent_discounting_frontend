@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identified users list</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="createlist.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+             <!-- Sidebar for larger screens -->
+             <div class="col-md-3 sidebar d-none d-md-block">
+                <div class="brand mb-4">
+                    <img src="M&H-logo.png" alt="M&H Clothing" class="img-fluid">
+                    M&H Clothing
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-shopping-bag"></i> Product Collection
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-message"></i> Notifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-chart-pie"></i> Segments
+                        </a>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <!-- Navbar for mobile screens -->
+            <nav class="navbar navbar-expand-md navbar-light bg-light d-md-none w-100">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a href="#" class="nav-link">Dashboard</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Product Collection</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Notifications</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Segments</a></li>
+                    </ul>
+                </div>
+            </nav>
+        
+            <div class="col-md-9 nopadding">
+                <section class="page-title bg-white p-4">
+                    <div class="title-content">      
+                        <h1>Create List</h1>
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </section>
+                <section class="main-content">
+                    <div class="container"> 
+                        <div class="form-group list-name-group">
+                            <label for="listName" class="list-name-label">List Name:</label>
+                            <input type="text" id="listName" name="listName" class="form-control list-name-input">
+                        </div>
+                
+                    
+                        <form> 
+                            
+                            <div class="container user-profile-container">
+                                <h2 class="settings-heading">User Profile</h2>
+                
+                                <div class="date-filter-section">
+                                    <div class="userdate-option">
+                                      <label for="lastSeen-filter" class="userdate-card-title">Last Seen</label>
+                                      <select id="lastSeen-filter" class="date-filter-select">
+                                        <option value="on">On</option>
+                                        <option value="after">After</option>
+                                        <option value="before">Before</option>
+                                        <option value="between">Between</option>
+                                      </select>
+                                      <label for="lastSeen-input" class="sr-only">Last Seen Date</label>
+                                      <input type="date" id="lastSeen-input" name="lastSeen" class="date-filter-input">
+                                    </div>
+                                  
+                                    <div class="userdate-option">
+                                      <label for="createdOn-filter" class="userdate-card-title">Created On</label>
+                                      <select id="createdOn-filter" class="date-filter-select">
+                                        <option value="on">On</option>
+                                        <option value="after">After</option>
+                                        <option value="before">Before</option>
+                                        <option value="between">Between</option>
+                                      </select>
+                                      <label for="createdOn-input" class="sr-only">Created On Date</label>
+                                      <input type="date" id="createdOn-input" name="createdOn" class="date-filter-input">
+                                    </div>
+                                  </div>
+                                <div class="form-group">
+                                    <label>Acquisition Source:</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="organic" name="acquisition_source" value="organic" class="form-check-input" disabled>
+                                        <label class="form-check-label" for="organic">Organic</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="paid" name="acquisition_source" value="paid" class="form-check-input" disabled>
+                                        <label class="form-check-label" for="paid">Paid</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Primary Usage:</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="mobile" name="primary_usage" value="mobile" class="form-check-input" disabled>
+                                        <label class="form-check-label" for="mobile">Mobile</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="desktop" name="primary_usage" value="desktop" class="form-check-input" disabled>
+                                        <label class="form-check-label" for="desktop">Desktop</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="sessions-option">
+                                    <label for="session-filter" class="sessions-card-title">Number of Sessions</label>
+                                    <select id="session-filter" class="date-filter-select">
+                                        <option value="equal">Equal to</option>
+                                        <option value="greater">Greater than</option>
+                                        <option value="lesser">Lesser than</option>
+                                    </select>
+                                    <input type="number" id="session-input" name="session" class="date-filter-input" placeholder="Enter number">
+                                </div>
+                            
+                            </div>
+                        </form> 
+                
+                        
+                        <div class="container behavioral-container">
+                
+                            <h2 class="settings-heading">Behavioral</h2>
+                            
+                            <div class="event-criteria-card">
+                                <div class="form-group">
+                                    <label for="event-select">USERS WHO DID THESE EVENTS:</label>
+                                    <select id="event-select" class="form-control">
+                                        <option value="purchase">Purchase</option>
+                                        <option value="add_to_cart">Add to Cart</option>
+                                        <option value="product_visit">Product Visit</option>
+                                    </select>
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="occurrence-select">Number of Occurrences</label>
+                                    <select id="occurrence-select" class="form-control">
+                                        <option value="at_least_once">At Least Once</option>
+                                        <option value="only_once">Only Once</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Most Recent Event Time -->
+                            <div class="form-group">
+                                <label for="time-select">Most Recent Event Time</label>
+                                <select id="time-select" class="form-control" onchange="handleTimeSelectionChange(this)">
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="today">Today</option>
+                                    <option value="within_last_days">Within Last ____ Days</option>
+                                    <option value="before_days">Before ____ Days</option>
+                                </select>
+                            </div>
+                
+                            <!-- Input for 'Within Last ____ Days' initially hidden -->
+                            <div id="within-last-days-container" class="form-group" style="display: none;">
+                                <input type="number" id="within-last-days" class="form-control" placeholder="Enter number of days">
+                            </div>
+                
+                            <!-- Input for 'Before ____ Days' initially hidden -->
+                            <div id="before-days-container" class="form-group" style="display: none;">
+                                <input type="number" id="before-days" class="form-control" placeholder="Enter number of days">
+                            </div>
+                                
+                            <div class="logic-buttons">
+                                <button type="button" class="btn btn-logic">AND</button>
+                                <button type="button" class="btn btn-logic">OR</button>
+                            </div>
+                        
+                                <button type="button" class="btn add-event">+</button>
+                            </div>
+                            
+                            <!-- Placeholder for additional event-criteria-cards -->
+                            <div class="additional-events"></div>
+                            
+                
+                            
+                            
+                            <button type="button" class="btn reset-button">Reset</button>
+                        
+                        </div>
+                        
+                        <div class="container behavioral-container">
+                
+                            <h2 class="settings-heading">Behavioral</h2>
+                            
+                            <div class="event-criteria-card">
+                                <div class="form-group">
+                                    <label for="event-select">USERS WHO DID NOT DO THESE EVENTS:</label>
+                                    <select id="event-select" class="form-control">
+                                        <option value="purchase">Purchase</option>
+                                        <option value="add_to_cart">Add to Cart</option>
+                                        <option value="product_visit">Product Visit</option>
+                                    </select>
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="occurrence-select">Number of Occurrences</label>
+                                    <select id="occurrence-select" class="form-control">
+                                        <option value="at_least_once">At Least Once</option>
+                                        <option value="only_once">Only Once</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Most Recent Event Time -->
+                            <div class="form-group">
+                                <label for="time-select">Most Recent Event Time</label>
+                                <select id="time-select" class="form-control" onchange="handleTimeSelectionChange(this)">
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="today">Today</option>
+                                    <option value="within_last_days">Within Last ____ Days</option>
+                                    <option value="before_days">Before ____ Days</option>
+                                </select>
+                            </div>
+                
+                            <!-- Input for 'Within Last ____ Days' initially hidden -->
+                            <div id="within-last-days-container" class="form-group" style="display: none;">
+                                <input type="number" id="within-last-days" class="form-control" placeholder="Enter number of days">
+                            </div>
+
+                            <!-- Input for 'Before ____ Days' initially hidden -->
+                            <div id="before-days-container" class="form-group" style="display: none;">
+                                <input type="number" id="before-days" class="form-control" placeholder="Enter number of days">
+                            </div>
+                                
+                            <div class="logic-buttons">
+                                <button type="button" class="btn">AND</button>
+                                <button type="button" class="btn">OR</button>
+                            </div>
+                        
+                                <button type="button" class="btn add-event">+</button>
+                            </div>
+                            
+                            <!-- Placeholder for additional event-criteria-cards -->
+                            <div class="additional-events"></div>
+                            
+                
+                            
+                            <button type="button" class="btn reset-button">Reset</button>
+                        
+                        </div>
+                            
+                    </div>
+                </section> 
+            </div>
+        </div>
+            
+       
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="notifications.js"></script>
+    <!-- Add the new <script> tag here -->
+    <script>
+    function handleTimeSelectionChange(selectElement) {
+        var selectedValue = selectElement.value;
+        var withinLastDaysContainer = document.getElementById('within-last-days-container');
+        var beforeDaysContainer = document.getElementById('before-days-container');
+    
+        if (selectedValue === 'within_last_days') {
+            withinLastDaysContainer.style.display = 'block';
+            beforeDaysContainer.style.display = 'none';
+        } else if (selectedValue === 'before_days') {
+            withinLastDaysContainer.style.display = 'none';
+            beforeDaysContainer.style.display = 'block';
+        } else {
+            withinLastDaysContainer.style.display = 'none';
+            beforeDaysContainer.style.display = 'none';
+        }
+    }
+    </script>
+</body>
+</html>
+
