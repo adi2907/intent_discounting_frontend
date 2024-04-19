@@ -51,7 +51,8 @@ Route::middleware('auth')->group(function () {
             Route::get('create', [SegmentController::class, 'create'])->name('create.identified.user.segments');
             Route::post('/', [SegmentController::class, 'store'])->name('store.identified.user.segments');
             Route::get('/', [SegmentController::class, 'list'])->name('list.identified.user.segments');
-            Route::get('delete/{id}', [SegmentController::class, 'deleteSegment'])->name('delete.identified.user.segments');
+            Route::get('delete/{id}', [SegmentController::class, 'delete'])->name('delete.identified.user.segments');
+            Route::get('show/{id}', [SegmentController::class, 'show'])->name('show.identified.user.segments');
             
             Route::prefix('partials')->group(function () {
                 Route::get('get_did_do_events_html', [SegmentController::class, 'getDidDoEventsDefaultHTML'])->name('segments.did_do_events.defaultHTML');
