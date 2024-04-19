@@ -13,7 +13,8 @@
             </div>
         </section>
         <section class="main-content mt-3 mr-3">
-        <form> 
+        <form method="POST" action="{{route('store.identified.user.segments')}}"> 
+            @csrf
             <div class="container"> 
                 <div class="form-group list-name-group">
                     <label for="listName" class="list-name-label">List Name:</label>
@@ -83,10 +84,7 @@
                     <h2 class="settings-heading" >Behavioral</h2>
                     <div id="did_do_events_card_container">
                         @include('partials.segments.did_do_events', ['counter' => 1])
-                    
                     </div>
-                    
-                    
                     <!-- Placeholder for additional event-criteria-cards -->
                     <div class="additional-events"></div>
                     <button type="button" class="btn reset-button" id="resetForm">Reset</button>
@@ -110,6 +108,18 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        $(document).on('click', '.btn-logic', function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var parent = el.parent();
+            parent.find('.btn-logic').each(function () {
+                $(this).removeClass('active-and-or-button');
+            });
+            el.addClass('active-and-or-button');
+            var value = el.data('value');
+            parent.find('.and_or_val').val(value);
+        });
+
         $('#resetForm').click(function (e) {
             e.preventDefault();
             $.ajax({

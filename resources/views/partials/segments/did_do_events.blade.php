@@ -38,12 +38,12 @@
     </div>
         
     <div class="logic-buttons">
-        <button type="button" class="btn btn-logic">AND</button>&nbsp;&nbsp;
-        <button type="button" class="btn btn-logic">OR</button>
-        <input type="hidden" class="and_or_val[]">
+        <button type="button" class="btn btn-logic btn-and active-and-or-button" data-value="and">AND</button>&nbsp;&nbsp;
+        <button type="button" class="btn btn-logic btn-or" data-value="or">OR</button>
+        <input type="hidden" class="and_or_val" name="and_or_val[]" value="and">
     </div>
 
-    <button type="button" class="btn add-event mt-2 addRule">Add Rule +</button>
+    <button type="button" class="btn add-event mt-4 addRule">Add Rule +</button>
     <a href="#" class="btn btn-danger deleteRule" style="float: right;background-color:red;color:white">DELETE</a>
     <hr>
 </div>

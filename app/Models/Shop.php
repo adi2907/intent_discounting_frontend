@@ -65,4 +65,8 @@ class Shop extends Model {
     public function isActivated() {
         return (bool) $this->isActivated;
     }
+
+    public function getAudienceSegments() {
+        return $this->hasMany(SegmentRule::class, 'shop_id', 'id');
+    }
 }

@@ -17,6 +17,7 @@
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
+                <a href="{{route('list.identified.user.segments')}}" class="btn btn-primary">Create Segments</a>
                 <a id="downloadExcel" class="btn btn-success mt-2" style="padding:8px 8px 8px 8px" href="#">Download as Excel</a>
             </div> 
             <div class="table-responsive mr-4">

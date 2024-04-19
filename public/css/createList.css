@@ -131,3 +131,8 @@ button.btn:hover {
     border-radius: 0.25rem;
     border: 1px solid #ced4da;
 }
+
+.active-and-or-button {
+    color: white !important;
+    background-color: red !important;
+}
