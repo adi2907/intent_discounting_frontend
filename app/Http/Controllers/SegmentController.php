@@ -58,7 +58,7 @@ class SegmentController extends Controller {
             'rules' => json_encode($segmentArr)
         ]);
 
-        RunSegment::dispatch($shop, $row)->onConnection('sync');
+        RunSegment::dispatch($row)->onConnection('sync');
 
         return redirect()->route('list.identified.user.segments')->with('success', 'Segment created. Processing will begin shortly.');
     }
