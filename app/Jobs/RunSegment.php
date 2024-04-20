@@ -32,7 +32,7 @@ class RunSegment implements ShouldQueue {
         $data = $this->runSegment($shop, $this->row);
         $count = 0;
         if(isset($data['body']) && is_array($data['body']) && count($data['body']) > 0) {
-            $count = $data['body'];
+            $count = count($data['body']);
         }
         $this->row->update(['no_of_users' => $count, 'users_measurement' => '']);
     }
