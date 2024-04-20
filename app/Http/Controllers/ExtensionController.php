@@ -166,7 +166,7 @@ class ExtensionController extends Controller {
                     }
                 }
 
-                return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title, 'shop' => $shop->shop_url])->render();
+                return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title, 'shop_url' => $shop->shop_url])->render();
             }
             Log::info('Body null found');
             Log::info($body);
