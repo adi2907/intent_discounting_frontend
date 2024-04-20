@@ -11,14 +11,14 @@
                     <div class="card__inner color-background-2 gradient ratio" style="--ratio-percent: 125.0%;">
                         <div class="card__media">
                             <div class="media media--transparent media--hover-effect">
-                                <img src="{{$product->imageSrc}}" sizes="(min-width: 1600px) 367px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="product.title" class="motion-reduce" loading="lazy" width="1600" height="1600">  
+                                <img src="{{$product['imageSrc']}}" sizes="(min-width: 1600px) 367px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)" alt="product.title" class="motion-reduce" loading="lazy" width="1600" height="1600">  
                             </div>
                         </div>
                         <div class="card__content">       
                             <div class="card__information">     
                                 <h3 class="card__heading">
-                                    <a href="products/{{$product->handle}}" id="StandardCardNoMediaLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="StandardCardNoMediaLink-template--19392271745334__featured_collection-8404321960246 NoMediaStandardBadge-template--19392271745334__featured_collection-8404321960246">
-                                        {{$product->title}}
+                                    <a href="https://{{$shop_url.'/products/'.$product['handle']}}" id="StandardCardNoMediaLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="StandardCardNoMediaLink-template--19392271745334__featured_collection-8404321960246 NoMediaStandardBadge-template--19392271745334__featured_collection-8404321960246">
+                                        {{$product['title']}}
                                     </a>   
                                 </h3>  
                             </div>    
@@ -28,8 +28,8 @@
                     <div class="card__content">   
                         <div class="card__information">
                             <h3 class="card__heading h5" id="title-template--19392271745334__featured_collection-8404321960246">
-                                <a href="products/{{$product->handle}}" class="CardLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="CardLink-template--19392271745334__featured_collection-8404321960246 Badge-template--19392271745334__featured_collection-8404321960246" style="color: black; text-decoration: none; ">
-                                    {{$product->title}}
+                                <a href="https://{{$shop_url.'/products/'.$product['handle']}}" class="CardLink-template--19392271745334__featured_collection-8404321960246" class="full-unstyled-link" aria-labelledby="CardLink-template--19392271745334__featured_collection-8404321960246 Badge-template--19392271745334__featured_collection-8404321960246" style="color: black; text-decoration: none; ">
+                                    {{$product['title']}}
                                 </a>       
                             </h3>                   
                             <div class="card-information">
@@ -38,7 +38,7 @@
                                     <div class="price__container">
                                         <div class="price__regular">     
                                             <span class="visually-hidden visually-hidden--inline">Regular price</span> 
-                                            <span class="price-item price-item--regular">Rs. {{$product->price}} </span>  
+                                            <span class="price-item price-item--regular">Rs. {{$product['price']}} </span>  
                                         </div>  
                                     </div>
                                 </div>    

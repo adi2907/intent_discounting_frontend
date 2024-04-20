@@ -138,7 +138,7 @@ class ExtensionController extends Controller {
     private function getHTML($body, $shop, $prop) {
         try {
             if($body !== null && count($body) > 0) {
-                $products = $shop->getProducts()->whereIn('product_id', $body)->get();
+                $products = $shop->getProducts()->whereIn('product_id', $body)->get()->keyBy('product_id')->toArray();
                 $viewFilePrefix = 'appExt.';
                 $viewFile = null;
                 $title = null;
@@ -166,7 +166,7 @@ class ExtensionController extends Controller {
                     }
                 }
 
-                return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title])->render();
+                return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title, 'shop' => $shop->shop_url])->render();
             }
             Log::info('Body null found');
             Log::info($body);
