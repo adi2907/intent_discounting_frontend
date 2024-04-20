@@ -1,7 +1,7 @@
 @extends('layouts.new_app')
 
 @section('css')
-<link href="{{asset('css/createlist.css')}}" type="text/css" rel="stylesheet" />
+<link href="{{asset('css/createList.css')}}" type="text/css" rel="stylesheet" />
 @endsection
 
 @section('content')
