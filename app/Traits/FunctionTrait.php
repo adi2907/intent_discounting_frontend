@@ -442,6 +442,29 @@ trait FunctionTrait {
         return null; 
     }
 
+    public function runSegment($shop, $row) {
+        $endpoint = getAlmeAppURLForStore('segments/identified-users-list');
+        $headers = getAlmeHeaders();
+        $rules = $row->getRules();
+        $ruleArr = $rules[0];
+        $payload = [
+            'app_name' => $shop->shop_url,
+            'action' => 'purchase',
+            'last_x_days' => 7
+        ];
+
+        $getParams = [];
+        foreach($payload as $key => $value) {
+            $getParams[] = $key.'='.$value;
+        }
+        $getParams = implode('&', $getParams);
+
+        $response = $this->makeAnAlmeAPICall('GET', $endpoint.'?'.$getParams, $headers);
+        Log::info('Response for running segment');
+        Log::info($response);
+        return $response;
+    }
+
     public function getAlmeAnalytics($shopURL, $request = null, $setCache = true) {
         try {
             $order = $request != null && isset($request['order']) && strlen($request['order']) > 0 && in_array($request['order'], ['asc', 'desc']) ? $request['order'] : 'desc';

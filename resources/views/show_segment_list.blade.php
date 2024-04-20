@@ -105,6 +105,29 @@
             </div> --}}
         </form> 
         </section> 
+        @if(isset($segmentData) && is_array($segmentData) && isset($segmentData['body']) && count($segmentData) > 0)
+            <section class="main-content mt-3 mr-3">
+                <div class="container">
+                    <h4>Users in segment</h4><br>
+                    <table class="table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                        </thead>
+                        <tbody>
+                            @foreach($segmentData['body'] as $userRow)
+                            <tr>
+                                <td>{{$userRow['name'] ?? ''}}</td>
+                                <td>{{$userRow['phone'] ?? ''}}</td>
+                                <td>{{$userRow['email'] ?? ''}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </section>           
+        @endif
     </div>
 @endsection
 

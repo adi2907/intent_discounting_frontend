@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\RunSegment;
+use App\Traits\FunctionTrait;
+use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class SegmentController extends Controller {
+
+    use FunctionTrait, RequestTrait;
 
     public function __construct() {
         $this->middleware('auth');
@@ -40,7 +45,7 @@ class SegmentController extends Controller {
             $segmentArr = [];
         }
         
-        $shop->getAudienceSegments()->create([
+        $row = $shop->getAudienceSegments()->create([
             'listName' => $request->listName,
             'lastSeen-filter' => $request->{'lastSeen-filter'},
             'lastSeen-input' => $request->{'lastSeen-input'},
@@ -49,9 +54,11 @@ class SegmentController extends Controller {
             'session_input' => $request->{'session-input'},
             'createdOn-input' => $request->{'createdOn-input'},
             'no_of_users' => 0,
-            'users_measurement' => 'Processing...',
+            'users_measurement' => '',
             'rules' => json_encode($segmentArr)
         ]);
+
+        RunSegment::dispatch($shop, $row)->onConnection('sync');
 
         return redirect()->route('list.identified.user.segments')->with('success', 'Segment created. Processing will begin shortly.');
     }
@@ -60,7 +67,8 @@ class SegmentController extends Controller {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $segment = $shop->getAudienceSegments()->where('id', $id)->first();
-        return view('show_segment_list', compact('user', 'shop', 'segment'));
+        $segmentData = $this->runSegment($shop, $segment);
+        return view('show_segment_list', compact('user', 'shop', 'segment', 'segmentData'));
     }   
 
     public function list(Request $request) {
