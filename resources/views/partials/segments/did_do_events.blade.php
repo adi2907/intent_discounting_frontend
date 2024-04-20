@@ -3,8 +3,8 @@
         <label for="event-select">USERS WHO DID THESE EVENTS:</label>
         <select id="event-select" name="did_event_select[]" class="form-control">
             <option @isset($rule) @if($rule['did_event_select'] == 'purchase') selected @endif @endisset value="purchase">Purchase</option>
-            <option @isset($rule) @if($rule['did_event_select'] == 'add_to_cart') selected @endif @endisset value="add_to_cart">Add to Cart</option>
-            <option @isset($rule) @if($rule['did_event_select'] == 'product_visit') selected @endif @endisset value="product_visit">Product Visit</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'cart') selected @endif @endisset value="cart">Add to Cart</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'visit') selected @endif @endisset value="visit">Product Visit</option>
         </select>
     </div>
 
