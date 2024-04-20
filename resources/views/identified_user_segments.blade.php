@@ -16,9 +16,9 @@
         <form method="POST" action="{{route('store.identified.user.segments')}}"> 
             @csrf
             <div class="container"> 
-                <div class="form-group list-name-group">
+                <div class="form-group list-name-group" style="background:white">
                     <label for="listName" class="list-name-label">List Name:</label>
-                    <input type="text" id="listName" name="listName" class="form-control list-name-input">
+                    <input type="text" required id="listName" name="listName" class="form-control list-name-input">
                 </div>
                 
                 <div class="container user-profile-container">
@@ -165,7 +165,7 @@
             var noOfElements = $('.event-criteria-card').length;
             var el = $(this);
             if(noOfElements > 1) {
-                el.parent().remove();
+                el.parent().parent().remove();
             }
         });
     });

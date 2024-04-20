@@ -300,7 +300,7 @@ and font family and alignment changes*/
 
 .active-and-or-button {
     color: white !important;
-    background-color: #1B4332 !important;
+    background-color: red !important;
 }
 /* New CSS changes begins */
 /* Added new font family */

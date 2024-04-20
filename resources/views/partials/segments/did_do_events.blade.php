@@ -1,4 +1,4 @@
-<div class="event-criteria-card" data-counter="{{$counter}}">
+<div class="event-criteria-card mt-3" data-counter="{{$counter}}">
     <div class="form-group">
         <label for="event-select">USERS WHO DID THESE EVENTS:</label>
         <select id="event-select" name="did_event_select[]" class="form-control">
@@ -41,9 +41,10 @@
         <button type="button" class="btn btn-logic btn-and active-and-or-button" data-value="and">AND</button>&nbsp;&nbsp;
         <button type="button" class="btn btn-logic btn-or" data-value="or">OR</button>
         <input type="hidden" class="and_or_val" name="and_or_val[]" @if(isset($rule) && $rule['and_or_val']) value="{{$rule['and_or_val']}}" @else value="and" @endif>
+        <button type="button" class="btn add-event deleteRule" style="float:right;background-color:red;color:white;font-size:1.2rem">X</button>
+        <button type="button" class="btn add-event addRule" style="float:right;font-size:1.2rem">+</button>    
     </div>
 
-    <button type="button" class="btn add-event mt-4 addRule">Add Rule +</button>
-    <a href="#" class="btn btn-danger deleteRule" style="float: right;background-color:red;color:white">DELETE</a>
-    <hr>
+     <!-- <a href="#" class="btn btn-danger  add-event deleteRule" style="background-color:red;color:white">-</a> -->
+    <!-- <hr> -->
 </div>
