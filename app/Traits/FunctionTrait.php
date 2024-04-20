@@ -450,16 +450,25 @@ trait FunctionTrait {
         $payload = [
             'app_name' => $shop->shop_url,
             'action' => $ruleArr['did_event_select'],
-            'last_x_days' => $ruleArr['time_select']
         ];
+
+        if($ruleArr['time_select'] == 'yesterday') {
+            $payload['yesterday'] = 'true';
+        }
+
+        if($ruleArr['time_select'] == 'today') {
+            $payload['today'] = 'true';
+        }
 
         $getParams = [];
         foreach($payload as $key => $value) {
             $getParams[] = $key.'='.$value;
         }
         $getParams = implode('&', $getParams);
-
-        $response = $this->makeAnAlmeAPICall('GET', $endpoint.'?'.$getParams, $headers);
+        $endpoint = $endpoint.'?'.$getParams;
+        Log::info('Generated endpoint');
+        Log::info($endpoint);
+        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
         Log::info('Response for running segment');
         Log::info($response);
         return $response;
