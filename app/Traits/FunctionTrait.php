@@ -449,7 +449,7 @@ trait FunctionTrait {
         $ruleArr = $rules[0];
         $payload = [
             'app_name' => $shop->shop_url,
-            'action' => 'purchase',
+            'action' => $ruleArr['did_event_select'],
             'last_x_days' => 7
         ];
 
