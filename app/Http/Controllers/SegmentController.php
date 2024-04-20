@@ -85,7 +85,7 @@ class SegmentController extends Controller {
         return response()->json(['status' => true, 'html' => $html]);
     }
 
-    public function deleteSegment($id) {
+    public function delete($id) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $shop->getAudienceSegments()->where('id', $id)->delete();
