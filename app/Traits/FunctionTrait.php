@@ -460,6 +460,14 @@ trait FunctionTrait {
             $payload['today'] = 'true';
         }
 
+        if($ruleArr['time_select'] == 'within_last_days') {
+            $payload['last_x_days'] = $ruleArr['within_last_days'];
+        }
+
+        if($ruleArr['time_select'] == 'before_days') {
+            $payload['before_x_days'] = $ruleArr['before_days'];
+        }
+
         $getParams = [];
         foreach($payload as $key => $value) {
             $getParams[] = $key.'='.$value;
