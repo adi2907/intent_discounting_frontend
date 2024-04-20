@@ -1,4 +1,4 @@
-@if($products !== null && $products->count() > 0)
+@if($products !== null && count($products) > 0)
 <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width collection__title--desktop-slider">
     <h2 class="title inline-richtext h1"><strong>{{$title}}</strong></h2>
 </div>
@@ -62,7 +62,7 @@
             <span class="slider-counter--current">1</span>                
             <span aria-hidden="true"> / </span>                
             <span class="visually-hidden">of</span>                
-            <span class="slider-counter--total">{{$products->count()}}</span>            
+            <span class="slider-counter--total">{{count($products)}}</span>            
         </div>            
         <button type="button" class="slider-button slider-button--next" name="next" aria-label="Slide right" aria-controls="Slider-template--19392271745334__featured_collection" disabled="disabled">                
             <svg aria-hidden="true" focusable="false" class="icon icon-caret" viewBox="0 0 10 6">                    
