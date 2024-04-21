@@ -376,3 +376,12 @@ and font family and alignment changes*/
    border: 1px; 
    border-style: solid;
   }
+  /* view segments visual fix */
+  .viewsegment{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #5e6b7a;
+  }
+  .viewsegment-2{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #5e6b7a;
+  }

@@ -108,9 +108,9 @@
         @if(isset($segmentData) && is_array($segmentData) && isset($segmentData['body']) && count($segmentData) > 0)
             <section class="main-content mt-3 mr-4 ml-4">
                 <div class="container">
-                    <h4>Users in segment</h4><br>
+                    <h4 class="viewsegment">Users in segment</h4><br>
                     <table class="table">
-                        <thead>
+                        <thead class="viewsegment-2">
                             <th>Name</th>
                             <th>Phone</th>
                             <th>Email</th>
