@@ -443,43 +443,89 @@ trait FunctionTrait {
     }
 
     public function runSegment($shop, $row) {
-        $endpoint = getAlmeAppURLForStore('segments/identified-users-list');
+        $baseEndpoint = getAlmeAppURLForStore('segments/identified-users-list');
         $headers = getAlmeHeaders();
         $rules = $row->getRules();
-        $ruleArr = $rules[0];
-        $payload = [
-            'app_name' => $shop->shop_url,
-            'action' => $ruleArr['did_event_select'],
-        ];
+        $responseArr = [];
+        foreach($rules as $ruleArr) {
+            $payload = [
+                'app_name' => $shop->shop_url,
+                'action' => $ruleArr['did_event_select'],
+            ];
 
-        if($ruleArr['time_select'] == 'yesterday') {
-            $payload['yesterday'] = 'true';
+            if($ruleArr['time_select'] == 'yesterday') {
+                $payload['yesterday'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'today') {
+                $payload['today'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'within_last_days') {
+                $payload['last_x_days'] = $ruleArr['within_last_days'];
+            }
+
+            if($ruleArr['time_select'] == 'before_days') {
+                $payload['before_x_days'] = $ruleArr['before_days'];
+            }
+
+            $getParams = [];
+            foreach($payload as $key => $value) {
+                $getParams[] = $key.'='.$value;
+            }
+            $getParams = implode('&', $getParams);
+            $endpoint = $baseEndpoint.'?'.$getParams;
+            $responseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+        }
+        
+        $dataToReturn = $this->processAlmeAudienceSegments($responseArr, $rules);
+    }
+
+    public function processAlmeAudienceSegments($responseArr, $rules) {
+        $dataToReturn = [];
+
+        //match the rules with alme responses
+        foreach($rules as $key => $value) {
+            $currentAndOr = $value['and_or_val'];
+            $currentSegment = $responseArr[$key]['body'];
+            if($key == 0) {
+                //Initialize first segment to be returned in case there's only one segment
+                $dataToReturn = $currentSegment;
+            }
+
+            $nextSegmentExists = array_key_exists($key + 1, $rules) && $rules[$key + 1] != null;
+            if($nextSegmentExists) {
+                //There are more than 1 rules in the segment so now we need to compare
+                $dataToReturn = $this->compareTwoSegmentsWithUnionOrIntersection($currentSegment, $responseArr[$key + 1]['body'], $dataToReturn, $currentAndOr);
+            } else {
+                //No more to compare
+                //I guess do nothing
+            }
         }
 
-        if($ruleArr['time_select'] == 'today') {
-            $payload['today'] = 'true';
-        }
+        return $dataToReturn;
+    }
 
-        if($ruleArr['time_select'] == 'within_last_days') {
-            $payload['last_x_days'] = $ruleArr['within_last_days'];
-        }
+    public function array_union($x, $y) { 
+        $aunion = array_merge(
+            array_intersect($x, $y),   // Intersection of $x and $y
+            array_diff($x, $y),        // Elements in $x but not in $y
+            array_diff($y, $x)         // Elements in $y but not in $x
+        );
+    
+        return $aunion;
+    }
 
-        if($ruleArr['time_select'] == 'before_days') {
-            $payload['before_x_days'] = $ruleArr['before_days'];
-        }
+    public function compareTwoSegmentsWithUnionOrIntersection($currentSegment, $almeBody, $dataToReturn, $currentAndOr) {
+        if($almeBody != null && count($almeBody) > 0) {
+            $tempRes = null;
+            if($currentAndOr == 'and') 
+                $tempRes = array_intersect($currentSegment, $almeBody);
 
-        $getParams = [];
-        foreach($payload as $key => $value) {
-            $getParams[] = $key.'='.$value;
+            if($currentAndOr == 'or')
+                $tempRes = $this->array_union($currentSegment, $almeBody);
         }
-        $getParams = implode('&', $getParams);
-        $endpoint = $endpoint.'?'.$getParams;
-        Log::info('Generated endpoint');
-        Log::info($endpoint);
-        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-        Log::info('Response for running segment');
-        Log::info($response);
-        return $response;
+        return $dataToReturn;
     }
 
     public function getAlmeAnalytics($shopURL, $request = null, $setCache = true) {
