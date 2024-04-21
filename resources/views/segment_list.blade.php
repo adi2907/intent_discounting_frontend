@@ -12,7 +12,7 @@
                 <i class="fas fa-user"></i>
             </div>
         </section>
-        <section class="main-content mt-3 mr-3"  style="background-color: white;" >
+        <section class="main-content mt- mr-3"  style="background-color: white;" >
             <div class="table-responsive mr-4">
                 <table class="table table-bordered mr-4 ml-4" id="idUsersTable">
                     <thead class="thead-light">

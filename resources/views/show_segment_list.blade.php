@@ -12,11 +12,11 @@
                 <i class="fas fa-chart-pie"></i>
             </div>
         </section>
-        <section class="main-content mt-3 mr-3">
+        <section class="main-content mt-3 mr-2 ml-2">
         <form method="POST" action="{{route('store.identified.user.segments')}}"> 
             @csrf
             <div class="container"> 
-                <div class="form-group list-name-group">
+                <div  class="form-group bg-white list-name-group">
                     <label for="listName" class="list-name-label">List Name:</label>
                     <input type="text" id="listName" value="{{$segment->listName ?? ''}}" name="listName" class="form-control list-name-input">
                 </div>
@@ -106,7 +106,7 @@
         </form> 
         </section> 
         @if(isset($segmentData) && is_array($segmentData) && isset($segmentData['body']) && count($segmentData) > 0)
-            <section class="main-content mt-3 mr-3">
+            <section class="main-content mt-3 mr-4 ml-4">
                 <div class="container">
                     <h4>Users in segment</h4><br>
                     <table class="table">

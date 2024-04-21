@@ -188,6 +188,7 @@ button.btn {
 
 }
 
+
 button.btn:hover {
     background-color: #1b4332;
     border-color: #d8d8d8;
@@ -366,4 +367,12 @@ and font family and alignment changes*/
         width: 200px;
         margin-top: 1rem;
     }
+  }
+  /* fixed sumbit button */
+  .btn.btn-primary{
+   padding: 5px;
+   padding-left: 5px;
+   background: #e8ecef;
+   border: 1px; 
+   border-style: solid;
   }
