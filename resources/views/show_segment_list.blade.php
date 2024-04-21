@@ -111,7 +111,7 @@
                 <div class="container">
                     <h4 class="viewsegment">Users in segment</h4><br>
                     <!-- added excel button to download -->
-                    <button class="excelbtn" onclick="downloadTableAsExcel()">Download as Excel</button>
+                    <button class="excelbtn" onclick="downloadTableAsExcel()">Download</button>
 
                     <table class="table">
                         <thead class="viewsegment-2">
