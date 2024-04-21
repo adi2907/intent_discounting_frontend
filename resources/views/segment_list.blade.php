@@ -10,6 +10,7 @@
             <div class="title-content">      
                 <h1>Segments</h1>
                 <i class="fas fa-user"></i>
+                <a href="{{ route('create.identified.user.segments') }}" class="plusicon fas fa-plus" title="Create New List"></a>
             </div>
         </section>
         <section class="main-content mt- mr-3"  style="background-color: white;" >
