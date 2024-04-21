@@ -3,6 +3,7 @@
 @section('css')
 <link href="{{asset('css/createList.css')}}" type="text/css" rel="stylesheet" />
 @endsection
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 @section('content')
     <div class="col-md-9 nopadding">
@@ -109,6 +110,9 @@
             <section class="main-content mt-3 mr-4 ml-4">
                 <div class="container">
                     <h4 class="viewsegment">Users in segment</h4><br>
+                    <!-- added excel button to download -->
+                    <button class="excelbtn" onclick="downloadTableAsExcel()">Download as Excel</button>
+
                     <table class="table">
                         <thead class="viewsegment-2">
                             <th>Name</th>
@@ -132,7 +136,19 @@
 @endsection
 
 @section('scripts')
+<!-- Added download as excel functionality -->
 <script>
+    function downloadTableAsExcel() {
+
+    var table = document.querySelector('.table');
+   
+    var workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    
+    var filename = 'users_data.xlsx';
+   
+    XLSX.writeFile(workbook, filename);
+}
+
     $(document).ready(function () {
         $(document).on('click', '.btn-logic', function (e) {
             e.preventDefault();
