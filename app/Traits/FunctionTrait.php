@@ -478,7 +478,7 @@ trait FunctionTrait {
             $responseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
         }
         
-        $dataToReturn = $this->processAlmeAudienceSegments($responseArr, $rules);
+        return $this->processAlmeAudienceSegments($responseArr, $rules);
     }
 
     public function processAlmeAudienceSegments($responseArr, $rules) {
@@ -489,12 +489,12 @@ trait FunctionTrait {
             $currentAndOr = $value['and_or_val'];
             $currentSegment = $responseArr[$key]['body'];
             if($key == 0) {
-                //Initialize first segment to be returned in case there's only one segment
+                //Initialize first segment to be returned in case there's only one rule
                 $dataToReturn = $currentSegment;
             }
 
-            $nextSegmentExists = array_key_exists($key + 1, $rules) && $rules[$key + 1] != null;
-            if($nextSegmentExists) {
+            $nextRuleExists = array_key_exists($key + 1, $rules) && $rules[$key + 1] != null;
+            if($nextRuleExists) {
                 //There are more than 1 rules in the segment so now we need to compare
                 $dataToReturn = $this->compareTwoSegmentsWithUnionOrIntersection($currentSegment, $responseArr[$key + 1]['body'], $dataToReturn, $currentAndOr);
             } else {
@@ -524,6 +524,8 @@ trait FunctionTrait {
 
             if($currentAndOr == 'or')
                 $tempRes = $this->array_union($currentSegment, $almeBody);
+
+            return array_unique(array_merge($tempRes, $dataToReturn));
         }
         return $dataToReturn;
     }
