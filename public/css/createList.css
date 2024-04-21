@@ -208,7 +208,8 @@ button.btn:hover {
 /* Make sure each section is a card */
 .main-content > div {
     background: #fff;
-   
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
     margin-bottom: 1rem;
     padding: 20px;
   
@@ -384,4 +385,7 @@ and font family and alignment changes*/
   .viewsegment-2{
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: #5e6b7a;
+  }
+  .contain{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
