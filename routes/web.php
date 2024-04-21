@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('syncOrders', [AppController::class, 'syncOrders']);
 
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
+    Route::get('notifications/smart', [AppController::class, 'showNotificationSettings'])->name('notifications.smart');
+    Route::get('notifications/convertAI', [AppController::class, 'smartConvertAI'])->name('notifications.smart.convert.ai');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::prefix('identified_users')->group(function () {
         Route::get('/', [AppController::class, 'showIdentifiedUsers'])->name('identifiedUsers');

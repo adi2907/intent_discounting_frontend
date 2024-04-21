@@ -27,6 +27,24 @@ class AppController extends Controller {
         
     }
 
+    public function smartConvertAI(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $notifSettings = $shop->notificationSettings;
+        if($notifSettings == null || $notifSettings->count() < 1) {
+            $notifSettings = $shop->notificationSettings()->create([
+                'status' => false,
+                'title' => null,
+                'description' => null,
+                'discount_value' => 10,
+                'sale_status' => false,
+                'sale_discount_value' => 10,
+                'discount_expiry' => 24
+            ]);
+        }
+        return view('notifications_ai', ['notifSettings' => $notifSettings]);
+    }
+
     public function mapCheckout(Request $request) {
         Log::info('Request came for mapping checkout');
         Log::info(json_encode($request->all()));
@@ -111,15 +129,26 @@ class AppController extends Controller {
     public function updateStoreNotifications(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        $shop->notificationSettings()->update([
-            'status' => $request->status == 'on',
-            'title' => $request->notification_title,
-            'description' => $request->notification_desc,
-            'cdn_logo' => $request->cdn_logo,
-            'sale_status' => $request->sale_status == 'on',
-            'sale_discount_value' => $request->sale_discount_value,
-            'discount_expiry' => $request->discount_expiry
-        ]);
+        $updateArr = [];
+
+        if($request->filled('status')) {
+            $updateArr = [
+                'status' => $request->status == 'on',
+                'title' => $request->notification_title,
+                'description' => $request->notification_desc,
+                'cdn_logo' => $request->cdn_logo,
+            ];
+        }
+
+        if($request->filled('sale_status')) {
+            $updateArr = [
+                'sale_status' => $request->sale_status == 'on',
+                'sale_discount_value' => $request->sale_discount_value,
+                'discount_expiry' => $request->discount_expiry
+            ] ;
+        }
+
+        $shop->notificationSettings()->update($updateArr);
         return response()->json(['status' => true, 'message' => 'Updated!']);
     }
 

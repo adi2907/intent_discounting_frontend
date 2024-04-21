@@ -19,10 +19,20 @@ $route = Route::currentRouteName()
             </a>
         </li>
         <li class="nav-item">
+            <a href="{{route('notifications.smart')}}" class="nav-link" @if($route == 'notifications.smart') style="background-color: white; color:#1B4332" @endif>
+                <i class="fas fa-message"></i> Smart Recognize
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{route('notifications.smart.convert.ai')}}" class="nav-link" @if($route == 'notifications.smart.convert.ai') style="background-color: white; color:#1B4332" @endif>
+                <i class="fas fa-message"></i> SmartConvertAI 
+            </a>
+        </li>
+        <!-- <li class="nav-item">
             <a href="{{route('notifications')}}" class="nav-link" @if($route == 'notifications') style="background-color: white; color:#1B4332" @endif>
                 <i class="fas fa-message"></i> Notifications
             </a>
-        </li>
+        </li> -->
         <li class="nav-item">
             <a href="{{route('show.identifiedUsers')}}" class="nav-link" @if($route == 'identifiedUsers') style="background-color: white; color:#1B4332;" @endif>
                 <i class="fas fa-user"></i> Identified Users
