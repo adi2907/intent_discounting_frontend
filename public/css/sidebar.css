@@ -1,0 +1,15 @@
+.dropdown-item{
+    background: #1b4332;
+    color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border: 1px solid ;
+    border-radius: 4px;
+    margin-top: -20px;
+    margin-bottom: -20px;
+}
+.dropdown-item:hover{
+    background: #555555;
+    color: white;
+    
+}

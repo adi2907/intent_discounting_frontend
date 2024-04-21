@@ -2,6 +2,7 @@
 @php 
 $route = Route::currentRouteName()
 @endphp
+<link href="{{asset('css/sidebar.css')}}" type="text/css" rel="stylesheet" />
 <div class="col-md-3 sidebar d-none d-md-block">
     <div class="brand mb-4">
         <img src="{{asset('images/TextALME.png')}}" alt="M&H Clothing" class="img-fluid">
@@ -35,8 +36,8 @@ $route = Route::currentRouteName()
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="{{ route('show.identifiedUsers') }}" @if($route == 'identifiedUsers') style="background-color: white; color:#1B4332;" @endif>
-                Identified Users
+            <a class="dropdown-item" href="{{ route('list.identified.user.segments') }}" @if($route == 'identifiedUsers') style="background-color: white; color:#1B4332;" @endif>
+                Identified Users Segment
             </a>
             
             <!-- Add other dropdown items here -->
