@@ -373,9 +373,10 @@ and font family and alignment changes*/
   .btn.btn-primary{
    padding: 5px;
    padding-left: 5px;
-   background: #e8ecef;
+   background: #509dd7;
    border: 1px; 
    border-style: solid;
+   color: white;
   }
   /* view segments visual fix */
   .viewsegment{
