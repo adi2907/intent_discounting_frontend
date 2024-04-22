@@ -10,9 +10,10 @@
             <div class="title-content">      
                 <h1>Segments</h1>
                 <i class="fas fa-user"></i>
+                <a href="{{ route('create.identified.user.segments') }}" class="plusicon fas fa-plus" title="Create New List"></a>
             </div>
         </section>
-        <section class="main-content mt-3 mr-3"  style="background-color: white;" >
+        <section class="main-content mt- mr-3"  style="background-color: white;" >
             <div class="table-responsive mr-4">
                 <table class="table table-bordered mr-4 ml-4" id="idUsersTable">
                     <thead class="thead-light">
@@ -34,6 +35,7 @@
                                     <td>
                                         <a class="btn btn-primary" href="{{route('show.identified.user.segments', ['id' => $row['id']])}}">View</a>
                                         <a class="btn btn-danger" href="{{route('delete.identified.user.segments', ['id' => $row['id']])}}">Delete</a>
+                                        
                                     </td>
                                 </tr>
                             @endforeach

@@ -188,6 +188,7 @@ button.btn {
 
 }
 
+
 button.btn:hover {
     background-color: #1b4332;
     border-color: #d8d8d8;
@@ -207,7 +208,8 @@ button.btn:hover {
 /* Make sure each section is a card */
 .main-content > div {
     background: #fff;
-   
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
     margin-bottom: 1rem;
     padding: 20px;
   
@@ -367,3 +369,41 @@ and font family and alignment changes*/
         margin-top: 1rem;
     }
   }
+  /* fixed sumbit button */
+  .btn.btn-primary{
+   padding: 5px;
+   padding-left: 5px;
+   background: #509dd7;
+   border: 1px; 
+   border-style: solid;
+   color: white;
+  }
+  /* view segments visual fix */
+  .viewsegment{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #5e6b7a;
+  }
+  .viewsegment-2{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #5e6b7a;
+  }
+  .contain{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+/* excel button style */
+.excelbtn{
+    background: #e9ecef;
+    border: none;
+    padding: 3px;
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: -60px;
+    float: right;
+    color: #5e6b7a;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.excelbtn:hover{
+    background: #1b4332;
+    color: white;
+}
