@@ -80,7 +80,7 @@ class ExtensionController extends Controller {
     private function handleHTMLBasedOnType($request, $prop) {
         try {
             $shop = Shop::with(['notificationSettings', 'productRackInfo'])->where('shop_url', $request['shop'])->first();
-            if($shop !== null && $shop->count() > 0 && $shop->isActivated()) {
+            if($shop !== null) {
                 $productRackSettings = $shop->productRackInfo;
                 $flag = isset($productRackSettings) && $productRackSettings !== null && $productRackSettings->count() > 0;
                 if($flag) {
