@@ -21,7 +21,7 @@ class SegmentController extends Controller {
     public function create(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        return view('identified_user_segments');
+        return view('identified_user_segments', compact('user', 'shop'));
     }
 
     public function store(Request $request) {
@@ -57,10 +57,10 @@ class SegmentController extends Controller {
             'users_measurement' => '',
             'rules' => json_encode($segmentArr)
         ]);
+        // //This is run just to store the 
+        // RunSegment::dispatch($row)->onConnection('sync');
 
-        RunSegment::dispatch($row)->onConnection('sync');
-
-        return redirect()->route('list.identified.user.segments')->with('success', 'Segment created. Processing will begin shortly.');
+        return redirect()->route('show.identified.user.segments', ['id' => $row->id])->with('success', 'Segment created. Processing will begin shortly.');
     }
 
     public function show($id, Request $request) {

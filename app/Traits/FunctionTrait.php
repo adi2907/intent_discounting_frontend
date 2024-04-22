@@ -478,7 +478,24 @@ trait FunctionTrait {
             $responseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
         }
         
-        return $this->processAlmeAudienceSegments($responseArr, $rules);
+        $ids = $this->processAlmeAudienceSegments($responseArr, $rules);
+        $finalAudience = $this->getFinalSegmentAudience($ids, $responseArr);
+        return ['status' => true, 'body' => $finalAudience];
+    }
+
+    public function getFinalSegmentAudience($ids, $responseArr) {
+        $returnVal = [];
+        
+        foreach($responseArr as $arr) {
+            $tempArrKeys = collect($arr['body'])->keyBy('id')->toArray();
+            foreach($ids as $id) {
+                if(array_key_exists($id, $tempArrKeys)) {
+                    $returnVal[$id] = $tempArrKeys[$id];
+                }
+            }
+        }
+
+        return $returnVal;
     }
 
     public function processAlmeAudienceSegments($responseArr, $rules) {
@@ -490,7 +507,7 @@ trait FunctionTrait {
             $currentSegment = $responseArr[$key]['body'];
             if($key == 0) {
                 //Initialize first segment to be returned in case there's only one rule
-                $dataToReturn = $currentSegment;
+                $dataToReturn = array_keys(collect($currentSegment)->keyBy('id')->toArray());
             }
 
             $nextRuleExists = array_key_exists($key + 1, $rules) && $rules[$key + 1] != null;
@@ -517,13 +534,20 @@ trait FunctionTrait {
     }
 
     public function compareTwoSegmentsWithUnionOrIntersection($currentSegment, $almeBody, $dataToReturn, $currentAndOr) {
-        if($almeBody != null && count($almeBody) > 0) {
+        
+        $currentSegment = collect($currentSegment)->keyBy('id')->toArray();
+        $almeBody = collect($almeBody)->keyBy('id')->toArray();
+
+        $currentSegmentKeys = array_keys($currentSegment);
+        $almeBodyKeys = array_keys($almeBody);
+
+        if($almeBodyKeys != null && count($almeBodyKeys) > 0) {
             $tempRes = null;
             if($currentAndOr == 'and') 
-                $tempRes = array_intersect($currentSegment, $almeBody);
+                $tempRes = array_intersect($currentSegmentKeys, $almeBodyKeys);
 
             if($currentAndOr == 'or')
-                $tempRes = $this->array_union($currentSegment, $almeBody);
+                $tempRes = $this->array_union($currentSegmentKeys, $almeBodyKeys);
 
             return array_unique(array_merge($tempRes, $dataToReturn));
         }
