@@ -6,8 +6,8 @@
 <div class="col-md-9 nopadding">
     <section class="page-title bg-white p-4">
         <div class="title-content">      
-            <h1>Notifications</h1>
-            <i class="fas fa-message"></i>
+            <h1>SmartConvertAI</h1>
+            <i class="fas fa-robot"></i>
         </div>
     </section>
     <section class="main-content">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="container mt-5">
-            <h2 class="settings-heading">Enable Sale Notifications</h2>
+            <h2 class="settings-heading">Enable SmartConvertAI</h2>
             <div class="settings-card">
                 <div class="settings-option">
                     <div>
@@ -47,7 +47,36 @@
                     </div>
                     <input class="validity-input blurInputChange" style="width:10%" data-fieldtype="text" id="discount_expiry" data-fieldName="discount_expiry" type="number" min="1" max="100" value="{{$notifSettings['discount_expiry']}}">
                 </div>
-            </div>
+	    </div>
+	<p><p>
+            <h2 class="settings-heading">SmartConvertAI statistics</h2>
+        
+            <div class="statistics-container">
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-eye"></i>
+                    <span class="statistics-value">20182</span>
+                    <span class="statistics-label">Total Views</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-edit"></i>
+                    <span class="statistics-value">2560</span>
+                    <span class="statistics-label">Total clicks</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-percentage"></i>
+                    <span class="statistics-value">13%</span>
+                    <span class="statistics-label">Click Rate</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-gift"></i>
+                    <span class="statistics-value">1212</span>
+                    <span class="statistics-label">Coupon Redemptions</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-chart-pie"></i>
+                    <span class="statistics-value">6%</span>
+                    <span class="statistics-label">% of new users shared their contact</span>
+                </div>
         </div>  
         <div class="row col-md-12" style="display:none;">
             <div class="col-md-6">

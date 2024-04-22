@@ -21,12 +21,12 @@ $route = Route::currentRouteName()
         </li>
         <li class="nav-item">
             <a href="{{route('notifications.smart')}}" class="nav-link" @if($route == 'notifications.smart') style="background-color: white; color:#1B4332" @endif>
-                <i class="fas fa-message"></i> Smart Recognize
+                <i class="fas fa-brain"></i> SmartRecognize
             </a>
         </li>
         <li class="nav-item">
             <a href="{{route('notifications.smart.convert.ai')}}" class="nav-link" @if($route == 'notifications.smart.convert.ai') style="background-color: white; color:#1B4332" @endif>
-                <i class="fas fa-message"></i> SmartConvertAI 
+                <i class="fas fa-robot"></i> SmartConvertAI 
             </a>
         </li>
         <!-- <li class="nav-item">

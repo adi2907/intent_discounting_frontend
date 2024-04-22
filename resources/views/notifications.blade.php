@@ -6,8 +6,8 @@
 <div class="col-md-9 nopadding">
     <section class="page-title bg-white p-4">
         <div class="title-content">      
-            <h1>Notifications</h1>
-            <i class="fas fa-message"></i>
+            <h1>SmartRecognize</h1>
+            <i class="fas fa-brain"></i>
         </div>
     </section>
     <section class="main-content">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="container mt-5">
-            <h2 class="settings-heading">Get contact details</h2>
+            <h2 class="settings-heading">Enable SmartRecognize</h2>
             <div class="settings-card">
                 <div class="settings-option">
                     <div>
@@ -60,7 +60,29 @@
                     <input class="discount-input blurInputChange" data-fieldtype="text" data-fieldName="discount_value" type="number" min="1" max="50" value="{{$notifSettings['discount_value']}}">
                 </div>
             </div>
-            
+            <p><p>
+        <h2 class="settings-heading">SmartRecognize statistics</h2>
+        <div class="statistics-container">
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-eye"></i>
+                <span class="statistics-value">1466</span>
+                <span class="statistics-label">Total Views</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-edit"></i>
+                <span class="statistics-value">345</span>
+                <span class="statistics-label">Total Submissions</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-percentage"></i>
+                <span class="statistics-value">20%</span>
+                <span class="statistics-label">Submit rate</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-user-plus"></i>
+                <span class="statistics-value">10%</span>
+                <span class="statistics-label">% of new users shared their contact</span>
+            </div> 
         </div>  
         <div class="row col-md-12" style="display:none;">
             <div class="col-md-6">
