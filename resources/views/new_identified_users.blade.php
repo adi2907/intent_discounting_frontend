@@ -14,7 +14,8 @@
         </section>
         <section class="main-content mt-3 mr-3"  style="background-color: white;" >
             <div class="button-group d-flex justify-content-end mt-3 mb-3 mr-3">
-                <label for="" class="mt-3">Select Date: </label><input id="date-range" class="form-control mt-2" style="width:20%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
+                <label for="" class="mt-3">Select Date: </label>
+                <input id="date-range" class="form-control mt-2" style="width:20%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
@@ -161,7 +162,7 @@
     }
 
     function setDateTimePicker() {
-        var startDate = @if($daysDiffFromStart != null && $daysDiffFromStart > 0) moment().subtract({{$daysDiffFromStart}}, 'days') @else moment().startOf('day') @endif;
+        var startDate = @if($daysDiffFromStart != null && $daysDiffFromStart > 0) moment().subtract({{$daysDiffFromStart}}, 'days') @else moment().subtract('1', 'days') @endif;
         var endDate = @if($daysDiffFromEnd != null && $daysDiffFromEnd > 0) moment().subtract({{$daysDiffFromEnd}}, 'days') @else moment().endOf('day') @endif;
         // $("#date-start").val(startDate.unix());
         // $("#date-end").val(endDate.unix());

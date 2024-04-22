@@ -59,7 +59,7 @@ class AppController extends Controller {
         $daysDiffFromStart = $daysDiffFromEnd = null;
 
         if(!array_key_exists('start_date', $request) && !array_key_exists('end_date', $request)) {
-            $request['start_date'] = strtotime('today');
+            $request['start_date'] = strtotime('-1 day');
             $request['end_date'] = strtotime('today');
         } else {
             $daysDiffFromStart = floor(abs($request['start_date'] - time())/60/60/24);
@@ -67,8 +67,7 @@ class AppController extends Controller {
         }
 
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
-        $regdUserIdArr = $this->getRegdUserIds($data);
-
+        //$regdUserIdArr = $this->getRegdUserIds($data);
         // $customers = $shop->getIdentifiedUsers();
         // if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
         //     $customers = $customers->where(function ($query) use ($regdUserIdArr) {
