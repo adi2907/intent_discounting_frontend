@@ -42,14 +42,8 @@
                                 @foreach($data['body'] as $row) 
                                     <tr>
                                         <td>{{$row['serial_number']}}</td>
-                                        <td>{{$row['name'] ?? $customersArr[$row['regd_user_id']]['name'] ?? 'N/A'}}</td>
-                                        <td>
-                                            @if(isset($customersArr[$row['regd_user_id']]))
-                                                {{$customersArr[$row['regd_user_id']]['email']}}
-                                            @else 
-                                            N/A
-                                            @endif
-                                        </td>
+                                        <td>{{$row['name'] ?? 'N/A'}}</td>
+                                        <td>{{$row['email'] ?? 'N/A'}}</td>
                                         <td>{{date('Y-m-d h:i:s', strtotime($row['last_visited']))}}</td>
                                         <td>{{$row['phone'] ?? $customersArr[$row['regd_user_id']]['phone'] ?? 'N/A'}}</td>
                                         <td>{{$row['visited']}}</td>

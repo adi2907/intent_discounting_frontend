@@ -69,25 +69,25 @@ class AppController extends Controller {
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
         $regdUserIdArr = $this->getRegdUserIds($data);
 
-        $customers = $shop->getIdentifiedUsers();
-        if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
-            $customers = $customers->where(function ($query) use ($regdUserIdArr) {
-                return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
-            });    
-        } else {
-            $customers = $customers->where(function ($query) {
-                return $query->where('regd_user_id', '>', 0);
-            });   
-        }
+        // $customers = $shop->getIdentifiedUsers();
+        // if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
+        //     $customers = $customers->where(function ($query) use ($regdUserIdArr) {
+        //         return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
+        //     });    
+        // } else {
+        //     $customers = $customers->where(function ($query) {
+        //         return $query->where('regd_user_id', '>', 0);
+        //     });   
+        // }
 
-        $customers = $customers->select(['email', 'name', 'regd_user_id'])->get();
+        // $customers = $customers->select(['email', 'name', 'regd_user_id'])->get();
         
-        $customersArr = [];
-        if($customers !== null && $customers->count() > 0) {
-            $customersArr = $customers->keyBy('regd_user_id')->toArray();
-        }
+        // $customersArr = [];
+        // if($customers !== null && $customers->count() > 0) {
+        //     $customersArr = $customers->keyBy('regd_user_id')->toArray();
+        // }
 
-        return view('new_identified_users', compact('customersArr', 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
+        return view('new_identified_users', compact(/*'customersArr',*/ 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
     }
 
     public function getRegdUserIds($data) {
