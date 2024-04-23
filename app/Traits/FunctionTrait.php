@@ -125,7 +125,7 @@ trait FunctionTrait {
     }
 
     public function createDiscountCode($priceRule, $shop) {
-        $code = Str::random(6);
+        $code = $shop['prefix'].Str::random(5);
         $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'/discount_codes.json', $shop);
         $headers = getShopifyAPIHeadersForStore($shop);
         $payload = [

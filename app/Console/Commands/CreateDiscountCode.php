@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CreateDiscountCode extends Command {
 
@@ -124,7 +125,7 @@ class CreateDiscountCode extends Command {
             $saleDiscountValue = 10;
         } 
         $saleDiscountValue = '-'.$saleDiscountValue;
-        $startsAt = date('c');
+        //$startsAt = date('c');
         //$this->info('Discount '.$saleDiscountValue);
         //$this->info('Setting start as '.$startsAt);
 
