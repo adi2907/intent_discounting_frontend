@@ -800,6 +800,11 @@ class AppController extends Controller {
                 $html = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
+                    
+                    //Early return
+                    if($code == null || strlen($code) < 1) 
+                        return response()->json(['code' => null, 'status' => true, 'html' => null]);
+                    
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
