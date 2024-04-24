@@ -73,13 +73,24 @@
         <div id="saleNotificationPopup" class="overlay">
         <div class="modal-content">
             <span class="close" id="saleCloseBtn">&times;</span>
-                <div class="title">You are a regular visitor</div>
-                    <div class="subtitle">
-                        Here's a special discount of {{ $discountValue }}% applicable on entire site<br>
-                        Valid only for {{ $discountExpiry }} hours
-                    </div>
-                    <span class="discount-code">{{ $discountCode }}</span>
+            <div class="title">You are a regular visitor</div>
+                <div class="subtitle">
+                    Here's a special discount of {{ $discountValue }}% applicable on entire site<br>
+                    Valid only for {{ $discountExpiry }} hours
                 </div>
+                <span id="discountAlmeCode" code="{{ $discountCode }}" class="discount-code" style="cursor:pointer" onclick="copyUri(event)">{{ $discountCode }}</span>
+            </div>
         </div>
+        <script>
+            function copyURI(evt) {
+                evt.preventDefault();
+                navigator.clipboard.writeText(evt.target.getAttribute('code')).then(() => {
+                    /* clipboard successfully set */
+                    document.getElementById('discountAlmeCode').innerHTML('Copied');
+                    }, () => {
+                    /* clipboard write failed */
+                });
+            }
+        </script>
     </body>
 </html>
