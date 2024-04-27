@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -178,6 +179,40 @@ class HomeController extends Controller {
         } catch(Throwable $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage().' '.$e->getLine()]);
         }
+    }
+
+    public function sampleMinOrderCoupon($id) {
+        $shop = Shop::where('id', $id)->first();
+        $endpoint = getShopifyAPIURLForStore('price_rules.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $payload = [
+            'price_rule' => [
+                "title" => "ALMEPRICEOFF".Str::random(3),
+                "target_type" => "line_item",
+                "target_selection" => "all",
+                "allocation_method" => "across",
+                "value_type" => "fixed_amount",
+                "value" => "-50.0",
+                "customer_selection" => "all",
+                "prerequisite_subtotal_range" => ["greater_than_or_equal_to" => "150.0"],
+                "starts_at" => "2024-04-25T18:59:59Z"
+            ]
+        ];
+
+        $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
+
+        if($response['statusCode'] == 201) {
+            $priceRuleId = $response['body']['price_rule']['id'];
+            $discountCodeEndpoint = getShopifyAPIURLForStore('price_rules/'.$priceRuleId.'/discount_codes.json', $shop);
+            $discountCodePayload = [
+                "discount_code" => [
+                    "code" => strtoupper(Str::random(4))
+                ]
+            ];
+            $discountCodeResponse = $this->makeAnAPICallToShopify('POST', $discountCodeEndpoint, $headers, $discountCodePayload);
+            dd($discountCodeResponse);
+        }
+        dd($response);
     }
 
     public function sampleProductRack(Request $request) {
