@@ -443,39 +443,115 @@ trait FunctionTrait {
     }
 
     public function runSegment($shop, $row) {
-        $endpoint = getAlmeAppURLForStore('segments/identified-users-list');
+        $baseEndpoint = getAlmeAppURLForStore('segments/identified-users-list');
         $headers = getAlmeHeaders();
         $rules = $row->getRules();
-        $ruleArr = $rules[0];
-        $payload = [
-            'app_name' => $shop->shop_url,
-            'action' => $ruleArr['did_event_select'],
-        ];
+        $responseArr = [];
+        foreach($rules as $ruleArr) {
+            $payload = [
+                'app_name' => $shop->shop_url,
+                'action' => $ruleArr['did_event_select'],
+            ];
 
-        if($ruleArr['time_select'] == 'yesterday') {
-            $payload['yesterday'] = 'true';
+            if($ruleArr['time_select'] == 'yesterday') {
+                $payload['yesterday'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'today') {
+                $payload['today'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'within_last_days') {
+                $payload['last_x_days'] = $ruleArr['within_last_days'];
+            }
+
+            if($ruleArr['time_select'] == 'before_days') {
+                $payload['before_x_days'] = $ruleArr['before_days'];
+            }
+
+            $getParams = [];
+            foreach($payload as $key => $value) {
+                $getParams[] = $key.'='.$value;
+            }
+            $getParams = implode('&', $getParams);
+            $endpoint = $baseEndpoint.'?'.$getParams;
+            $responseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+        }
+        
+        $ids = $this->processAlmeAudienceSegments($responseArr, $rules);
+        $finalAudience = $this->getFinalSegmentAudience($ids, $responseArr);
+        return ['status' => true, 'body' => $finalAudience];
+    }
+
+    public function getFinalSegmentAudience($ids, $responseArr) {
+        $returnVal = [];
+        
+        foreach($responseArr as $arr) {
+            $tempArrKeys = collect($arr['body'])->keyBy('id')->toArray();
+            foreach($ids as $id) {
+                if(array_key_exists($id, $tempArrKeys)) {
+                    $returnVal[$id] = $tempArrKeys[$id];
+                }
+            }
         }
 
-        if($ruleArr['time_select'] == 'today') {
-            $payload['today'] = 'true';
+        return $returnVal;
+    }
+
+    public function processAlmeAudienceSegments($responseArr, $rules) {
+        $dataToReturn = [];
+
+        //match the rules with alme responses
+        foreach($rules as $key => $value) {
+            $currentAndOr = $value['and_or_val'];
+            $currentSegment = $responseArr[$key]['body'];
+            if($key == 0) {
+                //Initialize first segment to be returned in case there's only one rule
+                $dataToReturn = array_keys(collect($currentSegment)->keyBy('id')->toArray());
+            }
+
+            $nextRuleExists = array_key_exists($key + 1, $rules) && $rules[$key + 1] != null;
+            if($nextRuleExists) {
+                //There are more than 1 rules in the segment so now we need to compare
+                $dataToReturn = $this->compareTwoSegmentsWithUnionOrIntersection($currentSegment, $responseArr[$key + 1]['body'], $dataToReturn, $currentAndOr);
+            } else {
+                //No more to compare
+                //I guess do nothing
+            }
         }
 
-        if($ruleArr['time_select'] == 'within_last_days') {
-            $payload['last_x_days'] = $ruleArr['within_last_days'];
-        }
+        return $dataToReturn;
+    }
 
-        if($ruleArr['time_select'] == 'before_days') {
-            $payload['before_x_days'] = $ruleArr['before_days'];
-        }
+    public function array_union($x, $y) { 
+        $aunion = array_merge(
+            array_intersect($x, $y),   // Intersection of $x and $y
+            array_diff($x, $y),        // Elements in $x but not in $y
+            array_diff($y, $x)         // Elements in $y but not in $x
+        );
+    
+        return $aunion;
+    }
 
-        $getParams = [];
-        foreach($payload as $key => $value) {
-            $getParams[] = $key.'='.$value;
+    public function compareTwoSegmentsWithUnionOrIntersection($currentSegment, $almeBody, $dataToReturn, $currentAndOr) {
+        
+        $currentSegment = collect($currentSegment)->keyBy('id')->toArray();
+        $almeBody = collect($almeBody)->keyBy('id')->toArray();
+
+        $currentSegmentKeys = array_keys($currentSegment);
+        $almeBodyKeys = array_keys($almeBody);
+
+        if($almeBodyKeys != null && count($almeBodyKeys) > 0) {
+            $tempRes = null;
+            if($currentAndOr == 'and') 
+                $tempRes = array_intersect($currentSegmentKeys, $almeBodyKeys);
+
+            if($currentAndOr == 'or')
+                $tempRes = $this->array_union($currentSegmentKeys, $almeBodyKeys);
+
+            return array_unique(array_merge($tempRes, $dataToReturn));
         }
-        $getParams = implode('&', $getParams);
-        $endpoint = $endpoint.'?'.$getParams;
-        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-        return $response;
+        return $dataToReturn;
     }
 
     public function getAlmeAnalytics($shopURL, $request = null, $setCache = true) {

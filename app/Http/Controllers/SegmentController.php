@@ -70,10 +70,10 @@ class SegmentController extends Controller {
             'rules' => json_encode($segmentArr),
             'not_rules' => json_encode($notSegmentArr)
         ]);
+        // //This is run just to store the 
+        // RunSegment::dispatch($row)->onConnection('sync');
 
-        RunSegment::dispatch($row)->onConnection('sync');
-
-        return redirect()->route('list.identified.user.segments')->with('success', 'Segment created. Processing will begin shortly.');
+        return redirect()->route('show.identified.user.segments', ['id' => $row->id])->with('success', 'Segment created. Processing will begin shortly.');
     }
 
     public function show($id, Request $request) {
