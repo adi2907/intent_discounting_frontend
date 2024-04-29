@@ -22,14 +22,14 @@ class SegmentController extends Controller {
     public function create(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        return view('identified_user_segments');
+        return view('create_identified_user_segments');
     }
 
     public function store(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $segmentArr = [];
-
+        $notSegmentArr = [];
         try {
             foreach($request->did_event_select as $key => $value) {
                 $segmentArr[] = [
@@ -39,6 +39,17 @@ class SegmentController extends Controller {
                     'within_last_days' => $request->{'within-last-days'}[$key],
                     'before_days' => $request->{'before-days'}[$key],
                     'and_or_val' => $request->and_or_val[$key]
+                ];
+            }
+
+            foreach($request->did_not_event_select as $key => $value) {
+                $notSegmentArr[] = [
+                    'did_event_select' => $value, 
+                    'occurrence_select' => $request->{'not-occurrence-select'}[$key],
+                    'time_select' => $request->{'not-time-select'}[$key],
+                    'within_last_days' => $request->{'not-within-last-days'}[$key],
+                    'before_days' => $request->{'not-before-days'}[$key],
+                    'and_or_val' => $request->not_and_or_val[$key]
                 ];
             }
         } catch (Throwable $th) {
@@ -56,7 +67,8 @@ class SegmentController extends Controller {
             'createdOn-input' => $request->{'createdOn-input'},
             'no_of_users' => 0,
             'users_measurement' => '',
-            'rules' => json_encode($segmentArr)
+            'rules' => json_encode($segmentArr),
+            'not_rules' => json_encode($notSegmentArr)
         ]);
 
         RunSegment::dispatch($row)->onConnection('sync');
@@ -81,6 +93,13 @@ class SegmentController extends Controller {
 
     public function getDidDoEventsDefaultHTML(Request $request) {
         $html = view('partials.segments.did_do_events', [
+            'counter' => $request->filled('counter') && $request->counter != null ? $request->counter + 1 : null
+        ])->render();
+        return response()->json(['status' => true, 'html' => $html]);
+    }
+
+    public function getDidNotDoEventsDefaultHTML(Request $request) {
+        $html = view('partials.segments.did_not_do_events', [
             'counter' => $request->filled('counter') && $request->counter != null ? $request->counter + 1 : null
         ])->render();
         return response()->json(['status' => true, 'html' => $html]);

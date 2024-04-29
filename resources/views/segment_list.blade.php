@@ -22,8 +22,8 @@
                         <th scope="col">#</th>
                         <!-- <th scope="col">User ID</th> -->
                         <th scope="col">Name</th>
-			<th scope="col">Number of Users</th>
-			<th scope="col">List Type</th>
+                        <th scope="col">Number of Users</th>
+                        <th scope="col">List Type</th>
                         <th scope="col">Action</th>
                     </tr>
                     </thead>
@@ -34,11 +34,10 @@
                                     <td>{{$key + 1}}</td>
                                     <td>{{$row['listName']}}</td>
                                     <td>{{$row['no_of_users']}} {{$row['users_measurement']}}</td>
-				    <td>Dynamic</td>
-				    <td>
+                                    <td>Dynamic</td>
+                                    <td>
                                         <a class="btn btn-primary" href="{{route('show.identified.user.segments', ['id' => $row['id']])}}">View</a>
                                         <a class="btn btn-danger" href="{{route('delete.identified.user.segments', ['id' => $row['id']])}}">Delete</a>
-                                        
                                     </td>
                                 </tr>
                             @endforeach

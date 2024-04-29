@@ -474,11 +474,7 @@ trait FunctionTrait {
         }
         $getParams = implode('&', $getParams);
         $endpoint = $endpoint.'?'.$getParams;
-        Log::info('Generated endpoint');
-        Log::info($endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-        Log::info('Response for running segment');
-        Log::info($response);
         return $response;
     }
 
@@ -563,7 +559,7 @@ trait FunctionTrait {
             $endpoint .= '&start_date='.date('Y-m-d', $request['start_date']);
             $endpoint .= '&end_date='.date('Y-m-d', $request['end_date']);
         }
-        Log::info('Endpoint '.$endpoint);
+        //Log::info('Endpoint '.$endpoint);
         $endpoint = getAlmeAppURLForStore($endpoint);
         $headers = getAlmeHeaders();
         return $this->makeAnAlmeAPICall('GET', $endpoint, $headers);

@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
             Route::get('show/{id}', [SegmentController::class, 'show'])->name('show.identified.user.segments');
             
             Route::prefix('partials')->group(function () {
+                Route::get('get_did_not_do_events_html', [SegmentController::class, 'getDidNotDoEventsDefaultHTML'])->name('segments.did_not_do_events.defaultHTML');
                 Route::get('get_did_do_events_html', [SegmentController::class, 'getDidDoEventsDefaultHTML'])->name('segments.did_do_events.defaultHTML');
             });
         });

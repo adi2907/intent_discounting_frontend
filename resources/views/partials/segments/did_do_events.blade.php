@@ -19,7 +19,7 @@
     <!-- Most Recent Event Time -->
     <div class="form-group">
         <label for="time-select">Most Recent Event Time</label>
-        <select id="time-select" class="form-control" name="time-select[]">
+        <select class="form-control time-select" name="time-select[]">
             <option @isset($rule) @if($rule['time_select'] == 'yesterday') selected @endif @endisset value="yesterday">Yesterday</option>
             <option @isset($rule) @if($rule['time_select'] == 'today') selected @endif @endisset value="today">Today</option>
             <option @isset($rule) @if($rule['time_select'] == 'within_last_days') selected @endif @endisset value="within_last_days">Within Last ____ Days</option>
@@ -29,12 +29,12 @@
 
     <!-- Input for 'Within Last ____ Days' initially hidden -->
     <div class="form-group within-last-days-container" @if(isset($rule) && $rule['time_select'] == 'within_last_days') @else style="display: none;" @endif >
-        <input type="number" id="within-last-days" name="within-last-days[]" @if(isset($rule) && $rule['time_select']) value="{{$rule['within_last_days']}}" @endif class="form-control" placeholder="Enter number of days">
+        <input type="number" name="within-last-days[]" @if(isset($rule) && $rule['time_select']) value="{{$rule['within_last_days']}}" @endif class="form-control within-last-days" placeholder="Enter number of days">
     </div>
 
     <!-- Input for 'Before ____ Days' initially hidden -->
     <div class="form-group before-days-container" @if(isset($rule) && $rule['time_select'] == 'before_days') @else style="display: none;" @endif>
-        <input type="number" id="before-days" name="before-days[]" @if(isset($rule) && $rule['time_select'] == 'before_days') value="{{$rule['before_days']}}" @endif class="form-control" placeholder="Enter number of days">
+        <input type="number" name="before-days[]" @if(isset($rule) && $rule['time_select'] == 'before_days') value="{{$rule['before_days']}}" @endif class="form-control before-days" placeholder="Enter number of days">
     </div>
         
     <div class="logic-buttons">
@@ -44,7 +44,4 @@
         <button type="button" class="btn add-event deleteRule" style="float:right;background-color:red;color:white;font-size:1.2rem">X</button>
         <button type="button" class="btn add-event addRule" style="float:right;font-size:1.2rem">+</button>    
     </div>
-
-     <!-- <a href="#" class="btn btn-danger  add-event deleteRule" style="background-color:red;color:white">-</a> -->
-    <!-- <hr> -->
 </div>
