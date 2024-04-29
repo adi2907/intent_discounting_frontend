@@ -89,16 +89,17 @@
                     <div class="additional-events"></div>
                     <button type="button" class="btn reset-button" id="resetForm">Reset</button>
                 </div>
-                {{--<div class="container behavioral-container">
+                <div class="container behavioral-container" id="did_not_do_events_card">
                     <h2 class="settings-heading">Behavioral</h2>
-                    @include('partials.segments.did_not_do_events')
-                    <!-- Placeholder for additional event-criteria-cards -->
+                    <div class="did_not_do_events_card_container">
+                        @include('partials.segments.did_not_do_events', ['counter' => 1])
+                    </div>
                     <div class="additional-events"></div>
-                    <button type="button" class="btn reset-button">Reset</button>
-                </div>--}}
+                    <button type="button" class="btn reset-button" id="resetDidNotDoForm">Reset</button>
+                </div>
             </div>
             <div class="text-center mt-2 mb-2">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" style="width:30%">Submit</button>
             </div>
         </form> 
         </section> 
@@ -120,6 +121,20 @@
             parent.find('.and_or_val').val(value);
         });
 
+        $('#resetNotForm').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'GET', 
+                url: "{{route('segments.did_not_do_events.defaultHTML')}}",
+                async: false,
+                success: function (response) {
+                    if(response.status && response.html) {
+                        $('#did_not_do_events_card').find('.event-criteria-card').html(response.html);
+                    }
+                }
+            })
+        });
+        
         $('#resetForm').click(function (e) {
             e.preventDefault();
             $.ajax({
@@ -134,11 +149,11 @@
             })
         });
 
-        $(document).on('change', '#time-select', function (e) {
+        $(document).on('change', '.time-select', function (e) {
             e.preventDefault();
             var el = $(this);
             var val = el.val();
-            var parentEl = el.parent().parent().parent();
+            var parentEl = el.parent().parent();
             parentEl.find('.within-last-days-container').css({'display': val == 'within_last_days' ? 'block' : 'none'});
             parentEl.find('.before-days-container').css({'display': val == 'before_days' ? 'block' : 'none'});
         });
@@ -154,15 +169,41 @@
                 async: false,
                 success: function (response) {
                     if(response.status && response.html) {
-                        el.parent().parent().append(response.html);
+                        el.parent().parent().parent().append(response.html);
                     }
                 }
             })
         });
 
+        $(document).on('click', '.addNotRule', function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var noOfElements = $('#did_not_do_events_card').find('.event-criteria-card').length;
+            $.ajax({
+                type: 'GET', 
+                url: "{{route('segments.did_not_do_events.defaultHTML')}}",
+                data: {counter: noOfElements},
+                async: false,
+                success: function (response) {
+                    if(response.status && response.html) {
+                        el.parent().parent().parent().append(response.html);
+                    }
+                }
+            })
+        });
+
+        $(document).on('click', '.deleteNotRule', function (e) {
+            e.preventDefault();
+            var noOfElements = $('#did_not_do_events_card').find('.event-criteria-card').length;
+            var el = $(this);
+            if(noOfElements > 1) {
+                el.parent().parent().remove();
+            }
+        });
+
         $(document).on('click', '.deleteRule', function (e) {
             e.preventDefault();
-            var noOfElements = $('.event-criteria-card').length;
+            var noOfElements = $('#did_do_events_card').find('.event-criteria-card').length;
             var el = $(this);
             if(noOfElements > 1) {
                 el.parent().parent().remove();
