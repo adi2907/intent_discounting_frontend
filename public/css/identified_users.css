@@ -39,3 +39,9 @@ overflow: hidden; /* Ensures the rounded corners are visible */
     padding: 5px 15px;
     background-color: #1B4332;
   }
+  /* Added + icon */
+  .plusicon{
+    border: none;
+    background-color: white;
+    text-decoration: none;
+  }

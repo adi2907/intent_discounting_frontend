@@ -1,0 +1,77 @@
+.main-content {
+    background-color: #FFFFFF;
+    margin-right: 16px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin-left: 24px; /* Added left margin for spacing from sidebar */
+    margin-top: 24px;
+  }
+  
+  #idUsersTable {
+    width: 100%; /* Table now uses full width */
+    margin: 16px 0; /* Top and bottom margin only, removed auto to respect full width */
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+  
+  #idUsersTable th, #idUsersTable td {
+    text-align: left;
+    padding: 8px 16px;
+  }
+  
+  #idUsersTable th {
+    font-size: 16px;
+    color: #333333;
+    border-bottom: 2px solid #E0E0E0;
+  }
+  
+  #idUsersTable th:nth-child(2), #idUsersTable td:nth-child(2) {
+    width: 50%; /* Giving more width to the Name column */
+  }
+  
+  #idUsersTable td {
+    background-color: #F8F8F8;
+    border-radius: 4px;
+    vertical-align: middle; 
+  }
+  
+  /* Subtle colors for buttons */
+  .btn-primary {
+    background-color: #464ca6; /* Indigo color */
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    padding: 8px 16px; /* Matching padding to table cells */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .btn-danger {
+    background-color: #aa1d1d; /* Maroon color */
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    padding: 8px 16px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .btn-primary:hover {
+    background-color: #3E0080; /* A darker shade of indigo for hover state */
+  }
+  
+  .btn-danger:hover {
+    background-color: #660000; /* A darker shade of maroon for hover state */
+  }
+  
+  /* Adjustments for responsive behavior, mobile-first approach may be needed depending on the layout */
+  @media (max-width: 768px) {
+    .main-content {
+      margin-right: 8px;
+      margin-left: 8px;
+    }
+  
+    #idUsersTable {
+      margin: 8px 0;
+    }
+    
+    /* Additional responsive adjustments as needed */
+  }

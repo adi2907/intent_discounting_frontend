@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('syncOrders', [AppController::class, 'syncOrders']);
 
     Route::get('notifications', [AppController::class, 'showNotificationSettings'])->name('notifications');
+    Route::get('notifications/smart', [AppController::class, 'showNotificationSettings'])->name('notifications.smart');
+    Route::get('notifications/convertAI', [AppController::class, 'smartConvertAI'])->name('notifications.smart.convert.ai');
     Route::get('product_racks', [AppController::class, 'showProductRacks'])->name('productRacks');
     Route::prefix('identified_users')->group(function () {
         Route::get('/', [AppController::class, 'showIdentifiedUsers'])->name('identifiedUsers');
@@ -55,6 +57,7 @@ Route::middleware('auth')->group(function () {
             Route::get('show/{id}', [SegmentController::class, 'show'])->name('show.identified.user.segments');
             
             Route::prefix('partials')->group(function () {
+                Route::get('get_did_not_do_events_html', [SegmentController::class, 'getDidNotDoEventsDefaultHTML'])->name('segments.did_not_do_events.defaultHTML');
                 Route::get('get_did_do_events_html', [SegmentController::class, 'getDidDoEventsDefaultHTML'])->name('segments.did_do_events.defaultHTML');
             });
         });
@@ -146,3 +149,4 @@ Route::get('testOrders', [HomeController::class, 'testOrders']);
 Route::get('testCustomers', [HomeController::class, 'testCustomers']);
 Route::get('testPurchaseEvent', [HomeController::class, 'testPurchaseEvent']);
 Route::get('testAlmePayload/{id}', [HomeController::class, 'testAlmePayload']);
+Route::get('segment_list', [HomeController::class, 'segment_list']);

@@ -14,7 +14,8 @@
         </section>
         <section class="main-content mt-3 mr-3"  style="background-color: white;" >
             <div class="button-group d-flex justify-content-end mt-3 mb-3 mr-3">
-                <label for="" class="mt-3">Select Date: </label><input id="date-range" class="form-control mt-2" style="width:20%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
+                <label for="" class="mt-3">Select Date: </label>
+                <input id="date-range" class="form-control mt-2" style="width:20%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
                 <input type="hidden" id="date-start">
                 <input type="hidden" id="date-end">
                 <button id="sendWhatsApp" style="display: none;" class="btn btn-primary mr-2">WhatsApp High Prob Users</button>
@@ -42,14 +43,8 @@
                                 @foreach($data['body'] as $row) 
                                     <tr>
                                         <td>{{$row['serial_number']}}</td>
-                                        <td>{{$row['name'] ?? $customersArr[$row['regd_user_id']]['name'] ?? 'N/A'}}</td>
-                                        <td>
-                                            @if(isset($customersArr[$row['regd_user_id']]))
-                                                {{$customersArr[$row['regd_user_id']]['email']}}
-                                            @else 
-                                            N/A
-                                            @endif
-                                        </td>
+                                        <td>{{$row['name'] ?? 'N/A'}}</td>
+                                        <td>{{$row['email'] ?? 'N/A'}}</td>
                                         <td>{{date('Y-m-d h:i:s', strtotime($row['last_visited']))}}</td>
                                         <td>{{$row['phone'] ?? $customersArr[$row['regd_user_id']]['phone'] ?? 'N/A'}}</td>
                                         <td>{{$row['visited']}}</td>
@@ -167,7 +162,7 @@
     }
 
     function setDateTimePicker() {
-        var startDate = @if($daysDiffFromStart != null && $daysDiffFromStart > 0) moment().subtract({{$daysDiffFromStart}}, 'days') @else moment().startOf('day') @endif;
+        var startDate = @if($daysDiffFromStart != null && $daysDiffFromStart > 0) moment().subtract({{$daysDiffFromStart}}, 'days') @else moment().subtract('1', 'days') @endif;
         var endDate = @if($daysDiffFromEnd != null && $daysDiffFromEnd > 0) moment().subtract({{$daysDiffFromEnd}}, 'days') @else moment().endOf('day') @endif;
         // $("#date-start").val(startDate.unix());
         // $("#date-end").val(endDate.unix());

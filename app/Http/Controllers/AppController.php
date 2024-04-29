@@ -27,6 +27,24 @@ class AppController extends Controller {
         
     }
 
+    public function smartConvertAI(Request $request) {
+        $user = Auth::user();
+        $shop = $user->shopifyStore;
+        $notifSettings = $shop->notificationSettings;
+        if($notifSettings == null || $notifSettings->count() < 1) {
+            $notifSettings = $shop->notificationSettings()->create([
+                'status' => false,
+                'title' => null,
+                'description' => null,
+                'discount_value' => 10,
+                'sale_status' => false,
+                'sale_discount_value' => 10,
+                'discount_expiry' => 24
+            ]);
+        }
+        return view('notifications_ai', ['notifSettings' => $notifSettings]);
+    }
+
     public function mapCheckout(Request $request) {
         Log::info('Request came for mapping checkout');
         Log::info(json_encode($request->all()));
@@ -41,7 +59,7 @@ class AppController extends Controller {
         $daysDiffFromStart = $daysDiffFromEnd = null;
 
         if(!array_key_exists('start_date', $request) && !array_key_exists('end_date', $request)) {
-            $request['start_date'] = strtotime('today');
+            $request['start_date'] = strtotime('-1 day');
             $request['end_date'] = strtotime('today');
         } else {
             $daysDiffFromStart = floor(abs($request['start_date'] - time())/60/60/24);
@@ -49,27 +67,26 @@ class AppController extends Controller {
         }
 
         $data = $this->callAlmeAppIdentifiedUsers($shop, $request);
-        $regdUserIdArr = $this->getRegdUserIds($data);
+        //$regdUserIdArr = $this->getRegdUserIds($data);
+        // $customers = $shop->getIdentifiedUsers();
+        // if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
+        //     $customers = $customers->where(function ($query) use ($regdUserIdArr) {
+        //         return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
+        //     });    
+        // } else {
+        //     $customers = $customers->where(function ($query) {
+        //         return $query->where('regd_user_id', '>', 0);
+        //     });   
+        // }
 
-        $customers = $shop->getIdentifiedUsers();
-        if($regdUserIdArr !== null && is_array($regdUserIdArr) && count($regdUserIdArr) > 0) {
-            $customers = $customers->where(function ($query) use ($regdUserIdArr) {
-                return $query->where('regd_user_id', '>', 0)->whereIn('regd_user_id', $regdUserIdArr);
-            });    
-        } else {
-            $customers = $customers->where(function ($query) {
-                return $query->where('regd_user_id', '>', 0);
-            });   
-        }
-
-        $customers = $customers->select(['email', 'name', 'regd_user_id'])->get();
+        // $customers = $customers->select(['email', 'name', 'regd_user_id'])->get();
         
-        $customersArr = [];
-        if($customers !== null && $customers->count() > 0) {
-            $customersArr = $customers->keyBy('regd_user_id')->toArray();
-        }
+        // $customersArr = [];
+        // if($customers !== null && $customers->count() > 0) {
+        //     $customersArr = $customers->keyBy('regd_user_id')->toArray();
+        // }
 
-        return view('new_identified_users', compact('customersArr', 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
+        return view('new_identified_users', compact(/*'customersArr',*/ 'data', 'request', 'daysDiffFromStart', 'daysDiffFromEnd'));
     }
 
     public function getRegdUserIds($data) {
@@ -111,15 +128,26 @@ class AppController extends Controller {
     public function updateStoreNotifications(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        $shop->notificationSettings()->update([
-            'status' => $request->status == 'on',
-            'title' => $request->notification_title,
-            'description' => $request->notification_desc,
-            'cdn_logo' => $request->cdn_logo,
-            'sale_status' => $request->sale_status == 'on',
-            'sale_discount_value' => $request->sale_discount_value,
-            'discount_expiry' => $request->discount_expiry
-        ]);
+        $updateArr = [];
+
+        if($request->filled('status')) {
+            $updateArr = [
+                'status' => $request->status == 'on',
+                'title' => $request->notification_title,
+                'description' => $request->notification_desc,
+                'cdn_logo' => $request->cdn_logo,
+            ];
+        }
+
+        if($request->filled('sale_status')) {
+            $updateArr = [
+                'sale_status' => $request->sale_status == 'on',
+                'sale_discount_value' => $request->sale_discount_value,
+                'discount_expiry' => $request->discount_expiry
+            ] ;
+        }
+
+        $shop->notificationSettings()->update($updateArr);
         return response()->json(['status' => true, 'message' => 'Updated!']);
     }
 
@@ -772,6 +800,11 @@ class AppController extends Controller {
                 $html = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
+                    
+                    //Early return
+                    if($code == null || strlen($code) < 1) 
+                        return response()->json(['code' => null, 'status' => true, 'html' => null]);
+                    
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
