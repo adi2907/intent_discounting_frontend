@@ -801,6 +801,11 @@ class AppController extends Controller {
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
                     
+                    //If current time unix is greater than the code's validity
+                    if($code->validity == null || time() > $code->validity) {
+                        return response()->json(['code' => null, 'status' => false, 'html' => null]);
+                    }
+
                     //Early return
                     if($code == null || strlen($code) < 1) 
                         return response()->json(['code' => null, 'status' => true, 'html' => null]);

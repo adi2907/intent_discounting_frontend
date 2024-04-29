@@ -57,11 +57,11 @@ class CreateDiscountCode extends Command {
                                     $this->deletePriceRule($priceRule, $shop);
                                     $this->createPriceRuleForShop($shop);
                                     $shop->refresh('getLatestPriceRule');
-                                    $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop);
+                                    $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
                                 } 
                             } else {
                                 //No Discount exist so create one.
-                                $this->createAndSaveDiscountCode($priceRule, $shop);
+                                $this->createAndSaveDiscountCode($priceRule, $shop, $frequency);
                             }
                         }
                     } else {
@@ -99,12 +99,23 @@ class CreateDiscountCode extends Command {
         }
     }
 
-    private function createAndSaveDiscountCode($priceRule, $shop) {
+    /**
+     * Function to create discount code on Shopify and create a
+     * database record (validity added now)
+     * 
+     * @param - PriceRule object from price_rules table
+     * @param - Shop object from shop table
+     * @param - Frequency i.e the time interval (hours) the merchant set on the dashboard
+     *          to generate discount codes
+     * 
+    */
+    private function createAndSaveDiscountCode($priceRule, $shop, $frequency) {
         $data = $this->createDiscountCode($priceRule, $shop);
         if(array_key_exists('code', $data) && $data['code'] !== null && strlen($data['code']) > 0) {
             $shop->getDiscountCode()->create([
                 'code' => $data['code'],
-                'full_response' => json_encode($data)
+                'full_response' => json_encode($data),
+                'validity' => time() + ($frequency * 60 * 60) //Add the frequency 
             ]);
             $this->info('Created and saved discount code for '.$shop->shop_url);
         } else {
