@@ -477,10 +477,62 @@ trait FunctionTrait {
             $endpoint = $baseEndpoint.'?'.$getParams;
             $responseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
         }
+
+        $notRules = $row->getNotRules();
+        $notResponseArr = [];
+        foreach($notRules as $ruleArr) {
+            $payload = [
+                'app_name' => $shop->shop_url,
+                'action' => $ruleArr['did_event_select'],
+            ];
+
+            if($ruleArr['time_select'] == 'yesterday') {
+                $payload['yesterday'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'today') {
+                $payload['today'] = 'true';
+            }
+
+            if($ruleArr['time_select'] == 'within_last_days') {
+                $payload['last_x_days'] = $ruleArr['within_last_days'];
+            }
+
+            if($ruleArr['time_select'] == 'before_days') {
+                $payload['before_x_days'] = $ruleArr['before_days'];
+            }
+
+            $getParams = [];
+            foreach($payload as $key => $value) {
+                $getParams[] = $key.'='.$value;
+            }
+            $getParams = implode('&', $getParams);
+            $endpoint = $baseEndpoint.'?'.$getParams;
+            $notResponseArr[] = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+        }
         
         $ids = $this->processAlmeAudienceSegments($responseArr, $rules);
         $finalAudience = $this->getFinalSegmentAudience($ids, $responseArr);
-        return ['status' => true, 'body' => $finalAudience];
+        
+        $notIds = $this->processAlmeAudienceSegments($notResponseArr, $notRules);
+        $finalNotAudience = $this->getFinalSegmentAudience($notIds, $notResponseArr);
+
+        $aMinusB = $this->getAMinusBForFinalData($finalAudience, $finalNotAudience);
+        return ['status' => true, 'body' => $aMinusB];
+    }
+
+    public function getAMinusBForFinalData($finalAudience, $finalNotAudience) {
+        if($finalAudience == null) return null;
+
+        if($finalNotAudience == null) return $finalAudience;
+
+        $finalArr = [];
+        foreach($finalAudience as $id => $data) {
+            if(!array_key_exists($id, $finalNotAudience)) {
+                $finalArr[$id] = $data;
+            }
+        }
+        return $finalArr;
     }
 
     public function getFinalSegmentAudience($ids, $responseArr) {
