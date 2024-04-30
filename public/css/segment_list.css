@@ -61,7 +61,29 @@
   .btn-danger:hover {
     background-color: #660000; /* A darker shade of maroon for hover state */
   }
-  
+ /* Container for buttons */
+  .button-container {
+    display: flex;
+    justify-content: space-between; /* Adjust as needed for your design */
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* Buttons same width */
+  .btn-primary,
+  .btn-danger {
+    flex: 1; /* Flex grow, flex shrink, flex basis */
+    margin: 0 4px; /* Add margin if needed */
+    text-align: center;
+  }
+
+  .btn-primary,
+  .btn-danger {
+  min-width: 30px; /* Example: sets a minimum width */
+  box-sizing: border-box; /* Ensures padding is included in width calculation */
+  }
+
+
   /* Adjustments for responsive behavior, mobile-first approach may be needed depending on the layout */
   @media (max-width: 768px) {
     .main-content {
@@ -73,5 +95,13 @@
       margin: 8px 0;
     }
     
-    /* Additional responsive adjustments as needed */
+    .button-container {
+    	flex-direction: column;
+    }
+  
+    .btn-primary,
+    .btn-danger {
+    margin: 4px 0; /* vertical stacking */
+    flex-basis: 100%;
+    }
   }

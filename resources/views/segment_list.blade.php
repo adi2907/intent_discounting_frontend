@@ -35,10 +35,12 @@
                                     <td>{{$row['listName']}}</td>
                                     <td>{{$row['no_of_users']}} {{$row['users_measurement']}}</td>
                                     <td>Dynamic</td>
-                                    <td>
-                                        <a class="btn btn-primary" href="{{route('show.identified.user.segments', ['id' => $row['id']])}}">View</a>
-                                        <a class="btn btn-danger" href="{{route('delete.identified.user.segments', ['id' => $row['id']])}}">Delete</a>
-                                    </td>
+				    <td>
+					<div class="button-container">
+                                        	<a class="btn btn-primary" href="{{route('show.identified.user.segments', ['id' => $row['id']])}}">View</a>
+                                        	<a class="btn btn-danger" href="{{route('delete.identified.user.segments', ['id' => $row['id']])}}">Delete</a>
+				    	</div>
+				    </td>
                                 </tr>
                             @endforeach
                         @else 
