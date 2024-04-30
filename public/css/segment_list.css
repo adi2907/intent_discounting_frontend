@@ -66,13 +66,21 @@
     display: flex;
     justify-content: space-between; /* Adjust as needed for your design */
     align-items: center;
+    flex-wrap: wrap;
   }
 
   /* Buttons same width */
   .btn-primary,
   .btn-danger {
-    flex: 1 0 auto; /* Flex grow, flex shrink, flex basis */
+    flex: 1; /* Flex grow, flex shrink, flex basis */
     margin: 0 4px; /* Add margin if needed */
+    text-align: center;
+  }
+
+  .btn-primary,
+  .btn-danger {
+  min-width: 30px; /* Example: sets a minimum width */
+  box-sizing: border-box; /* Ensures padding is included in width calculation */
   }
 
 
@@ -93,6 +101,7 @@
   
     .btn-primary,
     .btn-danger {
-    margin: 4px 0; /* Adjust margin for vertical stacking */
+    margin: 4px 0; /* vertical stacking */
+    flex-basis: 100%;
     }
   }
