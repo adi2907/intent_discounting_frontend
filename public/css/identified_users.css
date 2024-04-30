@@ -45,3 +45,8 @@ overflow: hidden; /* Ensures the rounded corners are visible */
     background-color: white;
     text-decoration: none;
   }
+  .btn-primary {
+    color: #fff;
+    background-color: #464ca6;
+    border-color: #464ca6;
+  }
