@@ -442,6 +442,93 @@ trait FunctionTrait {
         return null; 
     }
 
+    private function deletePriceRule($priceRule, $shop) {
+        if(isset($priceRule->price_id) && $priceRule->price_id !== null) {
+            $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $this->makeAnAPICallToShopify('DELETE', $endpoint, $headers);
+        }
+    }
+
+    /**
+     * Function to create discount code on Shopify and create a
+     * database record (validity added now)
+     * 
+     * @param - PriceRule object from price_rules table
+     * @param - Shop object from shop table
+     * @param - Frequency i.e the time interval (hours) the merchant set on the dashboard
+     *          to generate discount codes
+     * 
+    */
+    private function createAndSaveDiscountCode($priceRule, $shop, $frequency) {
+        $data = $this->createDiscountCode($priceRule, $shop);
+        if(array_key_exists('code', $data) && $data['code'] !== null && strlen($data['code']) > 0) {
+            $shop->getDiscountCode()->create([
+                'code' => $data['code'],
+                'full_response' => json_encode($data),
+                'validity' => time() + ($frequency * 60 * 60) //Add the frequency 
+            ]);
+            Log::info('Created and saved discount code for '.$shop->shop_url);
+        } else {
+            // Log::info('here Problem with validity for price rule '.$shop->id.' '.$shop->shop_url);
+            // Log::info($data);
+        }
+    }
+
+    private function createPriceRuleForShop($shop) {
+        //Create the price rule and save it
+        $endpoint = getShopifyAPIURLForStore('price_rules.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+
+        $saleDiscountValue = 10;
+        try {
+            $saleDiscountValue = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->sale_discount_value : null;
+        } catch(Exception $e) {
+            $saleDiscountValue = 10;
+        } 
+        $saleDiscountValue = '-'.$saleDiscountValue;
+       
+        $payload = [
+            'price_rule' => [
+                "title" => "ALMEPRICERULE",
+                "target_type" => "line_item",
+                "target_selection" => "all",
+                "allocation_method" => "across",
+                "value_type" => "percentage",
+                "value" => $saleDiscountValue,
+                "customer_selection" => "all",
+                "starts_at" => date('c')
+            ]
+        ];
+
+        try{
+            $discountExpiry = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->discount_expiry : null;
+        } catch(Exception $e) {
+            $discountExpiry = null;
+        }
+        if($discountExpiry !== null) {
+            $discountExpiry = (int) $discountExpiry;
+            $strtotime = strtotime('+'.($discountExpiry * 2).' hours');
+            $endsAt = date('c', $strtotime);
+            $payload['price_rule'] = array_merge($payload['price_rule'], ['ends_at' => $endsAt]);
+        }
+
+        $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
+        if(array_key_exists('statusCode', $response) && $response['statusCode'] == 201) {
+            $priceRuleId = $response['body']['price_rule']['id'];
+            $fullResponse = json_encode($response['body']['price_rule']);
+            $shop->getPriceRule()->create([
+                'price_id' => $priceRuleId,
+                'full_response' => $fullResponse
+            ]);
+        } else {
+            Log::info('Problem while creating price rule');
+            Log::info($response);
+        }
+        
+        return true;
+    }
+
     public function runSegment($shop, $row) {
         $baseEndpoint = getAlmeAppURLForStore('segments/identified-users-list');
         $headers = getAlmeHeaders();
