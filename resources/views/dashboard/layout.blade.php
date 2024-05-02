@@ -15,6 +15,7 @@
             @yield('content')
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js?v={{time()}}"></script>
     @yield('scripts')
     <!-- Including Bootstrap JS and FontAwesome for Navbar functionality on mobile -->    
     </body>
