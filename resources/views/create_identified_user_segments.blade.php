@@ -27,6 +27,7 @@
                         <div class="userdate-option">
                             <label for="lastSeen-filter" class="userdate-card-title">Last Seen</label>
                             <select id="lastSeen-filter" name="lastSeen-filter" class="date-filter-select">
+                                <option value="">Select an option</option>
                                 <option value="on">On</option>
                                 <option value="after">After</option>
                                 <option value="before">Before</option>
@@ -38,6 +39,7 @@
                         <div class="userdate-option">
                             <label for="createdOn-filter" class="userdate-card-title">Created On</label>
                             <select id="createdOn-filter" name="createdOn-filter" class="date-filter-select">
+                                <option value="">Select an option</option>
                                 <option value="on">On</option>
                                 <option value="after">After</option>
                                 <option value="before">Before</option>
@@ -72,6 +74,7 @@
                     <div class="sessions-option">
                         <label for="session-filter" class="sessions-card-title">Number of Sessions</label>
                         <select id="session-filter" name="session-filter" class="date-filter-select">
+                            <option value="">Select an option</option>
                             <option value="equal">Equal to</option>
                             <option value="greater">Greater than</option>
                             <option value="lesser">Lesser than</option>
