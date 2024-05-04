@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Shop extends Model {
     
@@ -68,5 +69,33 @@ class Shop extends Model {
 
     public function getAudienceSegments() {
         return $this->hasMany(SegmentRule::class, 'shop_id', 'id');
+    }
+
+    public function getNotificationStats() {
+        $cacheKey = $this->id.'_notif_stats';
+        if(Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+        return null;
+    }
+
+    public function setNotifStats($stats) {
+        $cacheKey = $this->id.'_notif_stats';
+        Cache::put($cacheKey, $stats);
+        return true;
+    }
+
+    public function setContactCaptureStats($stats) {
+        $cacheKey = $this->id.'_contact_stats';
+        Cache::put($cacheKey, $stats);
+        return true;
+    }
+
+    public function getContactCaptureStats() {
+        $cacheKey = $this->id.'_contact_stats';
+        if(Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+        return null;
     }
 }

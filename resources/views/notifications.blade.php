@@ -61,34 +61,35 @@
                 </div>
             </div>
             <p><p>
-        <h2 class="settings-heading">SmartRecognize statistics</h2>
-        <div class="statistics-container">
-            <div class="statistics-card">
-                <i class="statistics-icon fas fa-eye"></i>
-                <span class="statistics-value">1466</span>
-                <span class="statistics-label">Total Views</span>
-            </div>
-            <div class="statistics-card">
-                <i class="statistics-icon fas fa-edit"></i>
-                <span class="statistics-value">345</span>
-                <span class="statistics-label">Total Submissions</span>
-            </div>
-            <div class="statistics-card">
-                <i class="statistics-icon fas fa-percentage"></i>
-                <span class="statistics-value">20%</span>
-                <span class="statistics-label">Submit rate</span>
-            </div>
-            <div class="statistics-card">
-                <i class="statistics-icon fas fa-user-plus"></i>
-                <span class="statistics-value">10%</span>
-                <span class="statistics-label">% of new users shared their contact</span>
-            </div> 
-        </div>  
-        <div class="row col-md-12" style="display:none;">
-            <div class="col-md-6">
-            </div>
-            <div class="col-md-6">
-                <a href="#" class="btn btn-success mt-4 mb-2 p-2 save-button" style="float:right;width:40%;background-color:#1B4332">Save Changes</a>
+            <h2 class="settings-heading">SmartRecognize statistics</h2>
+            <div class="statistics-container">
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-eye"></i>
+                    <span class="statistics-value">@if(isset($stats['total_views'])) {{$stats['total_views']}} @else - @endif</span>
+                    <span class="statistics-label">Total Views</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-edit"></i>
+                    <span class="statistics-value">@if(isset($stats['submissions'])) {{$stats['submissions']}} @else - @endif</span>
+                    <span class="statistics-label">Total Submissions</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-percentage"></i>
+                    <span class="statistics-value">@if(isset($stats['percentage'])) {{ calcPercentage($stats['total_views'], $stats['submissions']) }}% @else - @endif</span>
+                    <span class="statistics-label">Submit rate</span>
+                </div>
+                <div class="statistics-card">
+                    <i class="statistics-icon fas fa-user-plus"></i>
+                    <span class="statistics-value">-</span>
+                    <span class="statistics-label">% of new users shared their contact</span>
+                </div> 
+            </div>  
+            <div class="row col-md-12" style="display:none;">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6">
+                    <a href="#" class="btn btn-success mt-4 mb-2 p-2 save-button" style="float:right;width:40%;background-color:#1B4332">Save Changes</a>
+                </div>
             </div>
         </div>
     </section>

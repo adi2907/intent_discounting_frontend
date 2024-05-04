@@ -42,7 +42,8 @@ class AppController extends Controller {
                 'discount_expiry' => 24
             ]);
         }
-        return view('notifications_ai', ['notifSettings' => $notifSettings]);
+        $contactStats = $shop->getNotificationStats();
+        return view('notifications_ai', ['notifSettings' => $notifSettings, 'stats' => $contactStats]);
     }
 
     public function mapCheckout(Request $request) {
@@ -245,8 +246,8 @@ class AppController extends Controller {
     public function submitContact(Request $request) {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {
-                $exists = Shop::where('shop_url', $request->app_name)->exists();
-                if($exists) {
+                $shop = Shop::where('shop_url', $request->app_name)->first();
+                if($shop !== null) {
                     $payload = [
                         "name" => $request->name,
                         "phone" => $request->phone,
@@ -256,11 +257,28 @@ class AppController extends Controller {
                     $endpoint = getAlmeAppURLForStore('notification/submit_contact/');
                     $headers = getAlmeHeaders();
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                    if($response['statusCode'] !== 200) {
-                        Log::info('Error in submit contact');
-                        Log::info('Payload '.json_encode($payload));
-                        Log::info('Response '.json_encode($response));
+                    try {
+                        $stats = $shop->getContactCaptureStats();
+                        if($stats !== null && array_key_exists('submissions', $stats)) {
+                            $stats['submissions'] += 1;
+                        } else {
+                            $stats = [
+                                'total_views' => 0,
+                                'submissions' => 0,
+                                'percentage' => 0
+                            ];
+                        }
+                        
+                        $shop->setContactCaptureStats($stats);
+                    
+                    } catch (Exception $th) {
+                        Log::info($th->getMessage().' '.$th->getLine());
                     }
+                    // if($response['statusCode'] !== 200) {
+                    //     Log::info('Error in submit contact');
+                    //     Log::info('Payload '.json_encode($payload));
+                    //     Log::info('Response '.json_encode($response));
+                    // }
                     return response()->json($response['body']);
                 }
             }
@@ -540,10 +558,12 @@ class AppController extends Controller {
         return view('product_racks', ['productRackInfo' => $productRackInfo]);
     }
 
+    //This is to render contact capture settings page
     public function showNotificationSettings(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $notifSettings = $shop->notificationSettings;
+        $notificationStats = $shop->getContactCaptureStats();
         if($notifSettings == null || $notifSettings->count() < 1) {
             $notifSettings = $shop->notificationSettings()->create([
                 'status' => false,
@@ -552,10 +572,10 @@ class AppController extends Controller {
                 'discount_value' => 10,
                 'sale_status' => false,
                 'sale_discount_value' => 10,
-                'discount_expiry' => 24
+                'discount_expiry' => 24,
             ]);
         }
-        return view('notifications', ['notifSettings' => $notifSettings]);
+        return view('notifications', ['notifSettings' => $notifSettings, 'stats' => $notificationStats]);
     }
 
     public function mapCartContents(Request $request) {
@@ -762,10 +782,9 @@ class AppController extends Controller {
                                 asset('images/TextALME.png') => $notificationSettings->cdn_logo
                             ]);
                         }
-                    } catch (\Throwable $th) {
+                    } catch (Exception $th) {
                         Log::info($th->getMessage().' '.$th->getLine());
                     }
-                    
                     
                     foreach($arrayValidate as $strToLookFor => $value) {
                         $checkIfHasStr = str_contains($html, $strToLookFor);
@@ -777,6 +796,26 @@ class AppController extends Controller {
                     $html = view('contact_capture_popup', ['settings' => $notificationSettings])->render();
                 }
             }
+
+            try {
+                if($html != null && strlen($html) > 0) {
+                    $stats = $shop->getContactCaptureStats();
+                    if($stats !== null && array_key_exists('total_views', $stats)) {
+                        $stats['total_views'] += 1;
+                    } else {
+                        $stats = [
+                            'total_views' => 0,
+                            'submissions' => 0,
+                            'percentage' => 0
+                        ];
+                    }
+                    
+                    $shop->setContactCaptureStats($stats);
+                }    
+            } catch (Exception $th) {
+                Log::info($th->getMessage().' '.$th->getLine());
+            }
+            
             return response()->json(['code' => $code, 'status' => true, 'html' => $html]);    
         }
         return response()->json(['code' => null, 'status' => true, 'html' => null]);
@@ -802,9 +841,9 @@ class AppController extends Controller {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
                     
                     //If current time unix is greater than the code's validity
-                    if($shop->getLatestDiscountCode->validity == null || time() > $shop->getLatestDiscountCode->validity) {
-                        return response()->json(['code' => null, 'status' => false, 'html' => null]);
-                    }
+                    // if($shop->getLatestDiscountCode->validity == null || time() > $shop->getLatestDiscountCode->validity) {
+                    //     return response()->json(['code' => null, 'status' => false, 'html' => null]);
+                    // }
 
                     //Early return
                     if($code == null || strlen($code) < 1) 
@@ -839,8 +878,28 @@ class AppController extends Controller {
                             'discountExpiry' => $discountExpiry
                         ])->render();
                     }
-                } else {    
+                } else {  
                     $html = null;
+                }
+
+                //Just before sending the notification popup HTML, increment the counter for stats
+                try {
+                    if($html !== null && strlen($html) > 0) {
+                        $stats = $shop->getNotificationStats();
+                        if($stats !== null && array_key_exists('total_views', $stats)) {
+                            $stats['total_views'] += 1;
+                        } else {
+                            $stats = [
+                                'total_views' => 0,
+                                'submissions' => 0,
+                                'percentage' => 0
+                            ];
+                        }
+                        
+                        $shop->setNotifStats($stats);
+                    }
+                } catch (Exception $th) {
+                    Log::info('Error during incrementing notif stats '.$shop->shop_url.' '.$th->getMessage().' '.$th->getLine());
                 }
                 
                 return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
