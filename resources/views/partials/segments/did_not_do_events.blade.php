@@ -1,16 +1,19 @@
 <div class="event-criteria-card mt-3" data-counter="{{$counter}}">
     <div class="form-group">
         <label for="event-select">USERS WHO DID NOT DO THESE EVENTS:</label>
-        <select id="event-select" name="did_not_event_select[]" class="form-control">
-            <option @isset($rule) @if($rule['did_event_select'] == 'purchase') selected @endif @endisset value="purchase">Purchase</option>    
-            <option @isset($rule) @if($rule['did_event_select'] == 'add_to_cart') selected @endif @endisset value="add_to_cart">Add to Cart</option>
-            <option @isset($rule) @if($rule['did_event_select'] == 'product_visit') selected @endif @endisset value="product_visit">Product Visit</option>
+        <select id="event-select" name="did_event_select[]" class="form-control">
+            <option value="">Select an option</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'site-visit') selected @endif @endisset value="site-visit">Site Visit</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'visit') selected @endif @endisset value="visit">Product Visit</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'cart') selected @endif @endisset value="cart">Add to Cart</option>
+            <option @isset($rule) @if($rule['did_event_select'] == 'purchase') selected @endif @endisset value="purchase">Purchase</option>      
         </select>
     </div>
 
     <div class="form-group">
         <label for="occurrence-select">Number of Occurrences</label>
         <select id="occurrence-select" name="not-occurrence-select[]" class="form-control">
+            <option value="">Select an option</option>
             <option @isset($rule) @if($rule['occurrence_select'] == 'at_least_once') selected @endif @endisset value="at_least_once">At Least Once</option>
             <option @isset($rule) @if($rule['occurrence_select'] == 'only_once') selected @endif @endisset value="only_once">Only Once</option>
         </select>
@@ -20,6 +23,7 @@
     <div class="form-group">
         <label for="time-select">Most Recent Event Time</label>
         <select id="did-not-time-select" class="form-control time-select" name="not-time-select[]">
+            <option value="">Select an option</option>
             <option @isset($rule) @if($rule['time_select'] == 'yesterday') selected @endif @endisset value="yesterday">Yesterday</option>
             <option @isset($rule) @if($rule['time_select'] == 'today') selected @endif @endisset value="today">Today</option>
             <option @isset($rule) @if($rule['time_select'] == 'within_last_days') selected @endif @endisset value="within_last_days">Within Last ____ Days</option>
