@@ -172,6 +172,7 @@ class AppController extends Controller {
                         }
                         $shop->refresh('notificationSettings');
                         $this->createPriceRuleForShop($shop);
+                        $shop->refresh('getLatestPriceRule');
                         $frequency = (int) $shop->notificationSettings->discount_expiry;
                         $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
                     }
