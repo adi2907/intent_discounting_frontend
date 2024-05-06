@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\CreateNotificationAsset;
+use App\Jobs\CreateShopDiscountCode;
 use App\Jobs\SyncShopifyOrders;
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
@@ -131,24 +132,52 @@ class AppController extends Controller {
         $shop = $user->shopifyStore;
         $updateArr = [];
 
+        
         if($request->filled('status')) {
-            $updateArr = [
+            $shop->notificationSettings()->update([
                 'status' => $request->status == 'on',
                 'title' => $request->notification_title,
                 'description' => $request->notification_desc,
                 'cdn_logo' => $request->cdn_logo,
-            ];
+            ]);
         }
 
         if($request->filled('sale_status')) {
-            $updateArr = [
-                'sale_status' => $request->sale_status == 'on',
+            /*
+            * Keep settings that was created last so we can compare 
+            * If the discount percentage value changed, then create a discount code right away,
+            * pass an override flag into the job file.
+            */
+            $prevSettings = $shop->notificationSettings;
+
+            $saleNotificationSwitchedOn = $request->sale_status == 'on';
+
+            $shop->notificationSettings()->update([
+                'sale_status' => $saleNotificationSwitchedOn,
                 'sale_discount_value' => $request->sale_discount_value,
                 'discount_expiry' => $request->discount_expiry
-            ] ;
+            ]);
+            
+            if($prevSettings != null && $prevSettings->count() > 0) {
+                if($request->sale_discount_value !== $prevSettings->sale_discount_value) {
+                    if($saleNotificationSwitchedOn) {
+                        Log::info('Discount percent changed for shop '.$shop->shop_url.' Creating a discount code now.');
+                        
+                        //First delete the existing price rule from Shopify and DB
+                        $priceRule = $shop->getLatestPriceRule;
+                        if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
+                            $this->deletePriceRule($priceRule, $shop);
+                            $shop->getLatestPriceRule()->delete(); //Delete from database too
+                        }
+                        $this->createPriceRuleForShop($shop);
+                        $shop->refresh('getLatestPriceRule');
+                        $frequency = (int) $shop->notificationSettings->discount_expiry;
+                        $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
+                    }
+                }
+            }
         }
-
-        $shop->notificationSettings()->update($updateArr);
+        
         return response()->json(['status' => true, 'message' => 'Updated!']);
     }
 
