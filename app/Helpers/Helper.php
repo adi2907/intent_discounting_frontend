@@ -42,4 +42,12 @@ if (!function_exists('getShopifyAPIURLForStore')) {
         
         return $string;
     } 
+
+    function calcPercentage($total, $sub) {
+        if($sub > $total) return 0;
+
+        if($sub < 1 || $total < 1) return 0;
+
+        return ($sub / $total) * 100;
+    }
 }

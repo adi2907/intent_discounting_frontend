@@ -54,17 +54,17 @@
             <div class="statistics-container">
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-eye"></i>
-                    <span class="statistics-value">20182</span>
+                    <span class="statistics-value">@if(isset($stats['total_views'])) {{$stats['total_views']}} @else - @endif</span>
                     <span class="statistics-label">Total Views</span>
                 </div>
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-edit"></i>
-                    <span class="statistics-value">2560</span>
+                    <span class="statistics-value">@if(isset($stats['submissions'])) {{$stats['submissions']}} @else - @endif</span>
                     <span class="statistics-label">Total clicks</span>
                 </div>
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-percentage"></i>
-                    <span class="statistics-value">13%</span>
+                    <span class="statistics-value">@if(isset($stats['percentage'])) {{ calcPercentage($stats['total_views'], $stats['submissions']) }}% @else - @endif</span>
                     <span class="statistics-label">Click Rate</span>
                 </div>
                 <div class="statistics-card">
