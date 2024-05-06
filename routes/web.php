@@ -93,6 +93,9 @@ Route::middleware('cors')->group(function () {
     Route::get('checkSubmitContact', [AppController::class, 'checkSubmitContact']);
     Route::any('sendCartContents', [AppController::class, 'mapCartContents']);
     Route::get('mapIp', [AppController::class, 'mapIp']);
+
+    //Record DiscountCode copy event 
+    Route::get('recordDiscountCodeCopyEvent', [ExtensionController::class, 'recordCopyDiscountCodeEvent']);
     
     Route::post('sendEvent', [AppController::class, 'sendEventToAlme']);
     Route::post('submitContact', [AppController::class, 'submitContact']);

@@ -21,6 +21,21 @@ class ExtensionController extends Controller {
         $this->maxItems = 5;
     }
 
+    public function recordCopyDiscountCodeEvent(Request $request) {
+        if($request->has('shop') && $request->filled('shop')) {
+            $shop = Shop::where('shop_url', $request->shop)->first();
+            $stats = $shop->getNotificationStats();
+            if($stats != null) {
+                $stats['submissions'] += 1;
+                $shop->setNotifStats($stats);
+            }
+            $response = ['status' => true, 'message' => 'Recorded'];
+        } else {
+            $response = ['status' => true, 'message' => 'Shop not in request'];
+        }
+        return response()->json($response); 
+    }
+
     public function pickUpWhereYouLeftOff(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             $response = $this->handleHTMLBasedOnType($request->all(), 'pickUpWhereYouLeftOff');
