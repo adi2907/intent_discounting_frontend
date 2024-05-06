@@ -48,6 +48,6 @@ if (!function_exists('getShopifyAPIURLForStore')) {
 
         if($sub < 1 || $total < 1) return 0;
 
-        return ($sub / $total) * 100;
+        return number_format(($sub / $total) * 100, 2);
     }
 }
