@@ -35,7 +35,7 @@ class CreateDiscountCode extends Command {
      */
     public function handle() {
 
-        $cacheKey = config('custom.cacheKeys.createDiscountCode');
+        $cacheKey = config('custom.cacheKeys.createDiscountCode'); 
         $data = [
             'ok' => true,
             'last_update' => date('Y/m/d h:i:s')
