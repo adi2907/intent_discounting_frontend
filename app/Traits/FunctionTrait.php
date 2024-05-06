@@ -487,7 +487,9 @@ trait FunctionTrait {
             $saleDiscountValue = 10;
         } 
         $saleDiscountValue = '-'.$saleDiscountValue;
-       
+        
+        Log::info('Creating discount code at percentage off for shop '.$shop->shop_url.' '.$saleDiscountValue);
+
         $payload = [
             'price_rule' => [
                 "title" => "ALMEPRICERULE",

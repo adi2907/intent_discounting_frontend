@@ -164,13 +164,14 @@ class AppController extends Controller {
                         Log::info('Discount percent changed for shop '.$shop->shop_url.' Creating a discount code now.');
                         
                         //First delete the existing price rule from Shopify and DB
+                        $shop->refresh('getLatestPriceRule');
                         $priceRule = $shop->getLatestPriceRule;
                         if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
                             $this->deletePriceRule($priceRule, $shop);
                             $shop->getLatestPriceRule()->delete(); //Delete from database too
                         }
+                        $shop->refresh('notificationSettings');
                         $this->createPriceRuleForShop($shop);
-                        $shop->refresh('getLatestPriceRule');
                         $frequency = (int) $shop->notificationSettings->discount_expiry;
                         $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
                     }
