@@ -72,6 +72,8 @@ class ProcessCache extends Command {
                         unlink($newCacheVal[$key]);
                     }
                 }
+
+                Log::info('Processed cache for shop '.$shop->shop_url);
                 Cache::put($cacheKey, $newCacheVal);
             }
         }
