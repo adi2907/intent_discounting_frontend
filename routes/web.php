@@ -6,7 +6,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\WebhookController;
-use App\Models\SegmentRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
