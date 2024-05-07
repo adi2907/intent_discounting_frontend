@@ -119,8 +119,8 @@ class WebhookController extends Controller {
             } catch (\Throwable $th) {
                 Log::info('Order create webhook problem '.$th->getMessage().' '.$th->getLine());
             }
-            Log::info('Order create webhook called');
-            CallAlmeWebhookEvent::dispatch($request, $headers)->onConnection('database');
+            //Log::info('Order create webhook called');
+            //CallAlmeWebhookEvent::dispatch($request, $headers)->onConnection('database');
         } catch (Throwable $th) {
             Log::info('Error in order create function '.$th->getMessage().' '.$th->getLine());
         }
