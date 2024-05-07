@@ -8,6 +8,7 @@ use App\Models\Shop;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -103,6 +104,21 @@ class WebhookController extends Controller {
     public function orderCreateWebhook(Request $request) {
         //Log::info('Request for order create');
         try {
+            try {
+                $headers = $request->headers->all();
+                $cacheKey = 'webhook_cache_'.$headers['x-shopify-shop-domain'][0];
+                $cacheVal = Cache::get($cacheKey);
+                if($cacheVal !== null) {
+                    $cacheVal[] = $request->all();
+                } else {
+                    $cacheVal = [];
+                    $cacheVal[] = $request->all();
+                }
+                Cache::put($cacheKey, $cacheVal);
+            } catch (\Throwable $th) {
+                Log::info('Order create webhook problem '.$th->getMessage().' '.$th->getLine());
+            }
+
             CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
         } catch (Throwable $th) {
             Log::info('Error in order create function '.$th->getMessage().' '.$th->getLine());

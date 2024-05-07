@@ -14,6 +14,7 @@ use App\Traits\RequestTrait;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 class HomeController extends Controller {
@@ -26,6 +27,16 @@ class HomeController extends Controller {
      */
     public function __construct() {
         //$this->middleware('auth');
+    }
+
+    public function testWebhookCache() {
+        $shops = Shop::get();
+        $returnVal = [];
+        foreach($shops as $shop) {
+            $cacheKey = 'webhook_cache_'.$shop->shop_url;
+            $returnVal[$shop->shop_url] = Cache::get($cacheKey);
+        }
+        return response()->json(['status' => true, 'response' => $returnVal]);
     }
 
     public function index() {

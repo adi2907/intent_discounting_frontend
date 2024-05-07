@@ -153,3 +153,4 @@ Route::get('testPurchaseEvent', [HomeController::class, 'testPurchaseEvent']);
 Route::get('testAlmePayload/{id}', [HomeController::class, 'testAlmePayload']);
 Route::get('segment_list', [HomeController::class, 'segment_list']);
 Route::get('sampleMinOrderCoupon/{id}', [HomeController::class, 'sampleMinOrderCoupon']);
+Route::get('testWebhookCache', [HomeController::class, 'testWebhookCache']);
