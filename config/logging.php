@@ -65,6 +65,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'alme_logs' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/alme_backend_logs.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 6,
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
