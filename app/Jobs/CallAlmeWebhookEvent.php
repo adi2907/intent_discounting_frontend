@@ -79,33 +79,4 @@ class CallAlmeWebhookEvent implements ShouldQueue {
             Log::info($th->getMessage().' '.$th->getLine());
         }
     }
-
-    public function saveOrUpdateOrder($request, $shopDetails) {
-        try {
-            $updateArr = [
-                'shop_id' => $shopDetails->id,
-                'name' => $request['name'],
-                'id' => $request['id']
-            ];
-
-            $createArr = array_merge($updateArr, [
-                'checkout_id' => $request['checkout_id'],
-                'browser_ip' => $request['browser_ip'],
-                'cart_token' => $request['cart_token'],
-                'source_name' => $request['source_name'] ?? null,
-                'total_price' => $request['total_price'],
-                'line_items' => json_encode($request['line_items']),
-                'customer' => isset($request['customer']) && is_array($request['customer']) ? json_encode($request['customer']) : null,
-                'shipping_address' => isset($request['shipping_address']) && is_array($request['shipping_address']) ? json_encode($request['shipping_address']) : null
-            ]);
-            
-            return ShopifyOrder::updateOrCreate($updateArr, $createArr);
-        } catch (Throwable $th) {
-            Log::info('Error in webhook create order job');
-            Log::info($th->getMessage().' ',$th->getLine());
-        } catch (Exception $th) {
-            Log::info('Error in webhook create order job');
-            Log::info($th->getMessage().' ',$th->getLine());
-        }
-    }
 }
