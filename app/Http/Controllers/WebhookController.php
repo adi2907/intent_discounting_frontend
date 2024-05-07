@@ -106,20 +106,21 @@ class WebhookController extends Controller {
         try {
             try {
                 $headers = $request->headers->all();
+                $request = $request->all();
                 $cacheKey = 'webhook_cache_'.$headers['x-shopify-shop-domain'][0];
                 $cacheVal = Cache::get($cacheKey);
                 if($cacheVal !== null) {
-                    $cacheVal[] = $request->all();
+                    $cacheVal[$request['id']] = $request;
                 } else {
                     $cacheVal = [];
-                    $cacheVal[] = $request->all();
+                    $cacheVal[$request['id']] = $request;
                 }
                 Cache::put($cacheKey, $cacheVal);
             } catch (\Throwable $th) {
                 Log::info('Order create webhook problem '.$th->getMessage().' '.$th->getLine());
             }
             Log::info('Order create webhook called');
-            CallAlmeWebhookEvent::dispatch($request->all(), $request->headers->all())->onConnection('database');
+            CallAlmeWebhookEvent::dispatch($request, $headers)->onConnection('database');
         } catch (Throwable $th) {
             Log::info('Error in order create function '.$th->getMessage().' '.$th->getLine());
         }
