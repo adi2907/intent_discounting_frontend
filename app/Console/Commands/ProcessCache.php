@@ -69,7 +69,7 @@ class ProcessCache extends Command {
                 $newCacheVal = Cache::get($cacheKey);
                 foreach(array_keys($newCacheVal) as $key) {
                     if(in_array($key, $cacheKeyArr)) {
-                        unlink($newCacheVal[$key]);
+                        unset($newCacheVal[$key]);
                     }
                 }
 
