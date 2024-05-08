@@ -637,7 +637,36 @@ trait FunctionTrait {
         $finalNotAudience = $this->getFinalSegmentAudience($notIds, $notResponseArr);
 
         $aMinusB = $this->getAMinusBForFinalData($finalAudience, $finalNotAudience);
-        return ['status' => true, 'body' => $aMinusB];
+
+        $topRules = $row->getTopRules();
+        $almeResponse = $this->getAlmeResponseForTopRules($topRules, $shop);
+        $createdUsersResponse = $this->filteredCreatedOrSessionResponse($almeResponse);
+
+        $sessionResponse = $this->getAlmeSessionResponseForTopRules($topRules, $shop);
+        $sessionsAudience = $this->filteredCreatedOrSessionResponse($sessionResponse);
+
+        $combinedTopAudience = $this->combinedTopAudience($createdUsersResponse, $sessionsAudience);
+        Log::info('Combined top audience');
+        Log::info($combinedTopAudience);
+        $absoluteFinalAudience = $this->array_union($aMinusB, $combinedTopAudience);
+        return ['status' => true, 'body' => $absoluteFinalAudience];
+    }
+
+    public function combinedTopAudience($createdUsersResponse, $sessionsAudience) {
+        if($createdUsersResponse !== null || $sessionsAudience !== null) {
+            if(is_array($createdUsersResponse) && count($createdUsersResponse) > 0) {
+                if(is_array($sessionsAudience) && count($sessionsAudience) > 0) {
+                    return $this->array_union($createdUsersResponse, $sessionsAudience);
+                } else {
+                    return $createdUsersResponse;
+                }
+            } else {
+                if(is_array($sessionsAudience) && count($sessionsAudience) > 0) {
+                    return $sessionsAudience;
+                }
+            }
+        }
+        return null;
     }
 
     public function getAMinusBForFinalData($finalAudience, $finalNotAudience) {
@@ -694,14 +723,90 @@ trait FunctionTrait {
         return $dataToReturn;
     }
 
+    public function getAlmeSessionResponseForTopRules($topRules, $shop) {
+        $endpoint = getAlmeAppURLForStore('segments/identified-users-created-at/', $shop);
+        $headers = getAlmeHeaders();
+        
+        $payload = [
+            'app_name' => $shop->shop_url,
+            'comparison_field' => $topRules['session_filter'],
+            'comparison_value' => $topRules['session_input']
+        ];
+
+        $getParams = [];
+        foreach($payload as $param => $val) {
+            $getParams[] = $param.'='.$val;
+        }
+        $getParams = implode('&', $getParams);
+        $endpoint = $endpoint.'?'.$getParams;
+        Log::info('Created at endpoint '.$endpoint);
+        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+
+        Log::info('Response for alme sessions');
+        Log::info($response);
+        return isset($response['body']['identified_users']) ? $response['body']['identified_users'] : null;
+    }
+
+    public function filteredCreatedOrSessionResponse($almeResponse) {
+        try {
+            $returnVal = [];
+            if($almeResponse != null && count($almeResponse) > 0) {
+                foreach($almeResponse as $response) {
+                    $returnVal[$response['id']] = $response;
+                }
+            }
+            return $returnVal;
+        } catch (Exception $e) {
+            Log::info('filtered created response error');
+            Log::info($e->getMessage().' '.$e->getLine());
+        }
+        return null;
+    }
+
+    public function getAlmeResponseForTopRules($topRules, $shop) {
+        $endpoint = getAlmeAppURLForStore('segments/identified-users-last-visit/', $shop);
+        $headers = getAlmeHeaders();
+        
+        $payload = [
+            'app_name' => $shop->shop_url
+        ];
+
+        if(in_array($topRules['lastSeen_filter'], ['on', 'before', 'after'])) {
+            $payload['date'] = $topRules['lastSeen_input'];
+        }
+
+        if(in_array($topRules['lastSeen_filter'], ['between'])) {
+            $payload['start_date'] = $topRules['lastSeen_input'];
+            $payload['end_date'] = $topRules['lastSeen_inputEnd'];
+        }
+
+        $getParams = [];
+        foreach($payload as $key => $val) {
+            $getParams[] = $key.'='.$val;
+        }
+
+        $getParams = implode(',', $getParams);
+        $endpoint = $endpoint.'?'.$getParams;
+        Log::info('last-visit endpoint '.$endpoint);
+        $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+        Log::info('Response for identified-users-last-visit');
+        Log::info($response);
+        $usersList = isset($response['body']['identified_users']) ? $response['body']['identified_users'] : null;
+        return $usersList;
+    }
+
     public function array_union($x, $y) { 
-        $aunion = array_merge(
-            array_intersect($x, $y),   // Intersection of $x and $y
-            array_diff($x, $y),        // Elements in $x but not in $y
-            array_diff($y, $x)         // Elements in $y but not in $x
-        );
+        if($x !== null && $y !== null) {
+            return array_merge(
+                array_intersect($x, $y),   // Intersection of $x and $y
+                array_diff($x, $y),        // Elements in $x but not in $y
+                array_diff($y, $x)         // Elements in $y but not in $x
+            );
+        }
+        if($x == null && $y !== null) return $y;
+        if($x !== null && $y == null) return $x;
     
-        return $aunion;
+        
     }
 
     public function compareTwoSegmentsWithUnionOrIntersection($currentSegment, $almeBody, $dataToReturn, $currentAndOr) {

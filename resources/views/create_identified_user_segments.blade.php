@@ -21,67 +21,7 @@
                     <input type="text" required id="listName" name="listName" class="form-control list-name-input">
                 </div>
                 
-                <div class="container user-profile-container">
-                    <h2 class="settings-heading">User Profile</h2>
-                    <div class="date-filter-section">
-                        <div class="userdate-option">
-                            <label for="lastSeen-filter" class="userdate-card-title">Last Seen</label>
-                            <select id="lastSeen-filter" name="lastSeen-filter" class="date-filter-select">
-                                <option value="">Select an option</option>
-                                <option value="on">On</option>
-                                <option value="after">After</option>
-                                <option value="before">Before</option>
-                                <option value="between">Between</option>
-                            </select>
-                            <label for="lastSeen-input" class="sr-only">Last Seen Date</label>
-                            <input type="date" id="lastSeen-input" name="lastSeen-input" class="date-filter-input">
-                        </div>
-                        <div class="userdate-option">
-                            <label for="createdOn-filter" class="userdate-card-title">Created On</label>
-                            <select id="createdOn-filter" name="createdOn-filter" class="date-filter-select">
-                                <option value="">Select an option</option>
-                                <option value="on">On</option>
-                                <option value="after">After</option>
-                                <option value="before">Before</option>
-                                <option value="between">Between</option>
-                            </select>
-                            <label for="createdOn-input" class="sr-only">Created On Date</label>
-                            <input type="date" id="createdOn-input" name="createdOn-input" class="date-filter-input">
-                        </div>
-                    </div>
-                    <div class="form-group" style="display: none;">
-                        <label>Acquisition Source:</label>
-                        <div class="form-check">
-                            <input type="checkbox" id="organic" name="acquisition_source" value="organic" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="organic">Organic</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" id="paid" name="acquisition_source" value="paid" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="paid">Paid</label>
-                        </div>
-                    </div>
-                    <div class="form-group" style="display: none;">
-                        <label>Primary Usage:</label>
-                        <div class="form-check">
-                            <input type="checkbox" id="mobile" name="primary_usage" value="mobile" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="mobile">Mobile</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" id="desktop" name="primary_usage" value="desktop" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="desktop">Desktop</label>
-                        </div>
-                    </div>
-                    <div class="sessions-option">
-                        <label for="session-filter" class="sessions-card-title">Number of Sessions</label>
-                        <select id="session-filter" name="session-filter" class="date-filter-select">
-                            <option value="">Select an option</option>
-                            <option value="equal">Equal to</option>
-                            <option value="greater">Greater than</option>
-                            <option value="lesser">Lesser than</option>
-                        </select>
-                        <input type="number" id="session-input" name="session-input" class="date-filter-input" placeholder="Enter number">
-                    </div>
-                </div>
+                @include('partials.segments.top_part')
             
                 <div class="container behavioral-container" id="did_do_events_card">
                     <h2 class="settings-heading" >Behavioral</h2>
@@ -112,6 +52,35 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+
+        $('.lastSeenFilterSelect').change(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var val = el.val();
+            var display = null;
+            if(val == 'between') {
+                display = 'block';
+            } else {
+                display = 'none';
+            }
+
+            $('.between_top_last_date').css({'display': display});
+        });
+
+        $('.createdFilterSelect').change(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            var val = el.val();
+            var display = null;
+            if(val == 'between') {
+                display = 'block';
+            } else {
+                display = 'none';
+            }
+
+            $('.between_top_created_date').css({'display': display});
+        });
+
         $(document).on('click', '.btn-logic', function (e) {
             e.preventDefault();
             var el = $(this);

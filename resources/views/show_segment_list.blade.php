@@ -22,64 +22,7 @@
                     <input type="text" id="listName" value="{{$segment->listName ?? ''}}" name="listName" class="form-control list-name-input">
                 </div>
                 
-                <div class="container user-profile-container">
-                    <h2 class="settings-heading">User Profile</h2>
-                    <div class="date-filter-section">
-                        <div class="userdate-option">
-                            <label for="lastSeen-filter" class="userdate-card-title">Last Seen</label>
-                            <select id="lastSeen-filter" name="lastSeen-filter" class="date-filter-select">
-                                <option @if($segment->{'lastSeen-filter'} == 'on') selected @endif value="on">On</option>
-                                <option @if($segment->{'lastSeen-filter'} == 'after') selected @endif value="after">After</option>
-                                <option @if($segment->{'lastSeen-filter'} == 'before') selected @endif value="before">Before</option>
-                                <option @if($segment->{'lastSeen-filter'} == 'between') selected @endif value="between">Between</option>
-                            </select>
-                            <label for="lastSeen-input" class="sr-only">Last Seen Date</label>
-                            <input type="date" id="lastSeen-input" value="{{ $segment->{'lastSeen-input'} }}" name="lastSeen-input" class="date-filter-input">
-                        </div>
-                        <div class="userdate-option">
-                            <label for="createdOn-filter" class="userdate-card-title">Created On</label>
-                            <select id="createdOn-filter" name="createdOn-filter" class="date-filter-select">
-                                <option @if($segment->{'createdOn-filter'} == 'on') selected @endif value="on">On</option>
-                                <option @if($segment->{'createdOn-filter'} == 'after') selected @endif value="after">After</option>
-                                <option @if($segment->{'createdOn-filter'} == 'before') selected @endif value="before">Before</option>
-                                <option @if($segment->{'createdOn-filter'} == 'between') selected @endif value="between">Between</option>
-                            </select>
-                            <label for="createdOn-input" class="sr-only">Created On Date</label>
-                            <input type="date" id="createdOn-input" value="{{ $segment->{'createdOn-input'} }}" name="createdOn-input" class="date-filter-input">
-                        </div>
-                    </div>
-                    <div class="form-group" style="display: none;">
-                        <label>Acquisition Source:</label>
-                        <div class="form-check">
-                            <input type="checkbox" id="organic" name="acquisition_source" value="organic" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="organic">Organic</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" id="paid" name="acquisition_source" value="paid" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="paid">Paid</label>
-                        </div>
-                    </div>
-                    <div class="form-group" style="display: none;">
-                        <label>Primary Usage:</label>
-                        <div class="form-check">
-                            <input type="checkbox" id="mobile" name="primary_usage" value="mobile" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="mobile">Mobile</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" id="desktop" name="primary_usage" value="desktop" class="form-check-input" disabled="">
-                            <label class="form-check-label" for="desktop">Desktop</label>
-                        </div>
-                    </div>
-                    <div class="sessions-option">
-                        <label for="session-filter" class="sessions-card-title">Number of Sessions</label>
-                        <select id="session-filter" name="session-filter" class="date-filter-select">
-                            <option @if($segment->{'session-filter'} == 'equal') selected @endif value="equal">Equal to</option>
-                            <option @if($segment->{'session-filter'} == 'greater') selected @endif value="greater">Greater than</option>
-                            <option @if($segment->{'session-filter'} == 'lesser') selected @endif value="lesser">Lesser than</option>
-                        </select>
-                        <input type="number" value="{{ $segment->session_input }}" id="session-input" name="session-input" class="date-filter-input" placeholder="Enter number">
-                    </div>
-                </div>
+                @include('partials.segments.top_part', ['rule' => $segment->top_rules])
             
                 <div class="container behavioral-container" id="did_do_events_card">
                     <h2 class="settings-heading" >Behavioral</h2>

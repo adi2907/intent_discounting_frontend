@@ -8,8 +8,8 @@ use App\Traits\RequestTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Exception;
 use Throwable;
-
 
 class SegmentController extends Controller {
 
@@ -30,34 +30,61 @@ class SegmentController extends Controller {
         $shop = $user->shopifyStore;
         $segmentArr = [];
         $notSegmentArr = [];
+
         try {
-            foreach($request->did_event_select as $key => $value) {
-                $segmentArr[] = [
-                    'did_event_select' => $value,
-                    'occurrence_select' => $request->{'occurrence-select'}[$key],
-                    'time_select' => $request->{'time-select'}[$key],
-                    'within_last_days' => $request->{'within-last-days'}[$key],
-                    'before_days' => $request->{'before-days'}[$key],
-                    'and_or_val' => $request->and_or_val[$key]
-                ];
+            $topRules = [
+                'lastSeen_filter'   => $request->lastSeen_filter,
+                'lastSeen_input'    => $request->lastSeen_input,
+                'lastSeen_inputEnd' => $request->filled('lastSeen_inputEnd') ? $request->lastSeen_inputEnd : null,
+
+                'createdOn_filter'      => $request->createdOn_filter,
+                'createdOn_input'       => $request->createdOn_input,
+                'createdOn_inputEnd'    => $request->filled('createdOn_inputEnd') ? $request->createdOn_input : null,
+                
+                'session_filter'    => $request->session_filter,
+                'session_input'     => $request->session_input
+            ];
+        } catch (Exception $th) {
+            $topRules = [];
+        }
+
+        try {
+            if($request->filled('did_event_select')) {
+                foreach($request->did_event_select as $key => $value) {
+                    if($value !== null) {
+                        $segmentArr[] = [
+                            'did_event_select' => $value,
+                            'occurrence_select' => $request->{'occurrence-select'}[$key],
+                            'time_select' => $request->{'time-select'}[$key],
+                            'within_last_days' => $request->{'within-last-days'}[$key],
+                            'before_days' => $request->{'before-days'}[$key],
+                            'and_or_val' => $request->and_or_val[$key]
+                        ];
+                    }
+                }
             }
 
-            foreach($request->did_not_event_select as $key => $value) {
-                $notSegmentArr[] = [
-                    'did_event_select' => $value, 
-                    'occurrence_select' => $request->{'not-occurrence-select'}[$key],
-                    'time_select' => $request->{'not-time-select'}[$key],
-                    'within_last_days' => $request->{'not-within-last-days'}[$key],
-                    'before_days' => $request->{'not-before-days'}[$key],
-                    'and_or_val' => $request->not_and_or_val[$key]
-                ];
+            if($request->filled('did_not_event_select')) {
+                foreach($request->did_not_event_select as $key => $value) {
+                    if($value !== null) {
+                        $notSegmentArr[] = [
+                            'did_event_select' => $value, 
+                            'occurrence_select' => $request->{'not-occurrence-select'}[$key],
+                            'time_select' => $request->{'not-time-select'}[$key],
+                            'within_last_days' => $request->{'not-within-last-days'}[$key],
+                            'before_days' => $request->{'not-before-days'}[$key],
+                            'and_or_val' => $request->not_and_or_val[$key]
+                        ];
+                    }
+                }
             }
+            
         } catch (Throwable $th) {
             Log::info('Error in segment arr '.$th->getMessage().' '.$th->getLine());
             $segmentArr = [];
         }
-        
-        $row = $shop->getAudienceSegments()->create([
+
+        $dbArr = [
             'listName' => $request->listName,
             'lastSeen-filter' => $request->{'lastSeen-filter'},
             'lastSeen-input' => $request->{'lastSeen-input'},
@@ -67,9 +94,12 @@ class SegmentController extends Controller {
             'createdOn-input' => $request->{'createdOn-input'},
             'no_of_users' => 0,
             'users_measurement' => '',
+            'top_rules' => json_encode($topRules),
             'rules' => json_encode($segmentArr),
             'not_rules' => json_encode($notSegmentArr)
-        ]);
+        ];
+        
+        $row = $shop->getAudienceSegments()->create($dbArr);
         // //This is run just to store the 
         RunSegment::dispatch($row)->onConnection('sync');
 
