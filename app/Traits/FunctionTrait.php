@@ -772,10 +772,12 @@ trait FunctionTrait {
         ];
 
         if(in_array($topRules['lastSeen_filter'], ['on', 'before', 'after'])) {
+            $payload['date_field'] = $topRules['lastSeen_filter'];
             $payload['date'] = $topRules['lastSeen_input'];
         }
 
         if(in_array($topRules['lastSeen_filter'], ['between'])) {
+            $payload['date_field'] = $topRules['lastSeen_filter'];
             $payload['start_date'] = $topRules['lastSeen_input'];
             $payload['end_date'] = $topRules['lastSeen_inputEnd'];
         }
