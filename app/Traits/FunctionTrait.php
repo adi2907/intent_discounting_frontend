@@ -785,7 +785,7 @@ trait FunctionTrait {
             $getParams[] = $key.'='.$val;
         }
 
-        $getParams = implode(',', $getParams);
+        $getParams = implode('&', $getParams);
         $endpoint = $endpoint.'?'.$getParams;
         Log::info('last-visit endpoint '.$endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
