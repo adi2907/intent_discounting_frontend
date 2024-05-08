@@ -724,7 +724,7 @@ trait FunctionTrait {
     }
 
     public function getAlmeSessionResponseForTopRules($topRules, $shop) {
-        $endpoint = getAlmeAppURLForStore('segments/identified-users-created-at/', $shop);
+        $endpoint = getAlmeAppURLForStore('segments/identified-users-created-at', $shop);
         $headers = getAlmeHeaders();
         
         $payload = [
@@ -764,7 +764,7 @@ trait FunctionTrait {
     }
 
     public function getAlmeResponseForTopRules($topRules, $shop) {
-        $endpoint = getAlmeAppURLForStore('segments/identified-users-last-visit/', $shop);
+        $endpoint = getAlmeAppURLForStore('segments/identified-users-last-visit', $shop);
         $headers = getAlmeHeaders();
         
         $payload = [
