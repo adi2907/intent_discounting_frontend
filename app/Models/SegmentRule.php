@@ -17,7 +17,7 @@ class SegmentRule extends Model {
         return is_string($this->not_rules) ? json_decode($this->not_rules, true) : $this->not_rules;
     }
 
-    public function getTopRules() {
+    public function getProfileRules() {
         return is_string($this->top_rules) ? json_decode($this->top_rules, true) : $this->top_rules;
     }
 }

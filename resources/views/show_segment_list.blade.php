@@ -28,9 +28,13 @@
                     <h2 class="settings-heading" >Behavioral</h2>
                     <div id="did_do_events_card_container">
                         @php $rules = $segment->getRules(); @endphp
-                        @foreach($rules as $key => $rule) 
-                            @include('partials.segments.did_do_events', ['rule' => $rule, 'counter' => ($key + 1)])
-                        @endforeach
+                        @if($rules !== null && count($rules) > 0)
+                            @foreach($rules as $key => $rule) 
+                                @include('partials.segments.did_do_events', ['rule' => $rule, 'counter' => ($key + 1)])
+                            @endforeach
+                        @else 
+                            @include('partials.segments.did_do_events', ['counter' =>  1])
+                        @endif
                     </div>
                     <!-- Placeholder for additional event-criteria-cards -->
                     <div class="additional-events"></div>

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Shop;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
+use App\Traits\SegmentTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +16,7 @@ use Illuminate\Queue\SerializesModels;
 class RunSegment implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    use FunctionTrait, RequestTrait;
+    use FunctionTrait, RequestTrait, SegmentTrait;
     public $row;
     /**
      * Create a new job instance.

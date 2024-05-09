@@ -133,16 +133,6 @@ class ExtensionController extends Controller {
             case 'pickUpWhereYouLeftOff': $pathName .= 'pick_up_where_you_left_off'; break;
             case 'crowdFavorites': $pathName .= 'crowd_favorites'; break;
             case 'featuredCollection': $pathName .= 'featured_collection'; break;
-            
-            /*
-            case 'most_added_prods': $pathName .= 'most_visited'; break;
-            case 'user_liked': $pathName .= 'most_carted'; break;
-            case 'pop_picks': $pathName .= 'carts'; break;
-            case 'feat_collect': $pathName .= 'visits';break;
-            case 'high_convert_prods': $pathName .= 'most_visited'; break;
-            
-            default: $pathName .= 'most_visited';
-            */ 
         }
 
         $endpoint = getAlmeAppURLForStore($pathName.$getParams);
@@ -158,30 +148,38 @@ class ExtensionController extends Controller {
                 $viewFile = null;
                 $title = null;
 
-                if($shop == 'almestore1.myshopify.com') {
-                    switch($prop) {
-                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
-                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
-                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
-                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
-                    }
-                } else if($shop == 'millet-amma.myshopify.com') {
-                    switch($prop) {
-                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
-                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
-                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
-                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
-                    }
-                } else {
-                    switch($prop) {
-                        case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
-                        case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
-                        case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
-                        case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
-                    }
+                switch($prop) {
+                    case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                    case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                    case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                    case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
                 }
-
+                
                 return view($viewFilePrefix.$viewFile, ['products' => $products, 'title' => $title, 'shop_url' => $shop->shop_url])->render();
+                
+                // if($shop == 'almestore1.myshopify.com') {
+                //     switch($prop) {
+                //         case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                //         case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                //         case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                //         case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                //     }
+                // } else if($shop == 'millet-amma.myshopify.com') {
+                //     switch($prop) {
+                //         case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                //         case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                //         case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                //         case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                //     }
+                // } else {
+                // switch($prop) {
+                //     case 'pickUpWhereYouLeftOff': $viewFile = 'productList'; $title = 'Pick up where you left off'; break;
+                //     case 'crowdFavorites': $viewFile = 'productList'; $title = 'Crowd favorites'; break;
+                //     case 'usersAlsoLiked': $viewFile = 'productList'; $title = 'Users also liked'; break;
+                //     case 'featuredCollection': $viewFile = 'productList'; $title = 'Featured collection'; break;
+                // }
+                //}
+
             }
             Log::info('Body null found');
             Log::info($body);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\RunSegment;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
+use App\Traits\SegmentTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,7 @@ use Throwable;
 
 class SegmentController extends Controller {
 
-    use FunctionTrait, RequestTrait;
+    use FunctionTrait, RequestTrait, SegmentTrait;
 
     public function __construct() {
         $this->middleware('auth');
