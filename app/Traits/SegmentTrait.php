@@ -127,6 +127,8 @@ trait SegmentTrait {
     }
 
     private function getProfileCombinedAudience($arrayVariables) {
+        if($arrayVariables == null || count($arrayVariables) < 1) return null; //Early return if nothing is there in array
+        
         $returnVal = [];
         foreach($arrayVariables as $key => $associatedArr) {
             if(count($returnVal) > 0) {
