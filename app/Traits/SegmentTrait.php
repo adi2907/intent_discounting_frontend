@@ -87,6 +87,7 @@ trait SegmentTrait {
         $profileRules = $row->getProfileRules();
         $combinedProfileAudience = null;
 
+        //TODO: use array_keys to compare not the actual audience
         $createdAtResponse = $this->getCreatedAtResponse($profileRules, $shop);
         if($createdAtResponse !== null) {
             $createdAtResponse = $this->filteredCreatedOrSessionResponse($createdAtResponse);

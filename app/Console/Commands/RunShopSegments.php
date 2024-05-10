@@ -6,11 +6,12 @@ use App\Jobs\RunSegment;
 use App\Models\SegmentRule;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
+use App\Traits\SegmentTrait;
 use Illuminate\Console\Command;
 
 class RunShopSegments extends Command
 {
-    use FunctionTrait, RequestTrait;
+    use FunctionTrait, RequestTrait, SegmentTrait;
     /**
      * The name and signature of the console command.
      *
