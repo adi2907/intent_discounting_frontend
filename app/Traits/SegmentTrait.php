@@ -85,28 +85,39 @@ trait SegmentTrait {
         $aMinusB = $this->getAMinusBForFinalData($finalAudience, $finalNotAudience);
 
         $profileRules = $row->getProfileRules();
-        $combinedProfileAudience = null;
+        $combinedProfileAudience = [];
+
+        $arrayVariables = [];
+        $arrayKeyArr = [];
 
         //TODO: use array_keys to compare not the actual audience
         $createdAtResponse = $this->getCreatedAtResponse($profileRules, $shop);
         if($createdAtResponse !== null) {
             $createdAtResponse = $this->filteredCreatedOrSessionResponse($createdAtResponse);
-            $combinedProfileAudience = $this->array_union($createdAtResponse, $combinedProfileAudience);
+            $arrayKeys = array_keys($createdAtResponse);
+            $arrayKeyArr[] = $arrayKeys;
+            $arrayVariables[] = $createdAtResponse;
         }
             
         $lastVisitResponse = $this->getLastVisitResponse($profileRules, $shop);
         if($lastVisitResponse !== null) {
             $lastVisitResponse = $this->filteredCreatedOrSessionResponse($lastVisitResponse);
-            $combinedProfileAudience = $this->array_union($lastVisitResponse, $combinedProfileAudience);
+            $arrayKeys = array_keys($lastVisitResponse);
+            $arrayKeyArr[] = $arrayKeys;
+            $arrayVariables[] = $lastVisitResponse;
         }
         
         $sessionResponse = $this->getSessionResponse($profileRules, $shop);
         if($sessionResponse !== null) {
             $sessionResponse = $this->filteredCreatedOrSessionResponse($sessionResponse);
-            $combinedProfileAudience = $this->array_union($sessionResponse, $combinedProfileAudience);
+            $arrayKeys = array_keys($sessionResponse);
+            $arrayKeyArr[] = $arrayKeys;
+            $arrayVariables[] = $sessionResponse;
         }
 
-        $absoluteFinalAudience = $this->array_union($aMinusB, $combinedProfileAudience);
+        $profileCombinedAudience = $this->getProfileCombinedAudience($arrayVariables);
+
+        $absoluteFinalAudience = $this->array_union($aMinusB, $profileCombinedAudience);
         return ['status' => true, 'body' => $absoluteFinalAudience];
     }
 
@@ -125,6 +136,22 @@ trait SegmentTrait {
             }
         }
         return null;
+    }
+
+    private function getProfileCombinedAudience($arrayVariables) {
+        $returnVal = [];
+        foreach($arrayVariables as $key => $associatedArr) {
+            if(count($returnVal) > 0) {
+                foreach($associatedArr as $key => $value) {
+                    if(!array_key_exists($key, $returnVal)) {
+                        unset($returnVal[$key]);
+                    }
+                }
+            } else {
+                $returnVal = $associatedArr;
+            }
+        }
+        return count($returnVal) > 0 ? $returnVal : null;
     }
 
     public function getAMinusBForFinalData($finalAudience, $finalNotAudience) {
