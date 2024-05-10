@@ -85,34 +85,22 @@ trait SegmentTrait {
         $aMinusB = $this->getAMinusBForFinalData($finalAudience, $finalNotAudience);
 
         $profileRules = $row->getProfileRules();
-        $combinedProfileAudience = [];
-
         $arrayVariables = [];
-        $arrayKeyArr = [];
 
         //TODO: use array_keys to compare not the actual audience
         $createdAtResponse = $this->getCreatedAtResponse($profileRules, $shop);
         if($createdAtResponse !== null) {
-            $createdAtResponse = $this->filteredCreatedOrSessionResponse($createdAtResponse);
-            $arrayKeys = array_keys($createdAtResponse);
-            $arrayKeyArr[] = $arrayKeys;
-            $arrayVariables[] = $createdAtResponse;
+            $arrayVariables[] = $this->filteredCreatedOrSessionResponse($createdAtResponse);
         }
             
         $lastVisitResponse = $this->getLastVisitResponse($profileRules, $shop);
         if($lastVisitResponse !== null) {
-            $lastVisitResponse = $this->filteredCreatedOrSessionResponse($lastVisitResponse);
-            $arrayKeys = array_keys($lastVisitResponse);
-            $arrayKeyArr[] = $arrayKeys;
-            $arrayVariables[] = $lastVisitResponse;
+            $arrayVariables[] = $this->filteredCreatedOrSessionResponse($lastVisitResponse);
         }
         
         $sessionResponse = $this->getSessionResponse($profileRules, $shop);
         if($sessionResponse !== null) {
-            $sessionResponse = $this->filteredCreatedOrSessionResponse($sessionResponse);
-            $arrayKeys = array_keys($sessionResponse);
-            $arrayKeyArr[] = $arrayKeys;
-            $arrayVariables[] = $sessionResponse;
+            $arrayVariables[] = $this->filteredCreatedOrSessionResponse($sessionResponse);
         }
 
         $profileCombinedAudience = $this->getProfileCombinedAudience($arrayVariables);
