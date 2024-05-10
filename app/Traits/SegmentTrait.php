@@ -235,6 +235,7 @@ trait SegmentTrait {
             $payload['end_date'] = $profileRules['createdOn_inputEnd'];
         }
 
+        
         $getParams = [];
         foreach($payload as $param => $val) {
             $getParams[] = $param.'='.$val;
@@ -243,10 +244,9 @@ trait SegmentTrait {
         $endpoint = $endpoint.'?'.$getParams;
         Log::info('getCreatedAtResponse endpoint '.$endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-
         Log::info('Response for alme sessions');
         Log::info($response);
-        return isset($response['body']['identified_users']) ? $response['body']['identified_users'] : null;
+        return isset($response['body']) ? $response['body'] : null;
     }
 
     public function filteredCreatedOrSessionResponse($almeResponse) {
