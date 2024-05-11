@@ -81,12 +81,15 @@ trait SegmentTrait {
         
         $notIds = $this->processAlmeAudienceSegments($notResponseArr, $notRules);
         $finalNotAudience = $this->getFinalSegmentAudience($notIds, $notResponseArr);
+        $arrayVariables = [];
 
         $aMinusB = $this->getAMinusBForFinalData($finalAudience, $finalNotAudience);
 
-        $profileRules = $row->getProfileRules();
-        $arrayVariables = [];
+        if($aMinusB != null)
+            $arrayVariables[] = $aMinusB;
 
+        $profileRules = $row->getProfileRules();
+        
         //TODO: use array_keys to compare not the actual audience
         $createdAtResponse = $this->getCreatedAtResponse($profileRules, $shop);
         if($createdAtResponse !== null) {
@@ -105,8 +108,7 @@ trait SegmentTrait {
 
         $profileCombinedAudience = $this->getProfileCombinedAudience($arrayVariables);
 
-        $absoluteFinalAudience = $this->array_union($aMinusB, $profileCombinedAudience);
-        return ['status' => true, 'body' => $absoluteFinalAudience];
+        return ['status' => true, 'body' => $profileCombinedAudience];
     }
 
     public function combineProfileAudience($createdUsersResponse, $sessionsAudience) {
