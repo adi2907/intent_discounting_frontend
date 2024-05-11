@@ -51,31 +51,36 @@ class SegmentController extends Controller {
 
         try {
             if($request->filled('did_event_select')) {
+                $i = 0;
                 foreach($request->did_event_select as $key => $value) {
                     if($value !== null) {
                         $segmentArr[] = [
                             'did_event_select' => $value,
-                            'occurrence_select' => $request->{'occurrence-select'}[$key],
-                            'time_select' => $request->{'time-select'}[$key],
-                            'within_last_days' => $request->{'within-last-days'}[$key],
-                            'before_days' => $request->{'before-days'}[$key],
-                            'and_or_val' => $request->and_or_val[$key]
+                            'occurrence_select' => $request->{'occurrence-select'}[$i],
+                            'time_select' => $request->{'time-select'}[$i],
+                            'within_last_days' => $request->{'within-last-days'}[$i],
+                            'before_days' => $request->{'before-days'}[$i],
+                            'and_or_val' => $request->and_or_val[$i]
                         ];
+
+                        $i = $i+1;
                     }
                 }
             }
 
             if($request->filled('did_not_event_select')) {
+                $i = 0;
                 foreach($request->did_not_event_select as $key => $value) {
                     if($value !== null) {
                         $notSegmentArr[] = [
                             'did_event_select' => $value, 
-                            'occurrence_select' => $request->{'not-occurrence-select'}[$key],
-                            'time_select' => $request->{'not-time-select'}[$key],
-                            'within_last_days' => $request->{'not-within-last-days'}[$key],
-                            'before_days' => $request->{'not-before-days'}[$key],
-                            'and_or_val' => $request->not_and_or_val[$key]
+                            'occurrence_select' => $request->{'not-occurrence-select'}[$i],
+                            'time_select' => $request->{'not-time-select'}[$i],
+                            'within_last_days' => $request->{'not-within-last-days'}[$i],
+                            'before_days' => $request->{'not-before-days'}[$i],
+                            'and_or_val' => $request->not_and_or_val[$i]
                         ];
+                        $i = $i + 1;
                     }
                 }
             }
@@ -118,7 +123,7 @@ class SegmentController extends Controller {
     public function list(Request $request) {
         $user = Auth::user();
         $shop = $user->shopifyStore;
-        $segments = $shop->getAudienceSegments;
+        $segments = $shop->getAudienceSegments()->orderBy('id', 'desc')->get();
         return view('segment_list', compact('user', 'shop', 'segments'));
     }
 

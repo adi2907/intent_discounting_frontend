@@ -147,11 +147,16 @@ trait SegmentTrait {
     }
 
     public function getAMinusBForFinalData($finalAudience, $finalNotAudience) {
-        if($finalAudience == null) return null;
-
-        if($finalNotAudience == null) return $finalAudience;
-
+        if($finalAudience == null || (is_array($finalAudience) && count($finalAudience) < 1)) {
+            if($finalNotAudience != null && is_array($finalNotAudience) && count($finalNotAudience) > 0)
+                return $finalNotAudience;
+        }
+        if($finalNotAudience == null || (is_array($finalNotAudience) && count($finalNotAudience) < 1)) {
+            if($finalAudience != null && is_array($finalAudience) && count($finalAudience) > 0)
+                return $finalAudience;
+        }
         $finalArr = [];
+        if(count($finalAudience) > 0) 
         foreach($finalAudience as $id => $data) {
             if(!array_key_exists($id, $finalNotAudience)) {
                 $finalArr[$id] = $data;
