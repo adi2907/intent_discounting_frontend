@@ -1020,7 +1020,7 @@ class AppController extends Controller {
     public function sendEventToAlme(Request $request) {
         if($request->has('shop') && $request->filled('shop')) {
             try {
-                $shop = Shop::where('shop_url', $request->shop)->exists();
+                $shop = Shop::where('shop_url', $request->shop)->first();
                 if($shop) {
                     $endpoint = getAlmeAppURLForStore('events/');
                     $headers = getAlmeHeaders();
