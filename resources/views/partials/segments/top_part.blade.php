@@ -34,7 +34,7 @@ if(isset($rule) && strlen($rule) > 0) {
             <label for="createdOn_input" class="sr-only">Created On Date</label>
             <input type="date" @if(isset($rule)) value="{{$rule['createdOn_input']}}" @endif id="createdOn_input" name="createdOn_input" class="date-filter-input">
             <label for="createdOn_inputEnd" class="sr-only between_top_created_date" @if(isset($rule) && $rule['createdOn_filter'] == 'between') @else style="display: none;" @endif>Created On Date</label>
-            <input type="date" id="createdOn_inputEnd" name="createdOn_inputEnd" class="date-filter-input between_top_created_date" @if(isset($rule) && $rule['createdOn_filter'] == 'between') @else style="display: none;" @endif>
+            <input type="date" @if(isset($rule)) value="{{$rule['createdOn_inputEnd']}}" @endif id="createdOn_inputEnd" name="createdOn_inputEnd" class="date-filter-input between_top_created_date" @if(isset($rule) && $rule['createdOn_filter'] == 'between') @else style="display: none;" @endif>
         </div>
     </div>
     <!-- <div class="form-group" style="display: none;">
