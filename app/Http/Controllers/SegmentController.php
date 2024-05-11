@@ -40,7 +40,7 @@ class SegmentController extends Controller {
 
                 'createdOn_filter'      => $request->createdOn_filter,
                 'createdOn_input'       => $request->createdOn_input,
-                'createdOn_inputEnd'    => $request->filled('createdOn_inputEnd') ? $request->createdOn_input : null,
+                'createdOn_inputEnd'    => $request->filled('createdOn_inputEnd') ? $request->createdOn_inputEnd : null,
                 
                 'session_filter'    => $request->session_filter,
                 'session_input'     => $request->session_input
