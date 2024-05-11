@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ConfigureMissingProducts;
 use App\Jobs\CreateNotificationAsset;
 use App\Jobs\CreateShopDiscountCode;
 use App\Jobs\SyncShopifyOrders;
@@ -1030,6 +1031,8 @@ class AppController extends Controller {
                         "lastEventTimestamp" => $request->lastEventTimestamp
                     ];
 
+                    //Push this into the database so we don't have to process it immediately
+                    ConfigureMissingProducts::dispatch($shop, $request->events)->onConnection('database');
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
                     return response()->json($response['body']);
                 }
