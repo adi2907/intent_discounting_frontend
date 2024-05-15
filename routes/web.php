@@ -148,6 +148,7 @@ Route::get('checkStoreThemeInstall', [AppController::class, 'checkStoreThemeInst
 Route::get('checkPurchaseEvent', [HomeController::class, 'checkPurchaseEvent']);
 Route::get('deleteCoupons', [HomeController::class, 'deleteCoupons']);
 Route::get('testOrders', [HomeController::class, 'testOrders']);
+Route::get('testOrder/{id}', [HomeController::class, 'testOrder']);
 Route::get('testCustomers', [HomeController::class, 'testCustomers']);
 Route::get('testPurchaseEvent', [HomeController::class, 'testPurchaseEvent']);
 Route::get('testAlmePayload/{id}', [HomeController::class, 'testAlmePayload']);

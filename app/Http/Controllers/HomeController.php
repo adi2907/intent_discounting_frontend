@@ -43,6 +43,15 @@ class HomeController extends Controller {
         return redirect()->route('login');
     }
 
+    public function testOrder($id) {
+        $order = ShopifyOrder::where('table_id', $id)->first();
+        $shop = Shop::where('id', $order->shop_id)->first();
+        $endpoint = getShopifyAPIURLForStore('orders/'.$order->id.'.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+        return response()->json(['status' => true, 'data' => $response]);
+    }
+
     public function testAlmePayload($id) {
         $order = ShopifyOrder::where('table_id', $id)->first();
         $shop = Shop::where('id', $order->shop_id)->first();
