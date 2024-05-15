@@ -268,11 +268,10 @@ class HomeController extends Controller {
             if($response['statusCode'] == 200) {
                 $orderBody = $response['body']['order'];
                 $payload = $this->getOrderRequestPayloadForAlmeEvent($orderBody, $shop);
-                $almeEndpoint = getAlmeAppURLForStore('events/purchase/');
-                $almeHeaders = getAlmeHeaders();
-                $almeResponse = $this->makeAnAlmeAPICall('POST', $almeEndpoint, $almeHeaders, $payload);
-                $order->update(['purchase_event_status' => 'Custom try Alme purchase event api', 'purchase_event_response' => json_encode($almeResponse)]);
-                $returnResp = ['status' => true, 'message' => 'ALme Response for purchase event', 'response' => $almeResponse['body']];
+                if(isset($payload['cart_token'])) {
+                    $almeShopifyOrderRow = AlmeShopifyOrders::where('shop_id', $shop->id)->where('shopify_cart_token', $payload['cart_token'])->first();
+                    $returnResp = ['status' => true, 'data' => $almeShopifyOrderRow];
+                }
             } else {
                 $returnResp = ['status' => false, 'message' => 'Alme endpoint not called because order not found'];
             }
