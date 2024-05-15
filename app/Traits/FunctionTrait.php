@@ -534,6 +534,28 @@ trait FunctionTrait {
 
     public function saveOrUpdateOrder($request, $shopDetails) {
         try {
+
+            try {
+                $cartToken = $request['cart_token'];
+                if($cartToken != null && is_string($cartToken) && strlen($cartToken) > 0) {
+                    //Nothing to do here, cart token is alright
+                } else {
+                    $key = 'note_attributes';
+                    if(isset($request[$key]) && is_array($request[$key]) && count($request[$key]) > 0) {
+                        foreach($request[$key] as $attr) {
+                            if($attr != null && is_array($attr) && array_key_exists('name', $attr)) {
+                                if($attr['name'] == 'cart_token') {
+                                    $cartToken = $attr['value']; //Now we took it from the note_attributes value
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (\Throwable $th) {
+                Log::info('Cart token error '.$th->getMessage().' '.$th->getLine());
+                $cartToken = $request['cart_token'] ?? null;
+            }
+
             $updateArr = [
                 'shop_id' => $shopDetails->id,
                 'name' => $request['name'],
@@ -543,7 +565,7 @@ trait FunctionTrait {
             $createArr = array_merge($updateArr, [
                 'checkout_id' => $request['checkout_id'],
                 'browser_ip' => $request['browser_ip'],
-                'cart_token' => $request['cart_token'],
+                'cart_token' => $cartToken,
                 'source_name' => $request['source_name'] ?? null,
                 'total_price' => $request['total_price'],
                 'line_items' => json_encode($request['line_items']),
