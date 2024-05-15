@@ -16,4 +16,8 @@ class ShopifyOrder extends Model
     public function getPurchaseEventRetries() {
         return $this->hasMany(RetryPurchaseEvent::class, 'order_id', 'table_id');
     }
+
+    public function getShop() {
+        return $this->belongsTo(Shop::class, 'shop_id', 'id');
+    }
 }

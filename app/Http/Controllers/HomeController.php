@@ -253,4 +253,34 @@ class HomeController extends Controller {
         }
         return view('product_racks', ['productRackInfo' => $productRackInfo]);
     }
+
+    public function checkPurchaseEvent($id, Request $request) {
+        try {
+            $order = ShopifyOrder::with(['getShop'])->where('table_id', $id)->first();
+            $shop = $order->getShop;
+            $shops = [$shop->id => $shop];
+
+            //First properly take everything from Shopify and save it in db
+            $endpoint = getShopifyAPIURLForStore('orders/'.$order->id.'.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+
+            if($response['statusCode'] == 200) {
+                $orderBody = $response['body']['order'];
+                $payload = $this->getOrderRequestPayloadForAlmeEvent($orderBody, $shop);
+                $almeEndpoint = getAlmeAppURLForStore('events/purchase/');
+                $almeHeaders = getAlmeHeaders();
+                $almeResponse = $this->makeAnAlmeAPICall('POST', $almeEndpoint, $almeHeaders, $payload);
+                $order->update(['purchase_event_status' => 'Custom try Alme purchase event api', 'purchase_event_response' => json_encode($almeResponse)]);
+                $returnResp = ['status' => true, 'message' => 'ALme Response for purchase event', 'response' => $almeResponse['body']];
+            } else {
+                $returnResp = ['status' => false, 'message' => 'Alme endpoint not called because order not found'];
+            }
+
+            return response()->json($returnResp);
+
+        } catch (Throwable $e) {
+            return response()->json(['status' => false, 'message' => $e->getLine().' '.$e->getMessage()]);
+        }
+    }
 }

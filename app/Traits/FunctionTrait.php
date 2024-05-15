@@ -921,8 +921,28 @@ trait FunctionTrait {
 
     public function getOrderRequestPayloadForAlmeEvent($obj, $shopDetails) {
         try {
+            try {
+                $cartToken = $obj['cart_token'];
+                if($cartToken != null && is_string($cartToken) && strlen($cartToken) > 0) {
+                    //Nothing to do here, cart token is alright
+                } else {
+                    $key = 'note_attributes';
+                    if(isset($obj[$key]) && is_array($obj[$key]) && count($obj[$key]) > 0) {
+                        foreach($obj[$key] as $attr) {
+                            if($attr != null && is_array($attr) && array_key_exists('name', $attr)) {
+                                if($attr['name'] == 'cart_token') {
+                                    $cartToken = $attr['value']; //Now we took it from the note_attributes value
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (\Throwable $th) {
+                Log::info('Cart token error '.$th->getMessage().' '.$th->getLine());
+                $cartToken = $obj['cart_token'] ?? null;
+            }
             return [
-                "cart_token" => $obj['cart_token'],
+                "cart_token" => $cartToken,
                 "app_name" => $shopDetails->shop_url,
                 "email" => $obj['email'] ?? null,
                 "user_id" => $obj['customer']['id'] ?? null,
