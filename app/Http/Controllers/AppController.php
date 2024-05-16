@@ -878,11 +878,6 @@ class AppController extends Controller {
                 $html = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
-                    
-                    //If current time unix is greater than the code's validity
-                    // if($shop->getLatestDiscountCode->validity == null || time() > $shop->getLatestDiscountCode->validity) {
-                    //     return response()->json(['code' => null, 'status' => false, 'html' => null]);
-                    // }
 
                     //Early return
                     if($code == null || strlen($code) < 1) 
@@ -891,14 +886,21 @@ class AppController extends Controller {
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
-                    if(isset($shop->notificationAsset) && $shop->notificationAsset != null && filled($shop->notificationAsset)) {
-                    
-                        $html = $shop->notificationAsset->sale_notif_html;
+                    $notificationAsset = $shop->notificationAsset;
+                    if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset) && $notificationAsset->sale_notif_html != null && strlen($notificationAsset->sale_notif_html) > 0) {  
+                        $html = $notificationAsset->sale_notif_html;
                         $arrayValidate = [
                             '{{DISCOUNT_CODE}}' => $code,
                             '{{DISCOUNT_VALUE}}' => $discountValue,
-                            '{{DISCOUNT_EXPIRY}}' => $discountExpiry
+                            '{{DISCOUNT_EXPIRY}}' => $discountExpiry,
+                            '{{MIN_VALUE_COUPON_STYLE}}' => 'style="display:none"',
+                            '{{MIN_VALUE_COUPON_VALUE}}' => null
                         ];
+
+                        if($notificationSettings != null && $notificationSettings->min_value_coupon != null && $notificationSettings->min_value_coupon > 0) {
+                            $arrayValidate['{{MIN_VALUE_COUPON_STYLE}}'] = null;
+                            $arrayValidate['{{MIN_VALUE_COUPON_VALUE}}'] = $notificationSettings->min_value_coupon;
+                        }
 
                         if(strlen($html) > 0) {
                             foreach($arrayValidate as $strToLookFor => $replacementValue) {
@@ -914,7 +916,8 @@ class AppController extends Controller {
                         $html = view('sale_notification_popup', [
                             'discountCode' => $code, 
                             'discountValue' => $discountValue, 
-                            'discountExpiry' => $discountExpiry
+                            'discountExpiry' => $discountExpiry,
+                            'minValueCoupon' => $notificationSettings->min_value_coupon
                         ])->render();
                     }
                 } else {  
