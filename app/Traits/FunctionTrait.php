@@ -484,37 +484,56 @@ trait FunctionTrait {
         $saleDiscountValue = 10;
         try {
             $saleDiscountValue = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->sale_discount_value : null;
+            $minValueCoupon = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->min_value_coupon : null;
+            $discountExpiry = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->discount_expiry : null;
         } catch(Exception $e) {
             $saleDiscountValue = 10;
+            $minValueCoupon = 0;
+            $discountExpiry = null;
         } 
         $saleDiscountValue = '-'.$saleDiscountValue;
         
         Log::info('Creating discount code at percentage off for shop '.$shop->shop_url.' '.$saleDiscountValue);
 
-        $payload = [
-            'price_rule' => [
-                "title" => "ALMEPRICERULE",
-                "target_type" => "line_item",
-                "target_selection" => "all",
-                "allocation_method" => "across",
-                "value_type" => "percentage",
-                "value" => $saleDiscountValue,
-                "customer_selection" => "all",
-                "starts_at" => date('c')
-            ]
-        ];
-
-        try{
-            $discountExpiry = isset($shop->notificationSettings) && $shop->notificationSettings->count() > 0 ? $shop->notificationSettings->discount_expiry : null;
-        } catch(Exception $e) {
-            $discountExpiry = null;
+        if($minValueCoupon > 0) {
+            $payload = [
+                'price_rule' => [
+                    "title" => "ALMEPRICERULE",
+                    "target_type" => "line_item",
+                    "target_selection" => "all",
+                    "allocation_method" => "across",
+                    "value_type" => "percentage",
+                    "value" => $saleDiscountValue,
+                    "customer_selection" => "all",
+                    "prerequisite_subtotal_range" => ["greater_than_or_equal_to" => $minValueCoupon],
+                    "starts_at" => date('c')
+                ]
+            ];
+        } else {
+            $payload = [
+                'price_rule' => [
+                    "title" => "ALMEPRICERULE",
+                    "target_type" => "line_item",
+                    "target_selection" => "all",
+                    "allocation_method" => "across",
+                    "value_type" => "percentage",
+                    "value" => $saleDiscountValue,
+                    "customer_selection" => "all",
+                    "starts_at" => date('c')
+                ]
+            ];
         }
+        
         if($discountExpiry !== null) {
             $discountExpiry = (int) $discountExpiry;
             $strtotime = strtotime('+'.($discountExpiry * 2).' hours');
             $endsAt = date('c', $strtotime);
             $payload['price_rule'] = array_merge($payload['price_rule'], ['ends_at' => $endsAt]);
         }
+
+        Log::info('Min value discount '.$minValueCoupon);
+        Log::info('Payload for store '.$shop->shop_url);
+        Log::info($payload);
 
         $response = $this->makeAnAPICallToShopify('POST', $endpoint, $headers, $payload);
         if(array_key_exists('statusCode', $response) && $response['statusCode'] == 201) {

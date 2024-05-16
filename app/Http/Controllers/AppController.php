@@ -156,7 +156,8 @@ class AppController extends Controller {
             $shop->notificationSettings()->update([
                 'sale_status' => $saleNotificationSwitchedOn,
                 'sale_discount_value' => $request->sale_discount_value,
-                'discount_expiry' => $request->discount_expiry
+                'discount_expiry' => $request->discount_expiry,
+                'min_value_coupon' => $request->filled('min_value_coupon') ? $request->min_value_coupon : 0
             ]);
             
             if($prevSettings != null && $prevSettings->count() > 0) {
@@ -169,7 +170,9 @@ class AppController extends Controller {
                         $priceRule = $shop->getLatestPriceRule;
                         if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
                             $this->deletePriceRule($priceRule, $shop);
-                            $shop->getLatestPriceRule()->delete(); //Delete from database too
+                            
+                            //Don't delete from database. IMPORTANT! We need the history of coupons creation.
+                            //$shop->getLatestPriceRule()->delete();
                         }
                         $shop->refresh('notificationSettings');
                         $this->createPriceRuleForShop($shop);
