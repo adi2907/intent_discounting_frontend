@@ -161,7 +161,12 @@ class AppController extends Controller {
             ]);
             
             if($prevSettings != null && $prevSettings->count() > 0) {
-                if($request->sale_discount_value !== $prevSettings->sale_discount_value) {
+                if(
+                    //Something has to change in frontend in order to create a new discount code
+                    $request->sale_discount_value !== $prevSettings->sale_discount_value ||
+                    $request->discount_expiry !== $prevSettings->discount_expiry ||
+                    $request->min_value_coupon !== $prevSettings->min_value_coupon
+                ) {
                     if($saleNotificationSwitchedOn) {
                         Log::info('Discount percent changed for shop '.$shop->shop_url.' Creating a discount code now.');
                         
