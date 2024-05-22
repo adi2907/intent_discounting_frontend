@@ -873,6 +873,7 @@ class AppController extends Controller {
                 $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
                             
                 $html = null;
+                $saleBackoffCouponTimeout = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
                     
@@ -887,9 +888,9 @@ class AppController extends Controller {
                     
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
-
+                    $saleBackoffCouponTimeout = strtotime('+5 days');
+                        
                     if(isset($shop->notificationAsset) && $shop->notificationAsset != null && filled($shop->notificationAsset)) {
-                    
                         $html = $shop->notificationAsset->sale_notif_html;
                         $arrayValidate = [
                             '{{DISCOUNT_CODE}}' => $code,
@@ -905,6 +906,7 @@ class AppController extends Controller {
                                 }
                             }
                         } else {
+                            $saleBackoffCouponTimeout = null;
                             $html = null;
                         }
                     } else {
@@ -914,7 +916,8 @@ class AppController extends Controller {
                             'discountExpiry' => $discountExpiry
                         ])->render();
                     }
-                } else {  
+                } else { 
+                    $saleBackoffCouponTimeout = null; 
                     $html = null;
                 }
 
@@ -938,11 +941,17 @@ class AppController extends Controller {
                     Log::info('Error during incrementing notif stats '.$shop->shop_url.' '.$th->getMessage().' '.$th->getLine());
                 }
                 
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html, 'saleBackoffCouponTimeout' => $saleBackoffCouponTimeout]);
             }
-            return response()->json(['code' => null, 'status' => true, 'html' => null]);
+            return response()->json(['code' => null, 'status' => true, 'html' => null, 'saleBackoffCouponTimeout' => null]);
         } catch (Exception $th) {
-            return response()->json(['code' => null, 'status' => false, 'debug' => $th->getMessage().' '.$th->getLine(), 'html' => null]);
+            return response()->json([
+                'code' => null, 
+                'saleBackoffCouponTimeout' => null,
+                'status' => false, 
+                'debug' => $th->getMessage().' '.$th->getLine(), 
+                'html' => null
+            ]);
         }
     }
 
