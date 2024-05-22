@@ -43,13 +43,25 @@ class HomeController extends Controller {
         return redirect()->route('login');
     }
 
-    public function testOrder($id) {
-        $order = ShopifyOrder::where('table_id', $id)->first();
-        $shop = Shop::where('id', $order->shop_id)->first();
-        $endpoint = getShopifyAPIURLForStore('orders/'.$order->id.'.json', $shop);
-        $headers = getShopifyAPIHeadersForStore($shop);
-        $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
-        return response()->json(['status' => true, 'data' => $response]);
+    public function testOrder($id, Request $request) {
+        try {
+            $order = ShopifyOrder::where('table_id', $id)->first();
+            $shop = Shop::where('id', $order->shop_id)->first();
+            $endpoint = getShopifyAPIURLForStore('orders/'.$order->id.'.json', $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            return response()->json(['status' => true, 'data' => $response]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'error' => $th->getMessage().' '.$th->getLine(),
+                'id' => $id,
+                'id_type' => gettype($id),
+                'request' => $request->all()
+            ]);
+        }
+
+        
     }
 
     public function testAlmePayload($id) {
