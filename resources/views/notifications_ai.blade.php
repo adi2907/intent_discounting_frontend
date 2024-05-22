@@ -47,6 +47,14 @@
                     </div>
                     <input class="validity-input blurInputChange" style="width:10%" data-fieldtype="text" id="discount_expiry" data-fieldName="discount_expiry" type="number" min="1" max="100" value="{{$notifSettings['discount_expiry']}}">
                 </div>
+                <div class="settings-option">
+                    <div>
+                        <span class="settings-card-title">Minimum value for coupons</span>
+                        <p class="settings-card-description">Specify the minimum cart value for the discount to apply.</p>
+                        <p class="settings-card-description">Keep it empty for no minimum cart value </p>
+                    </div>
+                    <input class="discount-input blurInputChange" style="width:10%" id="min_value_coupon" data-fieldtype="text" data-fieldName="min_value_coupon" type="number" min="10" @if($notifSettings['min_value_coupon'] > 0) value="{{$notifSettings['min_value_coupon']}}" @else value="" @endif>
+                </div>
 	    </div>
 	<p><p>
             <h2 class="settings-heading">SmartConvertAI statistics</h2>
@@ -129,6 +137,7 @@
                 "sale_status": $('#saleStatus').is(':checked') ? 'on':'off',
                 "sale_discount_value": $('#sale_discount_value').val(),
                 "discount_expiry": $('#discount_expiry').val(),
+                "min_value_coupon": $('#min_value_coupon').val()
             };
             $.ajax({
                 url: "{{route('update.store.notifications')}}", 

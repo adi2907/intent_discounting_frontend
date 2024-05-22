@@ -78,6 +78,9 @@
                     Here's a special discount of {{ $discountValue }}% applicable on entire site<br>
                     Valid only for {{ $discountExpiry }} hours
                 </div>
+                @if(isset($minValueCoupon) && $minValueCoupon != null && $minValueCoupon > 0) 
+                    <small>Applicable on orders worth over {{$minValueCoupon}} or more</small>
+                @endif
                 <span id="discountAlmeCode" code="{{ $discountCode }}" class="discount-code" style="cursor:pointer">{{ $discountCode }}</span>
             </div>
         </div>

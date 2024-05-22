@@ -156,11 +156,17 @@ class AppController extends Controller {
             $shop->notificationSettings()->update([
                 'sale_status' => $saleNotificationSwitchedOn,
                 'sale_discount_value' => $request->sale_discount_value,
-                'discount_expiry' => $request->discount_expiry
+                'discount_expiry' => $request->discount_expiry,
+                'min_value_coupon' => $request->filled('min_value_coupon') ? $request->min_value_coupon : 0
             ]);
             
             if($prevSettings != null && $prevSettings->count() > 0) {
-                if($request->sale_discount_value !== $prevSettings->sale_discount_value) {
+                if(
+                    //Something has to change in frontend in order to create a new discount code
+                    $request->sale_discount_value !== $prevSettings->sale_discount_value ||
+                    $request->discount_expiry !== $prevSettings->discount_expiry ||
+                    $request->min_value_coupon !== $prevSettings->min_value_coupon
+                ) {
                     if($saleNotificationSwitchedOn) {
                         Log::info('Discount percent changed for shop '.$shop->shop_url.' Creating a discount code now.');
                         
@@ -169,7 +175,9 @@ class AppController extends Controller {
                         $priceRule = $shop->getLatestPriceRule;
                         if($priceRule !== null && $priceRule->price_id !== null && strlen($priceRule->price_id) > 0) {
                             $this->deletePriceRule($priceRule, $shop);
-                            $shop->getLatestPriceRule()->delete(); //Delete from database too
+                            
+                            //Don't delete from database. IMPORTANT! We need the history of coupons creation.
+                            //$shop->getLatestPriceRule()->delete();
                         }
                         $shop->refresh('notificationSettings');
                         $this->createPriceRuleForShop($shop);
@@ -875,11 +883,6 @@ class AppController extends Controller {
                 $html = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
-                    
-                    //If current time unix is greater than the code's validity
-                    // if($shop->getLatestDiscountCode->validity == null || time() > $shop->getLatestDiscountCode->validity) {
-                    //     return response()->json(['code' => null, 'status' => false, 'html' => null]);
-                    // }
 
                     //Early return
                     if($code == null || strlen($code) < 1) 
@@ -888,14 +891,21 @@ class AppController extends Controller {
                     $discountValue = $notificationSettings->sale_discount_value ?? 'N/A';
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
-                    if(isset($shop->notificationAsset) && $shop->notificationAsset != null && filled($shop->notificationAsset)) {
-                    
-                        $html = $shop->notificationAsset->sale_notif_html;
+                    $notificationAsset = $shop->notificationAsset;
+                    if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset) && $notificationAsset->sale_notif_html != null && strlen($notificationAsset->sale_notif_html) > 0) {  
+                        $html = $notificationAsset->sale_notif_html;
                         $arrayValidate = [
                             '{{DISCOUNT_CODE}}' => $code,
                             '{{DISCOUNT_VALUE}}' => $discountValue,
-                            '{{DISCOUNT_EXPIRY}}' => $discountExpiry
+                            '{{DISCOUNT_EXPIRY}}' => $discountExpiry,
+                            '{{MIN_VALUE_COUPON_STYLE}}' => 'style="display:none"',
+                            '{{MIN_VALUE_COUPON_VALUE}}' => null
                         ];
+
+                        if($notificationSettings != null && $notificationSettings->min_value_coupon != null && $notificationSettings->min_value_coupon > 0) {
+                            $arrayValidate['{{MIN_VALUE_COUPON_STYLE}}'] = null;
+                            $arrayValidate['{{MIN_VALUE_COUPON_VALUE}}'] = $notificationSettings->min_value_coupon;
+                        }
 
                         if(strlen($html) > 0) {
                             foreach($arrayValidate as $strToLookFor => $replacementValue) {
@@ -911,7 +921,8 @@ class AppController extends Controller {
                         $html = view('sale_notification_popup', [
                             'discountCode' => $code, 
                             'discountValue' => $discountValue, 
-                            'discountExpiry' => $discountExpiry
+                            'discountExpiry' => $discountExpiry,
+                            'minValueCoupon' => $notificationSettings->min_value_coupon
                         ])->render();
                     }
                 } else {  
