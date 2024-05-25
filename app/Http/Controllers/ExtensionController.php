@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlmeAnalytics;
+use App\Models\AlmeClickAnalytics;
 use App\Models\Shop;
 use App\Models\ShopifyProducts;
 use App\Traits\FunctionTrait;
@@ -29,6 +31,20 @@ class ExtensionController extends Controller {
                 $stats['submissions'] += 1;
                 $shop->setNotifStats($stats);
             }
+
+            try {
+                $arr = [
+                    'shop_id' => $shop->id,
+                    'alme_token' => $request->token,
+                    'session_id' => $request->session_id
+                ];
+
+                AlmeAnalytics::where($arr)->increment('sale_copy_code');
+                AlmeClickAnalytics::where($arr)->orderBy('id', 'desc')->first()->update(['sale_notif_click' => time()]);
+            } catch (Throwable $th) {
+                Log::info('Line 45 '.$th->getMessage().' '.$th->getLine());
+            }
+
             $response = ['status' => true, 'message' => 'Recorded'];
         } else {
             $response = ['status' => true, 'message' => 'Shop not in request'];

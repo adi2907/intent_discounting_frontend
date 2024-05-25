@@ -6,6 +6,8 @@ use App\Jobs\ConfigureMissingProducts;
 use App\Jobs\CreateNotificationAsset;
 use App\Jobs\CreateShopDiscountCode;
 use App\Jobs\SyncShopifyOrders;
+use App\Models\AlmeAnalytics;
+use App\Models\AlmeClickAnalytics;
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
 use App\Models\Shop;
@@ -219,6 +221,7 @@ class AppController extends Controller {
                 $shop = Shop::where('shop_url', $request->shop)->first();
                 $ip = $request->ipAddr;
                 $token = $request->token;
+                $sessionId = $request->session_id;
                 $checkRecord = IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->exists();
                 if($checkRecord) {
                     IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->update(['alme_token' => $token]);
@@ -228,11 +231,19 @@ class AppController extends Controller {
                         'shop_id' => $shop->id, 
                         'ip_address' => $ip, 
                         'alme_token' => $token, 
-                        'session_id' => $request->session_id
+                        'session_id' => $sessionId
                     ]);
                     IpMap::updateOrCreate($updateArr, $createArr);
                 }
-                
+                //Create analytics row and click events row
+                $arr = [
+                    'shop_id' => $shop->id,
+                    'alme_token' => $token,
+                    'session_id' => $sessionId
+                ];
+
+                AlmeAnalytics::updateOrCreate($arr, $arr);
+                AlmeClickAnalytics::updateOrCreate($arr, $arr);
             }
             return response()->json(['status' => true, 'message' => 'OK']);
         } catch(Exception $e) {
@@ -292,10 +303,11 @@ class AppController extends Controller {
             if($request->has('app_name') && $request->filled('app_name')) {
                 $shop = Shop::where('shop_url', $request->app_name)->first();
                 if($shop !== null) {
+                    $almeToken = $request->alme_user_token;
                     $payload = [
                         "name" => $request->name,
                         "phone" => $request->phone,
-                        "alme_user_token" => $request->alme_user_token,
+                        "alme_user_token" => $almeToken,
                         "app_name" => $request->app_name,
                     ];
                     $endpoint = getAlmeAppURLForStore('notification/submit_contact/');
@@ -317,6 +329,24 @@ class AppController extends Controller {
                     
                     } catch (Exception $th) {
                         Log::info($th->getMessage().' '.$th->getLine());
+                    }
+
+                    try {
+                        $updateArr = [
+                            'alme_token' => $almeToken,
+                            'shop_id' => $shop->id
+                        ];
+
+                        $clickArr = array_merge($updateArr, [
+                            'contact_notif_click' => time()
+                        ]);
+
+                        AlmeAnalytics::updateOrCreate($updateArr, $updateArr);
+                        AlmeAnalytics::where($updateArr)->increment('contact_impressions');
+                        AlmeClickAnalytics::updateOrCreate($updateArr, $clickArr);
+                        AlmeClickAnalytics::where($updateArr)->orderBy('id','desc')->first()->update(['contact_notif_click' => time()]);
+                    } catch (Throwable $th) {
+                        Log::info('Line 349 '.$th->getMessage().' '.$th->getLine());
                     }
                     // if($response['statusCode'] !== 200) {
                     //     Log::info('Error in submit contact');
@@ -855,6 +885,26 @@ class AppController extends Controller {
                     }
                     
                     $shop->setContactCaptureStats($stats);
+                    
+                    try {
+                        if($request->filled('almeToken')) {
+                            $arr = [
+                                'shop_id' => $shop->id,
+                                'alme_token' => $request->almeToken,
+                                'session_id' => $request->session_id
+                            ];
+    
+                            AlmeAnalytics::updateOrCreate($arr, $arr);
+                            AlmeClickAnalytics::updateOrCreate($arr, $arr);
+                            
+                            AlmeAnalytics::where($arr)->increment('contact_impressions');
+                            AlmeClickAnalytics::where([
+                                'shop_id' => $shop->id,
+                                'alme_token' => $request->almeToken])->orderBy('id', 'desc')->first()->update(['contact_notif_impression' => time()]);
+                        }
+                    } catch (Throwable $th) {
+                        Log::info('Line 903 '.$th->getMessage().' '.$th->getLine());
+                    }
                 }    
             } catch (Exception $th) {
                 Log::info($th->getMessage().' '.$th->getLine());
