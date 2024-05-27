@@ -881,6 +881,7 @@ class AppController extends Controller {
                 $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
                             
                 $html = null;
+                $saleBackoffCouponTimeout = null;
                 if ($saleStatus) {
                     $code = $shop !== null && $shop->getLatestDiscountCode !== null ? $shop->getLatestDiscountCode->code : null;
 
@@ -892,7 +893,9 @@ class AppController extends Controller {
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
                     $notificationAsset = $shop->notificationAsset;
-                    if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset) && $notificationAsset->sale_notif_html != null && strlen($notificationAsset->sale_notif_html) > 0) {  
+                    $saleBackoffCouponTimeout = strtotime('+5 days');
+                        
+                    if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset)) {
                         $html = $notificationAsset->sale_notif_html;
                         $arrayValidate = [
                             '{{DISCOUNT_CODE}}' => $code,
@@ -915,6 +918,7 @@ class AppController extends Controller {
                                 }
                             }
                         } else {
+                            $saleBackoffCouponTimeout = null;
                             $html = null;
                         }
                     } else {
@@ -925,7 +929,8 @@ class AppController extends Controller {
                             'minValueCoupon' => $notificationSettings->min_value_coupon
                         ])->render();
                     }
-                } else {  
+                } else { 
+                    $saleBackoffCouponTimeout = null; 
                     $html = null;
                 }
 
@@ -949,11 +954,17 @@ class AppController extends Controller {
                     Log::info('Error during incrementing notif stats '.$shop->shop_url.' '.$th->getMessage().' '.$th->getLine());
                 }
                 
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html]);
+                return response()->json(['code' => $code, 'status' => true, 'html' => $html, 'saleBackoffCouponTimeout' => $saleBackoffCouponTimeout]);
             }
-            return response()->json(['code' => null, 'status' => true, 'html' => null]);
+            return response()->json(['code' => null, 'status' => true, 'html' => null, 'saleBackoffCouponTimeout' => null]);
         } catch (Exception $th) {
-            return response()->json(['code' => null, 'status' => false, 'debug' => $th->getMessage().' '.$th->getLine(), 'html' => null]);
+            return response()->json([
+                'code' => null, 
+                'saleBackoffCouponTimeout' => null,
+                'status' => false, 
+                'debug' => $th->getMessage().' '.$th->getLine(), 
+                'html' => null
+            ]);
         }
     }
 

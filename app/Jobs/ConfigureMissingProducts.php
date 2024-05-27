@@ -64,13 +64,13 @@ class ConfigureMissingProducts implements ShouldQueue {
                         $dbProductIds = array_keys($records);
                         $nonExistentKeys = array_diff($productIdsArr, $dbProductIds);
                         if($nonExistentKeys !== null && count($nonExistentKeys) > 0) {
-                            Log::info('Product Ids not found in database for shop '.$shop->shop_url);
+                            //Log::info('Product Ids not found in database for shop '.$shop->shop_url);
                             foreach($nonExistentKeys as $productId) {
                                 $endpoint = getShopifyAPIURLForStore('products/'.$productId.'.json', $shop);
                                 $headers = getShopifyAPIHeadersForStore($shop);
                                 $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
                                 if($response['statusCode'] == 200) {
-                                    Log::info('Syncing product Id '.$productId.' into database for shop '.$shop->shop_url);
+                                    //Log::info('Syncing product Id '.$productId.' into database for shop '.$shop->shop_url);
                                     $this->updateOrCreateThisProductInDB($response['body']['product'], $shop);
                                 }
                             }

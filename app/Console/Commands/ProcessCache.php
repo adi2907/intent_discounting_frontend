@@ -60,8 +60,6 @@ class ProcessCache extends Command {
                             'payload' => json_encode($payload),
                             'api_response' => json_encode($response)
                         ]);
-                    } else {
-                        Log::info('Got payload null for order '.$cacheKey);
                     }
                 }
 
@@ -73,7 +71,7 @@ class ProcessCache extends Command {
                     }
                 }
 
-                Log::info('Processed cache for shop '.$shop->shop_url);
+                //Log::info('Processed cache for shop '.$shop->shop_url);
                 Cache::put($cacheKey, $newCacheVal);
             }
         }
