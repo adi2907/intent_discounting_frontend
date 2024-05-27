@@ -12,6 +12,7 @@ use App\Traits\RequestTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PurchaseEventAlme extends Command
 {
@@ -37,13 +38,18 @@ class PurchaseEventAlme extends Command
     {
         $query = ShopifyOrder::where('purchase_event_status', null);
         $orders = $query->get();
-        if($orders !== null && $orders->count() > 0) {
-            $this->info('Processing '.$orders->count().' orders');
-            $shopIds = $orders->pluck('shop_id')->toArray();
-            $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
-            foreach($orders as $order) {
-                ProcessPurchaseEvent::dispatch($order, $shops)->onConnection('sync');
+        try {
+            if($orders !== null && $orders->count() > 0) {
+                $this->info('Processing '.$orders->count().' orders');
+                $shopIds = $orders->pluck('shop_id')->toArray();
+                $shops = Shop::whereIn('id', array_unique($shopIds))->get()->keyBy('id')->toArray();
+                foreach($orders as $order) {
+                    ProcessPurchaseEvent::dispatch($order, $shops)->onConnection('sync');
+                }
             }
+        } catch (Throwable $th) {
+            Log::info($th->getMessage().' '.$th->getLine());
         }
+        
     }
 }
