@@ -36,11 +36,11 @@ class ExtensionController extends Controller {
                 $arr = [
                     'shop_id' => $shop->id,
                     'alme_token' => $request->token,
-                    'session_id' => $request->session_id
+                    'session_id' => $request->session_id,
+                    'sale_notif_click' => time()
                 ];
 
-                AlmeAnalytics::where($arr)->increment('sale_copy_code');
-                AlmeClickAnalytics::where($arr)->orderBy('id', 'desc')->first()->update(['sale_notif_click' => time()]);
+                AlmeClickAnalytics::create($arr);
             } catch (Throwable $th) {
                 Log::info('Line 45 '.$th->getMessage().' '.$th->getLine());
             }

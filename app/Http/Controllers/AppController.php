@@ -235,15 +235,6 @@ class AppController extends Controller {
                     ]);
                     IpMap::updateOrCreate($updateArr, $createArr);
                 }
-                //Create analytics row and click events row
-                $arr = [
-                    'shop_id' => $shop->id,
-                    'alme_token' => $token,
-                    'session_id' => $sessionId
-                ];
-
-                AlmeAnalytics::updateOrCreate($arr, $arr);
-                AlmeClickAnalytics::updateOrCreate($arr, $arr);
             }
             return response()->json(['status' => true, 'message' => 'OK']);
         } catch(Exception $e) {
@@ -341,18 +332,10 @@ class AppController extends Controller {
                             'contact_notif_click' => time()
                         ]);
 
-                        AlmeAnalytics::updateOrCreate($updateArr, $updateArr);
-                        AlmeAnalytics::where($updateArr)->increment('contact_impressions');
-                        AlmeClickAnalytics::updateOrCreate($updateArr, $clickArr);
-                        AlmeClickAnalytics::where($updateArr)->orderBy('id','desc')->first()->update(['contact_notif_click' => time()]);
+                        AlmeClickAnalytics::create($clickArr);
                     } catch (Throwable $th) {
                         Log::info('Line 349 '.$th->getMessage().' '.$th->getLine());
                     }
-                    // if($response['statusCode'] !== 200) {
-                    //     Log::info('Error in submit contact');
-                    //     Log::info('Payload '.json_encode($payload));
-                    //     Log::info('Response '.json_encode($response));
-                    // }
                     return response()->json($response['body']);
                 }
             }
@@ -891,16 +874,10 @@ class AppController extends Controller {
                             $arr = [
                                 'shop_id' => $shop->id,
                                 'alme_token' => $request->almeToken,
-                                'session_id' => $request->session_id
+                                'session_id' => $request->session_id,
+                                'contact_notif_impression' => time()
                             ];
-    
-                            AlmeAnalytics::updateOrCreate($arr, $arr);
-                            AlmeClickAnalytics::updateOrCreate($arr, $arr);
-                            
-                            AlmeAnalytics::where($arr)->increment('contact_impressions');
-                            AlmeClickAnalytics::where([
-                                'shop_id' => $shop->id,
-                                'alme_token' => $request->almeToken])->orderBy('id', 'desc')->first()->update(['contact_notif_impression' => time()]);
+                            AlmeClickAnalytics::create($arr);
                         }
                     } catch (Throwable $th) {
                         Log::info('Line 903 '.$th->getMessage().' '.$th->getLine());
@@ -999,10 +976,25 @@ class AppController extends Controller {
                         }
                         
                         $shop->setNotifStats($stats);
+
+                        try {
+                            $updateArr = [
+                                'alme_token' => $request->token,
+                                'shop_id' => $shop->id
+                            ];
+        
+                            $clickArr = array_merge($updateArr, [
+                                'sale_notif_impression' => time()
+                            ]);
+        
+                            AlmeClickAnalytics::create($clickArr);
+                        } catch (Throwable $th) {
+                            Log::info('Line 349 '.$th->getMessage().' '.$th->getLine());
+                        }
                     }
                 } catch (Exception $th) {
                     Log::info('Error during incrementing notif stats '.$shop->shop_url.' '.$th->getMessage().' '.$th->getLine());
-                }
+                } 
                 
                 return response()->json(['code' => $code, 'status' => true, 'html' => $html, 'saleBackoffCouponTimeout' => $saleBackoffCouponTimeout]);
             }
