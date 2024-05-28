@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel {
         //$schedule->command('app:sync-products')->everyOddHour();
 
         //Processes Orders from cache every minute
-        $schedule->command('app:process-cache')->everyMinute();
+        $schedule->command('app:process-cache')->everyFiveMinutes();
 
         //Sets dashboard
         $schedule->command('app:set-dashboard')->everyFifteenMinutes();
