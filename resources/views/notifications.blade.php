@@ -79,7 +79,7 @@
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-edit"></i>
                     <span class="statistics-value">@if(isset($stats['submit_events'])) {{$stats['submit_events']}} @else - @endif</span>
-                    <span class="statistics-label">Total submit_events</span>
+                    <span class="statistics-label">Total Clicks</span>
                 </div>
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-percentage"></i>
