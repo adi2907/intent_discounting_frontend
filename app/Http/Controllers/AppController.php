@@ -35,6 +35,14 @@ class AppController extends Controller {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $notifSettings = $shop->notificationSettings;
+
+        $startDate = null;
+        $endDate = null;
+        if($request->filled('imp_start_date') && $request->filled('imp_end_date')) {
+            $startDate = $request->imp_start_date;
+            $endDate = $request->imp_end_date;
+        }
+        $impressionData = $shop->getSaleNotifStats($startDate, $endDate);
         if($notifSettings == null || $notifSettings->count() < 1) {
             $notifSettings = $shop->notificationSettings()->create([
                 'status' => false,
@@ -46,8 +54,10 @@ class AppController extends Controller {
                 'discount_expiry' => 24
             ]);
         }
-        $contactStats = $shop->getNotificationStats();
-        return view('notifications_ai', ['notifSettings' => $notifSettings, 'stats' => $contactStats]);
+        return view('notifications_ai', [
+            'stats' => $impressionData,
+            'notifSettings' => $notifSettings
+        ]);
     }
 
     public function mapCheckout(Request $request) {
@@ -304,24 +314,6 @@ class AppController extends Controller {
                     $endpoint = getAlmeAppURLForStore('notification/submit_contact/');
                     $headers = getAlmeHeaders();
                     $response = $this->makeAnAlmeAPICall('POST', $endpoint, $headers, $payload);
-                    try {
-                        $stats = $shop->getContactCaptureStats();
-                        if($stats !== null && array_key_exists('submissions', $stats)) {
-                            $stats['submissions'] += 1;
-                        } else {
-                            $stats = [
-                                'total_views' => 0,
-                                'submissions' => 0,
-                                'percentage' => 0
-                            ];
-                        }
-                        
-                        $shop->setContactCaptureStats($stats);
-                    
-                    } catch (Exception $th) {
-                        Log::info($th->getMessage().' '.$th->getLine());
-                    }
-
                     try {
                         $updateArr = [
                             'alme_token' => $almeToken,
@@ -620,7 +612,13 @@ class AppController extends Controller {
         $user = Auth::user();
         $shop = $user->shopifyStore;
         $notifSettings = $shop->notificationSettings;
-        $notificationStats = $shop->getContactCaptureStats();
+        $startDate = null;
+        $endDate = null;
+        if($request->filled('imp_start_date') && $request->filled('imp_end_date')) {
+            $startDate = $request->imp_start_date;
+            $endDate = $request->imp_end_date;
+        }
+        $notificationStats = $shop->getContactCaptureStats($startDate, $endDate);
         if($notifSettings == null || $notifSettings->count() < 1) {
             $notifSettings = $shop->notificationSettings()->create([
                 'status' => false,
@@ -964,19 +962,6 @@ class AppController extends Controller {
                 //Just before sending the notification popup HTML, increment the counter for stats
                 try {
                     if($html !== null && strlen($html) > 0) {
-                        $stats = $shop->getNotificationStats();
-                        if($stats !== null && array_key_exists('total_views', $stats)) {
-                            $stats['total_views'] += 1;
-                        } else {
-                            $stats = [
-                                'total_views' => 0,
-                                'submissions' => 0,
-                                'percentage' => 0
-                            ];
-                        }
-                        
-                        $shop->setNotifStats($stats);
-
                         try {
                             $updateArr = [
                                 'alme_token' => $request->token,

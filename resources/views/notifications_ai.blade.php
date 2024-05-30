@@ -1,6 +1,8 @@
 @extends('layouts.new_app')
 @section('css')
 <link rel="stylesheet" href="{{asset('css/notifications.css')}}">
+<link rel="stylesheet" href="{{asset('css/dashboard.css')}}">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 @section('content')
 <div class="col-md-9 nopadding">
@@ -56,35 +58,41 @@
                     <input class="discount-input blurInputChange" style="width:10%" id="min_value_coupon" data-fieldtype="text" data-fieldName="min_value_coupon" type="number" min="10" @if($notifSettings['min_value_coupon'] > 0) value="{{$notifSettings['min_value_coupon']}}" @else value="" @endif>
                 </div>
 	    </div>
-	<p><p>
-            <h2 class="settings-heading">SmartConvertAI statistics</h2>
-        
-            <div class="statistics-container">
-                <div class="statistics-card">
-                    <i class="statistics-icon fas fa-eye"></i>
-                    <span class="statistics-value">@if(isset($stats['total_views'])) {{$stats['total_views']}} @else - @endif</span>
-                    <span class="statistics-label">Total Views</span>
-                </div>
-                <div class="statistics-card">
-                    <i class="statistics-icon fas fa-edit"></i>
-                    <span class="statistics-value">@if(isset($stats['submissions'])) {{$stats['submissions']}} @else - @endif</span>
-                    <span class="statistics-label">Total clicks</span>
-                </div>
-                <div class="statistics-card">
-                    <i class="statistics-icon fas fa-percentage"></i>
-                    <span class="statistics-value">@if(isset($stats['percentage'])) {{ calcPercentage($stats['total_views'], $stats['submissions']) }}% @else - @endif</span>
-                    <span class="statistics-label">Click Rate</span>
-                </div>
-                <div class="statistics-card">
-                    <i class="statistics-icon fas fa-gift"></i>
-                    <span class="statistics-value">1212</span>
-                    <span class="statistics-label">Coupon Redemptions</span>
-                </div>
-                <div class="statistics-card">
-                    <i class="statistics-icon fas fa-chart-pie"></i>
-                    <span class="statistics-value">6%</span>
-                    <span class="statistics-label">% of new users shared their contact</span>
-                </div>
+	
+        <h2 class="settings-heading">SmartConvertAI statistics</h2>
+        <div class="row mb-4">
+            Select Date Range: &nbsp;
+            <input id="date-range" class="form-control" style="width:30%;border-radius:15%" type="text" name="daterange" value="01/01/2018 - 01/15/2018"/>
+            <input type="hidden" id="date-start">
+            <input type="hidden" id="date-end">
+        </div>
+    
+        <div class="statistics-container">
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-eye"></i>
+                <span class="statistics-value">@if(isset($stats['impressions'])) {{$stats['impressions']}} @else - @endif</span>
+                <span class="statistics-label">Total Views</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-edit"></i>
+                <span class="statistics-value">@if(isset($stats['copy_events'])) {{$stats['copy_events']}} @else - @endif</span>
+                <span class="statistics-label">Total clicks</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-percentage"></i>
+                <span class="statistics-value">@if(isset($stats['impressions'])) {{ calcPercentage($stats['impressions'], $stats['copy_events']) }}% @else - @endif</span>
+                <span class="statistics-label">Click Rate</span>
+            </div>
+            <div class="statistics-card">
+                <i class="statistics-icon fas fa-gift"></i>
+                <span class="statistics-value">@if(isset($stats['redemptions'])) {{ $stats['redemptions'] }} @else - @endif</span>
+                <span class="statistics-label">Coupon Redemptions</span>
+            </div>
+            <div class="statistics-card" style="display: none;">
+                <i class="statistics-icon fas fa-chart-pie"></i>
+                <span class="statistics-value">6%</span>
+                <span class="statistics-label">% of new users shared their contact</span>
+            </div>
         </div>  
         <div class="row col-md-12" style="display:none;">
             <div class="col-md-6">
@@ -99,20 +107,19 @@
 
 @section('scripts')
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <script>
         var madeChanges = false;
         $(document).ready(function () {
-            /*
-            $('.blurInputChange').blur(function (e) {
-                e.preventDefault();
-                updateSettings($(this));
-            });
-
-            $('.inputChange').change(function (e) {
-                e.preventDefault();
-                updateSettings($(this));
-            });
-            */
-
+            setDateTimePicker();
             window.addEventListener("beforeunload", function (e) {
                 var confirmationMessage = 'It looks like you have been unsaved changes. Sure to go proceed? '
                 if(madeChanges) {
@@ -184,6 +191,32 @@
                     }
                 }
             })
+        }
+
+        function setDateTimePicker() {
+            var startDate = moment().subtract(14, 'days');
+            var endDate = moment();
+            $("#date-start").val(startDate.unix());
+            $("#date-end").val(endDate.unix());
+            $('#date-range').daterangepicker({
+                showDropdowns: true,
+                startDate,
+                endDate,
+                alwaysShowCalendars: true,
+                ranges: {
+                    'Today': [moment().startOf('day'), moment().endOf('day')],
+                    'Last 7 Days': [moment().subtract(7, 'days'), moment()],
+                    'Last 15 Days': [moment().subtract(14, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                }
+            }, function(start, end, label) {
+                start = moment(start).format('YYYY-MM-DD');
+                end = moment(end).format('YYYY-MM-DD');
+                window.top.location.href= `{{route('notifications.smart.convert.ai')}}?imp_start_date=${start}&imp_end_date=${end}`;
+            });
         }
     </script>
 @endsection
