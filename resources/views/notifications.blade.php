@@ -83,7 +83,7 @@
                 </div>
                 <div class="statistics-card">
                     <i class="statistics-icon fas fa-percentage"></i>
-                    <span class="statistics-value">@if(isset($stats['percentage'])) {{ calcPercentage($stats['impressions'], $stats['submit_events']) }}% @else - @endif</span>
+                    <span class="statistics-value">@if(isset($stats['impressions'])) {{ calcPercentage($stats['impressions'], $stats['submit_events']) }}% @else - @endif</span>
                     <span class="statistics-label">Submit rate</span>
                 </div>
                 <div class="statistics-card" style="display: none;">
