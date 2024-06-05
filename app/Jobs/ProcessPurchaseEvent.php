@@ -2,8 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Models\AlmeClickAnalytics;
 use App\Models\AlmeShopifyOrders;
+use App\Models\DiscountCode;
 use App\Models\IpMap;
+use App\Models\Shop;
 use App\Models\ShopifyOrder;
 use App\Traits\FunctionTrait;
 use App\Traits\RequestTrait;
@@ -19,6 +22,10 @@ use Throwable;
 class ProcessPurchaseEvent implements ShouldQueue {
 
     public $shops, $order;
+
+    //Global variables added so we can access them after completing all operations
+    public $almeToken, $cartToken, $sessionId;
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     use FunctionTrait, RequestTrait;
     /**
@@ -27,6 +34,9 @@ class ProcessPurchaseEvent implements ShouldQueue {
     public function __construct($order, $shops) {
         $this->shops = $shops;
         $this->order = $order;
+
+        $this->almeToken = null;
+        $this->sessionId = null;
     }
 
     /**
@@ -52,12 +62,15 @@ class ProcessPurchaseEvent implements ShouldQueue {
                 ];
             }
 
+            $this->almeToken = $almeInfo->alme_token;
+            $this->sessionId = $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null;
+
             $payload = [
                 "cart_token" => $order->cart_token,
-                "alme_user_token" => $almeInfo->alme_token,
+                "alme_user_token" => $this->almeToken,
                 "timestamp" => $order->created_at,
                 "app_name" => $shops[$order->shop_id]['shop_url'],
-                "session_id" => $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
+                "session_id" => $this->sessionId,
                 "products" => $productsArr
             ];
 
@@ -82,12 +95,15 @@ class ProcessPurchaseEvent implements ShouldQueue {
                         ];
                     }
 
+                    $this->almeToken = $dbRowForIP->alme_token;
+                    $this->sessionId = isset($dbRowForIP) && isset($dbRowForIP->session_id) ? $dbRowForIP->session_id : null;
+
                     $payload = [
                         "cart_token" => $order->cart_token,
-                        "alme_user_token" => $dbRowForIP->alme_token,
+                        "alme_user_token" => $this->almeToken,
                         "timestamp" => $order->created_at,
                         "app_name" => $shops[$order->shop_id]['shop_url'],
-                        "session_id" => isset($dbRowForIP) && isset($dbRowForIP->session_id) ? $dbRowForIP->session_id : null,
+                        "session_id" => $this->sessionId,
                         "products" => $productsArr
                     ];
 
@@ -128,6 +144,43 @@ class ProcessPurchaseEvent implements ShouldQueue {
                     $order->update(['purchase_event_status' => 'Browser IP found null even after retrying']);
             }
         }
+
+        //Process Discount Code for order
+        try {
+            Log::info('Starting discount check for order '.$order->name);
+            if($this->almeToken == null) {
+                Log::info('Early return');
+                return;
+            }
+            
+            if(isset($order->discount_allocations) && $order->discount_allocations != null) {
+                $discountAllocations = json_decode($order->discount_allocations, true);
+                if($discountAllocations != null && is_array($discountAllocations) && count($discountAllocations) > 0) {
+                    foreach($discountAllocations as $discountInfo) {
+                        if(is_array($discountInfo) && array_key_exists('code', $discountInfo)) {
+                            $shop_url = $shops[$order->shop_id]['shop_url'];
+                            $shop = Shop::where('shop_url', $shop_url)->first();
+                            $dbRow = DiscountCode::where('store_id', $shop->id)->where('code', $discountInfo['code'])->first();
+                            if($dbRow != null && $shop != null) {
+                                $createArr = [
+                                    'shop_id' =>  $shop->id,
+                                    'discount_id' => $dbRow->id,
+                                    'order_id' => $order->table_id,
+                                    'created_at' => $order->created_at
+                                ];
+                                Log::info('About to create new alme click analytics');
+                                AlmeClickAnalytics::create($createArr);
+                            }
+                        }
+                    }
+                } else {
+                    Log::info('discount allocations is empty');
+                }
+            }
+        } catch (Throwable $th) {
+            Log::info('Discount allocations problem '.$th->getMessage().' '.$th->getLine());;
+        }
+
     }
 
     public function tryAgain($cartToken, $shop, $order) {
@@ -149,12 +202,15 @@ class ProcessPurchaseEvent implements ShouldQueue {
                 ];
             }
 
+            $this->almeToken = $almeInfo->alme_token;
+            $this->sessionId = $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null;
+
             $payload = [
                 "cart_token" => $cartToken,
-                "alme_user_token" => $almeInfo->alme_token,
+                "alme_user_token" => $this->almeToken,
                 "timestamp" => $order['created_at'],
                 "app_name" => $shop['shop_url'],
-                "session_id" => $almeInfo !== null && isset($almeInfo->session_id) ? $almeInfo->session_id : null,
+                "session_id" => $this->sessionId,
                 "products" => $productsArr
             ];
 
