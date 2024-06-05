@@ -164,6 +164,8 @@ class ProcessPurchaseEvent implements ShouldQueue {
                             if($dbRow != null && $shop != null) {
                                 $createArr = [
                                     'shop_id' =>  $shop->id,
+                                    'alme_token' => $this->almeToken,
+                                    'session_id' => $this->sessionId,
                                     'discount_id' => $dbRow->id,
                                     'order_id' => $order->table_id,
                                     'created_at' => $order->created_at
