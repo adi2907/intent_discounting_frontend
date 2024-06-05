@@ -591,7 +591,7 @@ trait FunctionTrait {
                 'source_name' => $request['source_name'] ?? null,
                 'total_price' => $request['total_price'],
                 'line_items' => json_encode($request['line_items']),
-                'discount_allocations' => isset($request['discount_allocations']) && is_array($request['discount_allocations']) ? json_encode($request['discount_allocations']) : null,
+                'discount_allocations' => isset($request['discount_applications']) && is_array($request['discount_applications']) ? json_encode($request['discount_applications']) : null,
                 'customer' => isset($request['customer']) && is_array($request['customer']) ? json_encode($request['customer']) : null,
                 'shipping_address' => isset($request['shipping_address']) && is_array($request['shipping_address']) ? json_encode($request['shipping_address']) : null
             ]);
