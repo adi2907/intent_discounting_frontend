@@ -207,7 +207,7 @@ trait SegmentTrait {
 
     public function getSessionResponse($profileRules, $shop) {
         if(!isset($profileRules['session_filter']) || !isset($profileRules['session_input']) || !filled($profileRules['session_filter']) || !filled($profileRules['session_input'])) {
-            Log::info('early return for getSessionResponse');
+            //Log::info('early return for getSessionResponse');
             return null;
         }
 
@@ -225,11 +225,11 @@ trait SegmentTrait {
         }
         $getParams = implode('&', $getParams);
         $endpoint = $endpoint.'?'.$getParams;
-        Log::info('getSessionResponse endpoint '.$endpoint);
+        //Log::info('getSessionResponse endpoint '.$endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
 
-        Log::info('Response for getSessionResponse');
-        Log::info($response);
+        // Log::info('Response for getSessionResponse');
+        // Log::info($response);
         return isset($response['body']) ? $response['body'] : null;
 
     }
@@ -237,7 +237,7 @@ trait SegmentTrait {
     public function getCreatedAtResponse($profileRules, $shop) {
 
         if(!isset($profileRules['createdOn_filter']) || !isset($profileRules['createdOn_input']) || !filled($profileRules['createdOn_filter']) || !filled($profileRules['createdOn_input'])) {
-            Log::info('early return for getCreatedAtResponse');
+            //Log::info('early return for getCreatedAtResponse');
             return null;
         }
 
@@ -266,10 +266,10 @@ trait SegmentTrait {
         }
         $getParams = implode('&', $getParams);
         $endpoint = $endpoint.'?'.$getParams;
-        Log::info('getCreatedAtResponse endpoint '.$endpoint);
+        //Log::info('getCreatedAtResponse endpoint '.$endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-        Log::info('Response for alme sessions');
-        Log::info($response);
+        //Log::info('Response for alme sessions');
+        //Log::info($response);
         return isset($response['body']) ? $response['body'] : null;
     }
 
@@ -292,7 +292,7 @@ trait SegmentTrait {
     public function getLastVisitResponse($profileRules, $shop) {
         
         if(!isset($profileRules['lastSeen_input']) || !isset($profileRules['lastSeen_filter']) || !filled($profileRules['lastSeen_input']) || !filled($profileRules['lastSeen_filter'])) {
-            Log::info('early return for getLastVisitResponse');
+            //Log::info('early return for getLastVisitResponse');
             return null;
         }
 
@@ -321,10 +321,10 @@ trait SegmentTrait {
 
         $getParams = implode('&', $getParams);
         $endpoint = $endpoint.'?'.$getParams;
-        Log::info('getLastVisitResponse endpoint '.$endpoint);
+        //Log::info('getLastVisitResponse endpoint '.$endpoint);
         $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-        Log::info('Response for identified-users-last-visit');
-        Log::info($response);
+        //Log::info('Response for identified-users-last-visit');
+        //Log::info($response);
         $usersList = isset($response['body']) ? $response['body'] : null;
         return $usersList;
     }
