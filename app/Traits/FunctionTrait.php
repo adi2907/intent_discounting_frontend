@@ -553,10 +553,6 @@ trait FunctionTrait {
 
     public function saveOrUpdateOrder($request, $shopDetails) {
         try {
-            if($shopDetails->id == 17) {
-                Log::info('Order object');
-                Log::info($request);
-            }
             try {
                 $cartToken = $request['cart_token'];
                 if($cartToken != null && is_string($cartToken) && strlen($cartToken) > 0) {
