@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\AlmeClickAnalytics;
+use App\Models\DiscountCode;
 use App\Models\RetryPurchaseEvent;
 use App\Models\Shop;
 use App\Models\ShopifyOrder;
@@ -549,6 +551,48 @@ trait FunctionTrait {
         }
         
         return true;
+    }
+
+    public function checkDiscountCodeRedemption($order, $shops, $almeToken, $sessionId) {
+        //Process Discount Code for order
+        try {
+            if($almeToken == null) {
+                return;
+            }
+            
+            if(isset($order->discount_allocations) && $order->discount_allocations != null) {
+                $discountAllocations = $order->discount_allocations != null && is_array($order->discount_allocations) ? $order->discount_allocations : json_decode($order->discount_allocations, true);
+                if($discountAllocations != null && is_array($discountAllocations) && count($discountAllocations) > 0) {
+                    foreach($discountAllocations as $discountInfo) {
+                        if(is_array($discountInfo) && array_key_exists('code', $discountInfo)) {
+                            $shop_url = $shops[$order->shop_id]['shop_url'];
+                            $shop = Shop::where('shop_url', $shop_url)->first();
+                            $dbRow = DiscountCode::where('store_id', $shop->id)->where('code', $discountInfo['code'])->first();
+                            if($dbRow != null && $shop != null) {
+                                $createArr = [
+                                    'shop_id' =>  $shop->id,
+                                    'alme_token' => $almeToken,
+                                    'session_id' => $sessionId,
+                                    'discount_id' => $dbRow->id,
+                                    'order_id' => $order->table_id,
+                                    'created_at' => $order->created_at
+                                ];
+                                $updateArr = [
+                                    'shop_id' =>  $shop->id,
+                                    'alme_token' => $almeToken,
+                                    'session_id' => $sessionId,
+                                    'discount_id' => $dbRow->id,
+                                ];
+                                Log::info('Creating click analytics row here '.$order->name);
+                                AlmeClickAnalytics::updateOrCreate($updateArr, $createArr);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $th) {
+            Log::info('Discount allocations problem '.$th->getMessage().' '.$th->getLine());;
+        }
     }
 
     public function saveOrUpdateOrder($request, $shopDetails) {

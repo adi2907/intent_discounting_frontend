@@ -50,6 +50,10 @@ class Shop extends Model {
         return $this->hasOne(ProductRackSettings::class, 'store_id', 'id')->orderBy('id', 'desc');
     }
 
+    public function getOrders() {
+        return $this->hasMany(ShopifyOrder::class, 'shop_id', 'id');
+    }
+
     public function getProducts() {
         return $this->hasMany(ShopifyProducts::class, 'shop_id', 'id');
     }

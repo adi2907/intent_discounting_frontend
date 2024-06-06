@@ -37,6 +37,9 @@ class Kernel extends ConsoleKernel {
         //Run Segments that updates the count
         $schedule->command('app:run-segment-command')->daily();
 
+        //Check Discount code for old orders
+        $schedule->command('app:check-discount-code-redemptions')->everyThirtyMinutes();
+
         //Syncs Alme's Identified Users data into the database. So we can do custom querying on it on our end.
         //$schedule->command('app:sync-identified-users')->everyThirtyMinutes();
 
