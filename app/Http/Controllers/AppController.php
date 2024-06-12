@@ -256,7 +256,7 @@ class AppController extends Controller {
         try {
             if($request->has('app_name') && $request->filled('app_name')) {
                 $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
-                $blockRequestsUntil = strtotime('+30 seconds');
+                $blockRequestsUntil = strtotime('+5 days');
                 if($shop !== null && $shop->count() > 0) {
                     if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
                         if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
