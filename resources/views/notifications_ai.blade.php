@@ -194,8 +194,8 @@
         }
 
         function setDateTimePicker() {
-            var startDate = moment().subtract(14, 'days');
-            var endDate = moment();
+            var startDate = @if(isset($start_imp_date) && !is_null($start_imp_date)) moment('{{$start_imp_date}}') @else moment().subtract(14, 'days') @endif;
+            var endDate = @if(isset($end_imp_date) && !is_null($end_imp_date)) moment('{{$end_imp_date}}') @else moment() @endif;
             $("#date-start").val(startDate.unix());
             $("#date-end").val(endDate.unix());
             $('#date-range').daterangepicker({

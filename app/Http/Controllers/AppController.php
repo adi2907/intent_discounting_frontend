@@ -56,7 +56,9 @@ class AppController extends Controller {
         }
         return view('notifications_ai', [
             'stats' => $impressionData,
-            'notifSettings' => $notifSettings
+            'notifSettings' => $notifSettings,
+            'start_imp_date' => $startDate,
+            'end_imp_date' => $endDate
         ]);
     }
 
