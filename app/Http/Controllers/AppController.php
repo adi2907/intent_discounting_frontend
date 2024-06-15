@@ -967,6 +967,7 @@ class AppController extends Controller {
                         try {
                             $updateArr = [
                                 'alme_token' => $request->token,
+                                'session_id' => $request->sessionId ?? null,
                                 'shop_id' => $shop->id
                             ];
         
