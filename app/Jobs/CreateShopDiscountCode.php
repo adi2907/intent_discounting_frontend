@@ -40,9 +40,18 @@ class CreateShopDiscountCode implements ShouldQueue {
                     if($shop->notificationSettings !== null) {
                         $frequency = (int) $shop->notificationSettings->discount_expiry;
                         $lastDiscountCode = $shop->getLatestDiscountCode;
+                        $logArr = [
+                            'frequency' => (int) $shop->notificationSettings->discount_expiry,
+                            'lastDiscountCode' => json_encode($shop->getLatestDiscountCode),
+                            'now' => strtotime('today UTC')
+                        ];
                         if($lastDiscountCode !== null && $lastDiscountCode->count() > 0) {
                             $hourdiff = round((strtotime('today UTC') - strtotime($lastDiscountCode->created_at))/3600, 1);
-                            
+                            $logArr = array_merge([
+                                'hoursDiff' => $hourdiff,
+                                'result' => $hourdiff >= $frequency,
+                                'text_result' => $hourdiff >= $frequency ? 'Creating a new discount' : 'Sticking with old one'
+                            ], $logArr);    
                             if($hourdiff >= $frequency) {
                                 $this->deletePriceRule($priceRule, $shop);
                                 $this->createPriceRuleForShop($shop);
@@ -50,8 +59,16 @@ class CreateShopDiscountCode implements ShouldQueue {
                                 $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
                             }
                         } else {
+                            $logArr = array_merge([
+                                'result' => 'Creating a new discount code'
+                            ], $logArr);
                             //No Discount exist so create one.
                             $this->createAndSaveDiscountCode($priceRule, $shop, $frequency);
+                        }
+
+                        if($this->shop->id == 17) {
+                            Log::info('Logging for almestore1');
+                            Log::info($logArr);
                         }
                     }
                 } else {

@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel {
      */
     protected function schedule(Schedule $schedule): void {
         //Create discount codes for all stores depending on what expiry they provided in their dashboards.
-	$schedule->command('app:discount')->everyFiveMinutes();
+	    $schedule->command('app:discount')->everyThirtyMinutes();
 
         //This command helps us check if crons are running at all on the server. Nothing is done in this.
         $schedule->command('app:check-cron-status')->everyThreeHours();
