@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CreateShopDiscountCode;
 use App\Jobs\ProcessPurchaseEvent;
 use App\Models\AlmeShopifyOrders;
 use App\Models\IpMap;
@@ -245,6 +246,12 @@ class HomeController extends Controller {
             dd($discountCodeResponse);
         }
         dd($response);
+    }
+
+    public function testCreateDiscount() {
+        $shop = Shop::where('id', 17)->first();
+        CreateShopDiscountCode::dispatch($shop)->onConnection('sync');
+        dd('Done');
     }
 
     public function sampleProductRack(Request $request) {
