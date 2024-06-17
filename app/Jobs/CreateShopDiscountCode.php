@@ -47,7 +47,7 @@ class CreateShopDiscountCode implements ShouldQueue {
                         ];
                         
                         if($lastDiscountCode !== null && $lastDiscountCode->count() > 0) {
-                            $hourdiff = round((strtotime($lastDiscountCode->created_at) - strtotime('now'))/3600, 0);
+                            $hourdiff = round((strtotime('now') - strtotime($lastDiscountCode->created_at))/3600, 0);
                             $logArr = array_merge([
                                 'hoursDiff' => $hourdiff,
                                 'result' => $hourdiff >= $frequency,
