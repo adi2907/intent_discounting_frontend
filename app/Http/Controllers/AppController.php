@@ -270,7 +270,7 @@ class AppController extends Controller {
             # if the almeapp api returns a criteria_met false (for some criteria set by brand owner like no purchase history 2 months prior)
             # or if notification settings is turned off, then block the api requests for 2 hours
 
-            $blockRequestsUntil = strtotime('+2 hours');
+            $blockRequestsUntil = strtotime('+1 minute');
             # if the brand owner has turned off the notification settings, block api requests for 2 hours
             if (!isset($shop->notificationSettings) || !isset($shop->notificationSettings->sale_status)) {
                 return response()->json(['status' => true, 'message' => 'Data not found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
@@ -310,10 +310,6 @@ class AppController extends Controller {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
         }
     }
-
-
-
-
 
 
 
@@ -991,7 +987,7 @@ class AppController extends Controller {
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
                     $notificationAsset = $shop->notificationAsset;
-                    $saleBackoffCouponTimeout = strtotime('+5 days');
+                    $saleBackoffCouponTimeout = strtotime('+5 minutes');
                         
                     if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset)) {
                         $html = $notificationAsset->sale_notif_html;
