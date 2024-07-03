@@ -254,52 +254,114 @@ class AppController extends Controller {
         }
     }
 
-    public function saleNotification(Request $request) {
+    public function saleNotification(Request $request){
         try {
-            if($request->has('app_name') && $request->filled('app_name')) {
-                $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
-                $blockRequestsUntil = strtotime('+5 days');
-                if($shop !== null && $shop->count() > 0) {
-                    if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
-                        if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
-                            
-                            $almeToken = null;
-                            if($request->has('token') && filled($request->token)) {
-                                $almeToken = $request->token;
-                            }
-
-                            if($almeToken === null) {
-                                if($request->has('alme_user_token') && filled($request->alme_user_token)) {
-                                    $almeToken = $request->alme_user_token;
-                                }
-                            }
-
-                            if($almeToken !== null) {
-                                $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
-                                $headers = getAlmeHeaders();
-                                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
-                                if(array_key_exists('criteria_met', $response['body']) && $response['body']['criteria_met'] == false) {
-                                    return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
-                                }
-                                
-                                return response()->json($response['body']);
-                            }
-                            return response()->json(['status' => true, 'message' => 'Alme Token found null']);
-                        } else {
-                            return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
-                        } 
-                    } else {
-                        return response()->json(['status' => true, 'message' => 'Data not found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
-                    }
-                } else {
-                    return response()->json(['status' => true, 'message' => 'Shop Not Found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
-                }
+            if (!$request->filled('app_name')) {
+                return response()->json(['status' => false, 'message' => 'App name not found']);
             }
-            return response()->json(['status' => true, 'message' => 'OK']);
-        } catch(Exception $e) {
+        
+
+            $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
+            if ($shop === null || $shop->count() === 0) {
+                return response()->json(['status' => true, 'message' => 'Shop Not Found']);
+            }
+
+            # Set a timer to avoid too many requests. 
+            # if the almeapp api returns a criteria_met false (for some criteria set by brand owner like no purchase history 2 months prior)
+            # or if notification settings is turned off, then block the api requests for 2 hours
+
+            $blockRequestsUntil = strtotime('+1 minute');
+            # if the brand owner has turned off the notification settings, block api requests for 2 hours
+            if (!isset($shop->notificationSettings) || !isset($shop->notificationSettings->sale_status)) {
+                return response()->json(['status' => true, 'message' => 'Data not found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+            }
+
+            if ($shop->notificationSettings->sale_status != 1 && $shop->notificationSettings->sale_status !== true) {
+                return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+            }
+
+            $almeToken = $request->filled('token') ? $request->token : ($request->filled('alme_user_token') ? $request->alme_user_token : null);
+
+            if ($almeToken === null) {
+                return response()->json(['status' => true, 'message' => 'Alme Token found null']);
+            }
+
+            $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
+            $headers = getAlmeHeaders();
+            
+            try {
+                $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+            } catch (Exception $apiError) {
+                return response()->json(['status' => false, 'message' => 'API call failed', 'error' => $apiError->getMessage()]);
+            }
+
+            if (isset($response['body']['criteria_met']) && $response['body']['criteria_met'] == false) {
+            return response()->json(['status' => true, 'message' => 'Criteria not met', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+            }
+
+            return response()->json($response['body']);
+        }
+        catch (Exception $e) {
             return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+
+
+
+    // public function saleNotification(Request $request) {
+    //     try {
+    //         if($request->has('app_name') && $request->filled('app_name')) {
+    //             $shop = Shop::with('notificationSettings')->where('shop_url', $request->app_name)->first();
+
+    //             # Set a timer to avoid to many requests. 
+    //             # The almeapp returns a criteria_met key in the response body, if that is false, then we block. 
+    //             # Typically criteria_met is false when user doesn't want to show notifications to users who have purchased say 2 months earlier
+    //             # Also we block requests if the user has turned off the notification settings.
+            
+
+    //             $blockRequestsUntil = strtotime('+2 hours');
+    //             if($shop !== null && $shop->count() > 0) {
+    //                 if(isset($shop->notificationSettings) && isset($shop->notificationSettings->sale_status)) {
+    //                     if($shop->notificationSettings->sale_status == 1 || $shop->notificationSettings->sale_status === true) {
+                            
+    //                         $almeToken = null;
+    //                         if($request->has('token') && filled($request->token)) {
+    //                             $almeToken = $request->token;
+    //                         }
+
+    //                         if($almeToken === null) {
+    //                             if($request->has('alme_user_token') && filled($request->alme_user_token)) {
+    //                                 $almeToken = $request->alme_user_token;
+    //                             }
+    //                         }
+
+    //                         if($almeToken !== null) {
+    //                             $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
+    //                             $headers = getAlmeHeaders();
+    //                             $response = $this->makeAnAlmeAPICall('GET', $endpoint, $headers);
+    //                             if(array_key_exists('criteria_met', $response['body']) && $response['body']['criteria_met'] == false) {
+    //                                 return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+    //                             }
+                                
+    //                             return response()->json($response['body']);
+    //                         }
+    //                         return response()->json(['status' => true, 'message' => 'Alme Token found null']);
+    //                     } else {
+    //                         return response()->json(['status' => true, 'message' => 'Turned off', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+    //                     } 
+    //                 } else {
+    //                     return response()->json(['status' => true, 'message' => 'Data not found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+    //                 }
+    //             } else {
+    //                 return response()->json(['status' => true, 'message' => 'Shop Not Found', 'blockRequests' => true, 'blockRequestsUntil' => $blockRequestsUntil]);
+    //             }
+    //         }
+    //         return response()->json(['status' => true, 'message' => 'OK']);
+    //     } catch(Exception $e) {
+    //         return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+    //     }
+    // }
 
     public function submitContact(Request $request) {
         try {
@@ -920,7 +982,7 @@ class AppController extends Controller {
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
                     $notificationAsset = $shop->notificationAsset;
-                    $saleBackoffCouponTimeout = strtotime('+5 days');
+                    $saleBackoffCouponTimeout = strtotime('+5 minutes');
                         
                     if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset)) {
                         $html = $notificationAsset->sale_notif_html;
