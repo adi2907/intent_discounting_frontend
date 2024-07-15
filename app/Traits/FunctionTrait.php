@@ -128,9 +128,11 @@ trait FunctionTrait {
         try {
             $now = date('c');
             $body = $response['body']['price_rule'];
-            Log::info('Now = '.$now.' Unix equiv '.strtotime($now));
-            Log::info('Expires at = '.$body['ends_at'].' Unix equiv '.strtotime($body['ends_at']));
-            Log::info('Result '.(strtotime($now) > strtotime($body['ends_at'])));
+            
+            $strtotimeNow = strtotime($now);
+            $strtotimeExpiry = strtotime($body['ends_at']);
+
+            return $strtotimeExpiry >= $strtotimeNow;
         } catch (Exception $e) {
             Log::info($e->getMessage().' '.$e->getLine());
         }        
