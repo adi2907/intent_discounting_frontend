@@ -120,6 +120,12 @@ trait FunctionTrait {
         }
     }
 
+    public function getPriceRuleResponse($priceRule, $shop) {
+        $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'.json', $shop);
+        $headers = getShopifyAPIHeadersForStore($shop);
+        return $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+    }
+
     public function isPriceRuleValid($priceRule, $shop) {
         $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'.json', $shop);
         $headers = getShopifyAPIHeadersForStore($shop);

@@ -207,3 +207,4 @@ Route::get('sampleMinOrderCoupon/{id}', [HomeController::class, 'sampleMinOrderC
 Route::get('testWebhookCache', [HomeController::class, 'testWebhookCache']);
 Route::get('createDiscountCode', [HomeController::class, 'testCreateDiscount']);
 Route::get('checkStoreInstallAndScript', [HomeController::class, 'checkInstallAndScript']);
+Route::get('checkPriceRulesForShops', [HomeController::class, 'testPriceRules']);

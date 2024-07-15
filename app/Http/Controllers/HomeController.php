@@ -61,6 +61,20 @@ class HomeController extends Controller {
         return response()->json(['status' => true, 'data'=> $returnVal]);
     }
 
+    public function testPriceRules() {
+        $shops = Shop::whereHas('getLatestPriceRule')->with('getLatestPriceRule')->get();
+        $returnVal = [];
+        foreach($shops as $shop) {
+            $response = $this->getPriceRuleResponse($shop->getLatestPriceRule, $shop);
+            $returnVal[] = [
+                'shop' => $shop->shop_url,
+                'response' => $response
+            ];
+        }
+
+        return $returnVal;
+    }
+
     public function testOrder($id, Request $request) {
         try {
             $order = ShopifyOrder::where('table_id', $id)->first();
