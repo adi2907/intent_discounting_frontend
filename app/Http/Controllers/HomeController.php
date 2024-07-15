@@ -44,6 +44,23 @@ class HomeController extends Controller {
         return redirect()->route('login');
     }
 
+    public function checkInstallAndScript() {
+        $shops = Shop::get();
+        $returnVal = [];
+        foreach($shops as $shop) {
+            $install = $this->verifyInstallation($shop);
+            $script = $this->checkAlmeScriptRunningOrNot($shop);
+
+            $returnVal[] = [
+                'shop' => $shop->shop_url,
+                'install' => $install,
+                'scriptEnabled' => $script
+            ];
+        }
+
+        return response()->json(['status' => true, 'data'=> $returnVal]);
+    }
+
     public function testOrder($id, Request $request) {
         try {
             $order = ShopifyOrder::where('table_id', $id)->first();

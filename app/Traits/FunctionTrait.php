@@ -124,6 +124,16 @@ trait FunctionTrait {
         $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'.json', $shop);
         $headers = getShopifyAPIHeadersForStore($shop);
         $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+
+        try {
+            $now = date('c');
+            $body = $response['body']['price_rule'];
+            Log::info('Now = '.$now);
+            Log::info('Expires at = '.$body['expires_at']);
+        } catch (Exception $e) {
+            Log::info($e->getMessage().' '.$e->getLine());
+        }        
+
         return array_key_exists('statusCode', $response) && $response['statusCode'] == 200;
     }
 
