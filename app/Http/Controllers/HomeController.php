@@ -72,7 +72,7 @@ class HomeController extends Controller {
             ];
         }
 
-        return $returnVal;
+        return response()->json(['status' => true, 'data' => $returnVal]);
     }
 
     public function testOrder($id, Request $request) {

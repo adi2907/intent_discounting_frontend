@@ -138,6 +138,10 @@ trait FunctionTrait {
             $strtotimeNow = strtotime($now);
             $strtotimeExpiry = strtotime($body['ends_at']);
 
+            $log_message = 'Price Rule ID '.$priceRule->price_id.' Now '.$strtotimeNow.' Expiry '.$strtotimeExpiry.' Result '.($strtotimeExpiry >= $strtotimeNow ? 'True' : 'False');
+            Log::info('Expiry for shop '.$shop->shop_url);
+            Log::info($log_message);
+
             return $strtotimeExpiry >= $strtotimeNow;
         } catch (Exception $e) {
             Log::info($e->getMessage().' '.$e->getLine());
