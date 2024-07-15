@@ -129,7 +129,7 @@ trait FunctionTrait {
             $now = date('c');
             $body = $response['body']['price_rule'];
             Log::info('Now = '.$now);
-            Log::info('Expires at = '.$body['expires_at']);
+            Log::info('Expires at = '.$body['ends_at']);
         } catch (Exception $e) {
             Log::info($e->getMessage().' '.$e->getLine());
         }        
