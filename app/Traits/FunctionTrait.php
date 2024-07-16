@@ -551,6 +551,12 @@ trait FunctionTrait {
         
         if($discountExpiry !== null) {
             $discountExpiry = (int) $discountExpiry;
+            # log all the attributes
+            Log::info('Logging discount expiry timeline');
+            Log::info('Discount expiry '.$discountExpiry);
+            Log::info('Current time '.strtotime('now'));
+            Log::info('Current time '.date('c'));
+            Log::info('Shop '.$shop->shop_url);
             $strtotime = strtotime('+'.($discountExpiry * 2).' hours');
             $endsAt = date('c', $strtotime);
             $payload['price_rule'] = array_merge($payload['price_rule'], ['ends_at' => $endsAt]);
