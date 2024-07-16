@@ -149,7 +149,7 @@ trait FunctionTrait {
 
         return array_key_exists('statusCode', $response) && $response['statusCode'] == 200;
     }
-
+    
     public function createDiscountCode($priceRule, $shop) {
         $code = strtoupper($shop['prefix'].Str::random(5));
         $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'/discount_codes.json', $shop);
@@ -475,6 +475,7 @@ trait FunctionTrait {
             $this->makeAnAPICallToShopify('DELETE', $endpoint, $headers);
         }
     }
+   
 
     /**
      * Function to create discount code on Shopify and create a
