@@ -193,4 +193,21 @@ class Shop extends Model {
             ];
         }
     }
+
+    public function isExemptFromPaying() {
+        return $this->is_exempt_from_pay == 1 || $this->is_exempt_from_pay == true;
+    }
+
+    public function subscriptionsInfo() {
+        return $this->hasMany(ShopSubscription::class, 'shop_id', 'id');
+    }
+
+    public function lastSubscription() {
+        return $this->hasOne(ShopSubscription::class, 'shop_id', 'id')->orderBy('id', 'desc');
+    }
+
+    public function checkLastSubscription() {
+        $lastSub = $this->lastSubscription;
+        return $lastSub !== null && filled($lastSub) && isset($lastSub->status) && (int) $lastSub->status > 0;
+    }
 }

@@ -731,6 +731,26 @@ class AppController extends Controller {
         }
     }
 
+    public function acceptCharge(Request $request) {
+        try {
+            $user = Auth::user();
+            $shop = $user->shopifyStore;
+            $charge_id = $request->charge_id;
+            $endpoint = getShopifyAPIURLForStore("recurring_application_charges/$charge_id.json", $shop);
+            $headers = getShopifyAPIHeadersForStore($shop);
+            $response = $this->makeAnAPICallToShopify('GET', $endpoint, $headers);
+            if($response['statusCode'] === 200) {
+                $body = $response['body']['recurring_application_charge'];
+                if($body['status'] === 'active') {
+                    $shop->subscriptionsInfo()->where('shopify_id', $charge_id)->update(['status' => true]); //It's paid
+                }   
+            }
+        } catch (Throwable $th) {
+            Log::info('Problem in acceptcharge '.$th->getMessage().' '.$th->getLine());
+        }
+        return redirect()->route('dashboard');
+    }
+
     public function showDashboard(Request $request) {
         try{
             $request = $request->only('shop');

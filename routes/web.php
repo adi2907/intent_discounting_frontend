@@ -26,7 +26,7 @@ Auth::routes(['register' => false]);
 Route::get('/', [HomeController::class, 'index']);
 
 //Middleware auth is applied to these routes. User must be authenticated in order to be able to access these routes.
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'ensureShopIsPaid'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [AppController::class, 'showDashboard'])->name('dashboard');
         Route::get('reloadAnalytics', [AppController::class, 'reloadDashboard'])->name('reload.dashboard');
@@ -104,6 +104,9 @@ Route::middleware('auth')->group(function () {
     //Just for testing. In case the notification asset did not get created properly. So you can hit it manually.
     Route::get('createNotificationAsset', [AppController::class, 'createNotificationAsset']);
 });
+
+//Accept charge route. Should not be in EnsureStoreIsPaid middleware
+Route::middleware('auth')->get('acceptCharge', [AppController::class, 'acceptCharge'])->name('shopify.accept.charge');
 
 //Not used anymore. Used script tags API that we don't use in the app.
 Route::get('deleteCustomScript', [AppController::class, 'removeCustomScript']);
