@@ -20,4 +20,5 @@ yarn-error.log
 .htaccess
 .DS_Store
 __MACOSX/
+*.sql
 

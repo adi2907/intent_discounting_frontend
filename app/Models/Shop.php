@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class Shop extends Model {
     
@@ -24,6 +25,24 @@ class Shop extends Model {
 
     public function getLatestPriceRule() {
         return $this->hasOne(PriceRule::class, 'store_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    public function getSecondLatestPriceRule() {
+        try {
+            $priceRules = $this->getPriceRules()
+                ->orderBy('created_at', 'desc')
+                ->limit(2)
+                ->get();
+            
+            if ($priceRules->count() > 1) {
+                return $priceRules->last(); // Get the second latest price rule
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            Log::error('Error fetching second latest price rule: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function getLatestDiscountCode() {

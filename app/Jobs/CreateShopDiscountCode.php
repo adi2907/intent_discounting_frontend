@@ -53,12 +53,17 @@ class CreateShopDiscountCode implements ShouldQueue {
                                 'result' => $hourdiff >= $frequency,
                                 'text_result' => $hourdiff >= $frequency ? 'Creating a new discount' : 'Sticking with old one'
                             ], $logArr);    
+                            $secondLatestPriceRule = $shop->getSecondLatestPriceRule(); 
                             if($hourdiff >= $frequency) {
-                                $this->deletePriceRule($priceRule, $shop);
+                                //$this->deletePriceRule($priceRule, $shop);
                                 $this->createPriceRuleForShop($shop);
                                 $shop->refresh('getLatestPriceRule');
                                 $this->createAndSaveDiscountCode($shop->getLatestPriceRule, $shop, $frequency);
                             }
+                            if ($hourdiff >= 2 * $frequency && $secondLatestPriceRule !== null) {
+                                $this->deletePriceRule($secondLatestPriceRule, $shop);
+                            }
+
                         } else {
                             $logArr = array_merge([
                                 'result' => 'Creating a new discount code'

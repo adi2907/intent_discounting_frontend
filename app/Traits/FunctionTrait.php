@@ -149,7 +149,7 @@ trait FunctionTrait {
 
         return array_key_exists('statusCode', $response) && $response['statusCode'] == 200;
     }
-
+    
     public function createDiscountCode($priceRule, $shop) {
         $code = strtoupper($shop['prefix'].Str::random(5));
         $endpoint = getShopifyAPIURLForStore('price_rules/'.$priceRule->price_id.'/discount_codes.json', $shop);
@@ -475,6 +475,7 @@ trait FunctionTrait {
             $this->makeAnAPICallToShopify('DELETE', $endpoint, $headers);
         }
     }
+   
 
     /**
      * Function to create discount code on Shopify and create a
@@ -551,6 +552,12 @@ trait FunctionTrait {
         
         if($discountExpiry !== null) {
             $discountExpiry = (int) $discountExpiry;
+            # log all the attributes
+            Log::info('Logging discount expiry timeline');
+            Log::info('Discount expiry '.$discountExpiry);
+            Log::info('Current time '.strtotime('now'));
+            Log::info('Current time '.date('c'));
+            Log::info('Shop '.$shop->shop_url);
             $strtotime = strtotime('+'.($discountExpiry * 2).' hours');
             $endsAt = date('c', $strtotime);
             $payload['price_rule'] = array_merge($payload['price_rule'], ['ends_at' => $endsAt]);
