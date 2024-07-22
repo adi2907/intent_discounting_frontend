@@ -774,7 +774,7 @@ trait FunctionTrait {
             $payload = [
                 "recurring_application_charge" => [
                     "name" => "Alme Plan",
-                    "price" => 15.0,
+                    "price" => 9.99,
                     "test" => $this->checkIfTestPaymentsAreEnabled(),
                     "return_url" => route('shopify.accept.charge'),
                     "trial_days" => 0

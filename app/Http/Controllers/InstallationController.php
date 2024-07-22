@@ -7,6 +7,7 @@ use App\Jobs\RegisterWebhooks;
 use App\Jobs\SyncShopifyProducts;
 use App\Models\Shop;
 use App\Models\ShopDetail;
+use App\Models\ShopSubscription;
 use App\Models\User;
 use App\Models\UserShops;
 use App\Models\UserStores;
@@ -57,6 +58,15 @@ class InstallationController extends Controller {
             UserShops::where('user_id', $user->id)->where('shop_id', $baseShop->id)->update(['active' => 1]);
             return redirect()->route('dashboard');
         } else {
+
+            if($shopDetails != null) {
+                //Mark the payment flag false if it exists.
+                $subscriptions = $shopDetails->subscriptionsInfo;
+                if($subscriptions != null) {
+                    $shopDetails->subscriptionsInfo()->update(['status' => 0]);
+                }
+            }
+            
             $redirectUrl = urlencode(route('shopify.auth.redirect'));
             $installUrl = "https://$shop/admin/oauth/authorize?client_id=$this->apiKey&scope=$this->scopes&redirect_uri=$redirectUrl";
             return redirect()->to($installUrl);
