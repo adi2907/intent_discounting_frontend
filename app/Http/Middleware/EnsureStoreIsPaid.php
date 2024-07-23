@@ -20,10 +20,10 @@ class EnsureStoreIsPaid {
         if(Auth::check()) {
             $user = Auth::user();
             $shop = $user->shopifyStore;
-            if(!$shop->isExemptFromPaying()) {
-                $checkIfStoreHasPaid = $shop->checkLastSubscription();
-                return $checkIfStoreHasPaid ? $next($request) : $this->redirectShopToPaymentScreen($shop);
-            }
+            // if(!$shop->isExemptFromPaying()) {
+            //     $checkIfStoreHasPaid = $shop->checkLastSubscription();
+            //     return $checkIfStoreHasPaid ? $next($request) : $this->redirectShopToPaymentScreen($shop);
+            // }
             return $next($request);
         }
         return redirect()->route('login');
