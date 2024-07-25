@@ -81,8 +81,12 @@ class ProcessPurchaseEvent implements ShouldQueue {
             $order->update(['purchase_event_status' => 'Alme purchase event api called', 'purchase_event_response' => json_encode($response)]);
         } else {
             if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
+                $ip = $order['browser_ip'];
+                $ipMapField = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 'ipv6_address' : 'ip_address';
+                Log::info('IP: '.$ip.' IPMapField: '.$ipMapField);
+                $dbRowForIP = IpMap::where($ipMapField, $ip)->where('shop_id', $order->shop_id)->first();
                 //Log::info('Logging order '.json_encode($order));
-                $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->where('shop_id', $order->shop_id)->first();
+                //$dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->where('shop_id', $order->shop_id)->first();
                 if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
                     $line_items = is_array($order->line_items) ? $order->line_items : json_decode($order->line_items, true);
                     $productsArr = [];

@@ -236,7 +236,7 @@ class AppController extends Controller {
                     return response()->json(['status' => false, 'message' => 'Shop not found']);
                 }
     
-                $ipv4 = $request->ipv4;
+                $ipv4 = $request->ipv4 ? $request->ipv4 : $request->ipAddr; // Handle both ipv4 and ipAddr for older versions of javascript
                 $ipv6 = $request->ipv6;
                 $token = $request->token;
                 $sessionId = $request->session_id;
@@ -246,7 +246,7 @@ class AppController extends Controller {
                     'session_id' => $sessionId,
                     'shop_id' => $shop->id
                 ];
-    
+                // Check if ipv4 is provided, else check if ipaddr is provided, then assign it to ipv4
                 if ($ipv4) {
                     $updateArr['ip_address'] = $ipv4;
                 }
@@ -259,12 +259,27 @@ class AppController extends Controller {
                 if (!$ipv4 && !$ipv6) {
                     return response()->json(['status' => false, 'message' => 'At least one IP address (IPv4 or IPv6) must be provided']);
                 }
-    
+                
+                // Check if a record with the same shop_id and ip_address or ipv6_address exists
+                $existingIpMap = IpMap::where('shop_id', $shop->id)
+                ->where(function($query) use ($ipv4, $ipv6) {
+                    $query->where('ip_address', $ipv4)
+                        ->orWhere('ipv6_address', $ipv6);
+                })
+                ->first();
+
+                if ($existingIpMap) {
+                    // Update the existing record
+                    $existingIpMap->update($updateArr);
+                } else {
+                    // Create a new record
+                    IpMap::create($updateArr);
+                }
                 // Update or create the record
-                IpMap::updateOrCreate(
-                    ['shop_id' => $shop->id],
-                    $updateArr
-                );
+                // IpMap::updateOrCreate(
+                //     ['shop_id' => $shop->id],
+                //     $updateArr
+                // );
     
                 return response()->json(['status' => true, 'message' => 'OK']);
             }
