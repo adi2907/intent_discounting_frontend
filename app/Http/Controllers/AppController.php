@@ -246,15 +246,19 @@ class AppController extends Controller {
                     'session_id' => $sessionId,
                     'shop_id' => $shop->id
                 ];
-                // Check if ipv4 is provided, else check if ipaddr is provided, then assign it to ipv4
-                if ($ipv4) {
+                // Validate and assign IPv4 address
+                if ($ipv4 && filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                     $updateArr['ip_address'] = $ipv4;
+                } else {
+                    $ipv4 = null;
                 }
-    
-                if ($ipv6) {
+
+                // Validate and assign IPv6 address
+                if ($ipv6 && filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                     $updateArr['ipv6_address'] = $ipv6;
+                } else {
+                    $ipv6 = null;
                 }
-    
                 // If neither IPv4 nor IPv6 is provided, return an error
                 if (!$ipv4 && !$ipv6) {
                     return response()->json(['status' => false, 'message' => 'At least one IP address (IPv4 or IPv6) must be provided']);
