@@ -267,7 +267,6 @@ class AppController extends Controller {
                         ->orWhere('ipv6_address', $ipv6);
                 })
                 ->first();
-
                 if ($existingIpMap) {
                     // Update the existing record
                     $existingIpMap->update($updateArr);
