@@ -226,33 +226,101 @@ class AppController extends Controller {
 
     }
 
-    public function mapIp(Request $request) {
-        try{
-            //Log::info('Request received for ip map '.json_encode($request->all()));
-            if($request->has('shop') && $request->filled('shop')) {
+    public function mapIp(Request $request)
+    {
+        try {
+            if ($request->has('shop') && $request->filled('shop')) {
                 $shop = Shop::where('shop_url', $request->shop)->first();
-                $ip = $request->ipAddr;
+                
+                if (!$shop) {
+                    return response()->json(['status' => false, 'message' => 'Shop not found']);
+                }
+    
+                $ipv4 = $request->ipv4 ? $request->ipv4 : $request->ipAddr; // Handle both ipv4 and ipAddr for older versions of javascript
+                $ipv6 = $request->ipv6;
                 $token = $request->token;
                 $sessionId = $request->session_id;
-                $checkRecord = IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->exists();
-                if($checkRecord) {
-                    IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->update(['alme_token' => $token]);
+    
+                $updateArr = [
+                    'alme_token' => $token,
+                    'session_id' => $sessionId,
+                    'shop_id' => $shop->id
+                ];
+                // Validate and assign IPv4 address
+                if ($ipv4 && filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $updateArr['ip_address'] = $ipv4;
                 } else {
-                    $updateArr = ['alme_token' => $token];
-                    $createArr = array_merge($updateArr, [
-                        'shop_id' => $shop->id, 
-                        'ip_address' => $ip, 
-                        'alme_token' => $token, 
-                        'session_id' => $sessionId
-                    ]);
-                    IpMap::updateOrCreate($updateArr, $createArr);
+                    $ipv4 = null;
                 }
+
+                // Validate and assign IPv6 address
+                if ($ipv6 && filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    $updateArr['ipv6_address'] = $ipv6;
+                } else {
+                    $ipv6 = null;
+                }
+                // If neither IPv4 nor IPv6 is provided, return an error
+                if (!$ipv4 && !$ipv6) {
+                    return response()->json(['status' => false, 'message' => 'At least one IP address (IPv4 or IPv6) must be provided']);
+                }
+                
+                // Check if a record with the same shop_id and ip_address or ipv6_address exists
+                $existingIpMap = IpMap::where('shop_id', $shop->id)
+                ->where(function($query) use ($ipv4, $ipv6) {
+                    $query->where('ip_address', $ipv4)
+                        ->orWhere('ipv6_address', $ipv6);
+                })
+                ->first();
+                if ($existingIpMap) {
+                    // Update the existing record
+                    $existingIpMap->update($updateArr);
+                } else {
+                    // Create a new record
+                    IpMap::create($updateArr);
+                }
+                // Update or create the record
+                // IpMap::updateOrCreate(
+                //     ['shop_id' => $shop->id],
+                //     $updateArr
+                // );
+    
+                return response()->json(['status' => true, 'message' => 'OK']);
             }
-            return response()->json(['status' => true, 'message' => 'OK']);
+    
+            return response()->json(['status' => false, 'message' => 'Shop parameter is missing or empty']);
         } catch(Exception $e) {
-            return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+            return response()->json(['status' => false, 'message' => 'Error', 'error' => $e->getMessage().' '.$e->getLine()]);
         }
     }
+
+
+    // public function mapIp(Request $request) {
+    //     try{
+    //         //Log::info('Request received for ip map '.json_encode($request->all()));
+    //         if($request->has('shop') && $request->filled('shop')) {
+    //             $shop = Shop::where('shop_url', $request->shop)->first();
+    //             $ip = $request->ipAddr;
+    //             $token = $request->token;
+    //             $sessionId = $request->session_id;
+    //             $checkRecord = IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->exists();
+    //             if($checkRecord) {
+    //                 IpMap::where('shop_id', $shop->id)->where('ip_address', $ip)->update(['alme_token' => $token]);
+    //             } else {
+    //                 $updateArr = ['alme_token' => $token];
+    //                 $createArr = array_merge($updateArr, [
+    //                     'shop_id' => $shop->id, 
+    //                     'ip_address' => $ip, 
+    //                     'alme_token' => $token, 
+    //                     'session_id' => $sessionId
+    //                 ]);
+    //                 IpMap::updateOrCreate($updateArr, $createArr);
+    //             }
+    //         }
+    //         return response()->json(['status' => true, 'message' => 'OK']);
+    //     } catch(Exception $e) {
+    //         return response()->json(['status' => false, 'message' => 'OK', 'error' => $e->getMessage().' '.$e->getLine()]);
+    //     }
+    // }
 
     public function saleNotification(Request $request){
         try {
