@@ -10,7 +10,7 @@ return [
     "webhooks" => [
         //'carts/update' => 'carts.update.webhook',
         //'carts/create' => 'carts.create.webhook',
-        'checkouts/create' => 'checkouts.create.webhook',
+        //'checkouts/create' => 'checkouts.create.webhook',
         //'checkouts/update' => 'checkouts.update.webhook',
         'orders/create' => 'orders.create.webhook',
         //'orders/updated' => 'orders.update.webhook'
