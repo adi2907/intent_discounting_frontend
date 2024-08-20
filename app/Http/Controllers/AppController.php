@@ -354,7 +354,7 @@ class AppController extends Controller {
                 return response()->json(['status' => true, 'message' => 'Alme Token found null']);
             }
 
-            $endpoint = getAlmeAppURLForStore('notification/sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
+            $endpoint = getAlmeAppURLForStore('notification/new_sale_notification/?session_id='.$request->session_id.'&token='.$almeToken.'&app_name='.$request->app_name);
             $headers = getAlmeHeaders();
             
             try {
