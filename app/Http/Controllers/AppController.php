@@ -1070,7 +1070,7 @@ class AppController extends Controller {
                     $discountExpiry = $notificationSettings->discount_expiry ?? 'N/A';
 
                     $notificationAsset = $shop->notificationAsset;
-                    $saleBackoffCouponTimeout = strtotime('+5 days');
+                    $saleBackoffCouponTimeout = strtotime('+2 days');
                         
                     if(isset($notificationAsset) && $notificationAsset != null && filled($notificationAsset)) {
                         $html = $notificationAsset->sale_notif_html;
