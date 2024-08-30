@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel {
         //$schedule->command('app:purchase-event-alme')->everyMinute();
 
         //Syncs products data from all stores. 
-        //$schedule->command('app:sync-products')->everyOddHour();
+        $schedule->command('app:sync-products')->everySixHours();
 
         //Processes Orders from cache every minute
         $schedule->command('app:process-cache')->everyFiveMinutes();
