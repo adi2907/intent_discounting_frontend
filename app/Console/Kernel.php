@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('app:check-discount-code-redemptions')->everyThirtyMinutes();
 
         //Syncs Alme's Identified Users data into the database. So we can do custom querying on it on our end.
-        //$schedule->command('app:sync-identified-users')->everyThirtyMinutes();
+        $schedule->command('app:sync-identified-users')->everyThirtyMinutes();
 
         //Retries failed purchase events and saves information in the table
         //Turned off for now
