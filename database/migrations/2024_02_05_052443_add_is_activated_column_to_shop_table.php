@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('shops', function (Blueprint $table) {
+        Schema::table('shop', function (Blueprint $table) {
             $table->tinyInteger('isActivated')->default(false)->after('hmac');
         });
     }
