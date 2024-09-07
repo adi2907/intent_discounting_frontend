@@ -95,9 +95,9 @@ class CheckDiscountCodeRedemptions extends Command
             return ['almeToken' => $almeInfo->alme_token, 'sessionId' => $almeInfo->session_id];    
         }
 
-        if(isset($order['browser_ip']) && filled($order['browser_ip'])) {
+        if(isset($shopifyOrder['browser_ip']) && filled($shopifyOrder['browser_ip'])) {
             //Log::info('Logging order '.json_encode($order));
-            $dbRowForIP = IpMap::where('ip_address', $order['browser_ip'])->where('shop_id', $order->shop_id)->first();
+            $dbRowForIP = IpMap::where('ip_address', $shopifyOrder['browser_ip'])->where('shop_id', $shopifyOrder->shop_id)->first();
             if($dbRowForIP !== null && $dbRowForIP->count() > 0) {
                 return ['almeToken' => $dbRowForIP->alme_token, 'sessionId' => $dbRowForIP->session_id];
             }

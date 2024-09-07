@@ -1134,12 +1134,13 @@ class AppController extends Controller {
                     Log::info('Error during incrementing notif stats '.$shop->shop_url.' '.$th->getMessage().' '.$th->getLine());
                 } 
                 
-                return response()->json(['code' => $code, 'status' => true, 'html' => $html, 'saleBackoffCouponTimeout' => $saleBackoffCouponTimeout]);
+                return response()->json(['code' => $code, 'discountValue' => $discountValue, 'status' => true, 'html' => $html, 'saleBackoffCouponTimeout' => $saleBackoffCouponTimeout]);
             }
             return response()->json(['code' => null, 'status' => true, 'html' => null, 'saleBackoffCouponTimeout' => null]);
         } catch (Exception $th) {
             return response()->json([
                 'code' => null, 
+                'discountValue' => null, 
                 'saleBackoffCouponTimeout' => null,
                 'status' => false, 
                 'debug' => $th->getMessage().' '.$th->getLine(), 
