@@ -1,66 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+intent-discounting-frontend
+This repository contains the source code for almeapp-laravel, a robust e-commerce application built with the Laravel framework. The application is designed to function as an integrated tool for managing user interactions, orders, and analytics,  connecting to a platform Shopify
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Features
 
-## About Laravel
+Shopify Integration: Seamlessly integrates with Shopify stores to handle various e-commerce workflows, including order processing, discount management, and webhook events.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+User & Shop Management: Maintains a comprehensive record of identified users, their browsing habits, and their relationship with specific shops. The system tracks user activities like last_visited, added_to_cart, and purchased to build detailed user profiles.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Dynamic Analytics: Gathers and processes detailed analytics on user behavior and engagement. It records impressions, clicks on notifications, coupon redemptions, and contact form submissions.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Discount and Pricing Rules: Provides a system for creating and managing flexible price rules and discount codes. This includes setting coupon validity and minimum order values.
 
-## Learning Laravel
+User Segmentation: Offers a powerful mechanism for segmenting users based on various criteria and rules, such as lastSeen-filter and custom rule definitions.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Product Recommendations: Supports product recommendation logic based on user data, with settings for user_liked, crowd_fav, and prev_browsing.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Webhook & Event Handling: Includes a system for processing and logging Shopify webhook events and a mechanism for retrying failed purchase events.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Database Schema
+The core functionality of the application is powered by a well-structured database schema. Key tables include:
 
-## Laravel Sponsors
+identified_users: Stores user-specific data and a history of their engagement.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+shopify_orders: Contains detailed information about orders synchronized from Shopify.
 
-### Premium Partners
+alme_click_analytics: Records user interactions with notifications and coupons.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+price_rules & discount_codes: Manages the application's discount and pricing logic.
 
-## Contributing
+segment_rules: Stores the custom rules used for user segmentation.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Routes
+The application exposes a number of routes, primarily for testing and internal functionality:
 
-## Code of Conduct
+API Routes (routes/web.php):
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+/testFullOrder/{id}: Endpoint to test full order data retrieval.
 
-## Security Vulnerabilities
+/testCustomers: Endpoint to test customer data.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+/testPurchaseEvent: Endpoint for testing purchase event handling.
 
-## License
+/testAlmePayload/{id}: Endpoint to test the Alme payload for a specific ID.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+/segment_list: Retrieves a list of user segments.
+
+/sampleMinOrderCoupon/{id}: Tests coupon generation with a minimum order value.
+
+/createDiscountCode: Endpoint for testing discount code creation.
+
+/checkStoreInstallAndScript: Checks for a store's installation and script status.
+
+User API Routes (routes/api.php):
+
+/user: Returns the authenticated user's data (requires auth:sanctum middleware).
+
+Getting Started
+To get a local copy of this project up and running, follow these steps:
+
+Clone the repository:
+
+git clone [your-repo-url]
+cd almeapp-laravel
+
+Install dependencies:
+
+composer install
+
+Set up the environment file:
+
+Copy .env.example to .env.
+
+Configure your database and other services in the .env file.
+
+Run database migrations:
+
+php artisan migrate
+
+Serve the application:
+
+php artisan serve
